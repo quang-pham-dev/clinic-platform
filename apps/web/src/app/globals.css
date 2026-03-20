@@ -1,4 +1,4 @@
-@import '@seaguntech/design-system';
+@import '@clinic-platform/design-system';
 
 @source '../**/*.{ts,tsx}';
 @source '../../../../packages/ui/src/**/*.{ts,tsx}';

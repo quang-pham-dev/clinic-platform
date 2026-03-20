@@ -1,1 +1,1 @@
-export { default } from '@seaguntech/design-system/postcss-config';
+export { default } from '@clinic-platform/design-system/postcss-config';

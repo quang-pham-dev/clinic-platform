@@ -1,4 +1,4 @@
-# @seaguntech/eslint-config
+# @clinic-platform/eslint-config
 
 <div align="center">
 
@@ -21,7 +21,7 @@ This package is automatically available to workspace packages:
 ```json
 {
   "devDependencies": {
-    "@seaguntech/eslint-config": "workspace:*"
+    "@clinic-platform/eslint-config": "workspace:*"
   }
 }
 ```
@@ -33,7 +33,7 @@ This package is automatically available to workspace packages:
 The foundational ESLint configuration for TypeScript projects.
 
 ```javascript
-import { config } from '@seaguntech/eslint-config/base';
+import { config } from '@clinic-platform/eslint-config/base';
 
 export default [...config];
 ```
@@ -43,7 +43,7 @@ export default [...config];
 React-specific rules extending the base configuration.
 
 ```javascript
-import { config } from '@seaguntech/eslint-config/react';
+import { config } from '@clinic-platform/eslint-config/react';
 
 export default [...config];
 ```
@@ -55,7 +55,7 @@ export default [...config];
 In `eslint.config.mjs` or `eslint.config.js`:
 
 ```javascript
-import { config } from '@seaguntech/eslint-config/base';
+import { config } from '@clinic-platform/eslint-config/base';
 
 /** @type {import("eslint").Linter.Config} */
 export default [
@@ -69,7 +69,7 @@ export default [
 ### With Custom Rules
 
 ```javascript
-import { config } from '@seaguntech/eslint-config/base';
+import { config } from '@clinic-platform/eslint-config/base';
 
 export default [
   ...config,
@@ -85,7 +85,7 @@ export default [
 ### React Configuration
 
 ```javascript
-import { config } from '@seaguntech/eslint-config/react';
+import { config } from '@clinic-platform/eslint-config/react';
 
 export default [
   ...config,
@@ -135,14 +135,14 @@ function greet(name) {
 import { useState } from 'react';
 import { View, Text } from 'react-native';
 
-import { Button } from '@seaguntech/ui/button';
-import { useTheme } from '@seaguntech/theme';
+import { Button } from '@clinic-platform/ui/button';
+import { useTheme } from '@clinic-platform/theme';
 
 import { localHelper } from './utils';
 
 // ❌ Wrong - Unorganized
 import { localHelper } from './utils';
-import { Button } from '@seaguntech/ui/button';
+import { Button } from '@clinic-platform/ui/button';
 import { useState } from 'react';
 ```
 
@@ -407,5 +407,5 @@ To modify ESLint configuration:
 ---
 
 <div align="center">
-Part of the Seaguntech monorepo
+Part of the Clinic Platform monorepo
 </div>

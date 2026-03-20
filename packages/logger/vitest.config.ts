@@ -1,4 +1,4 @@
-import { nodeConfig } from '@seaguntech/vitest-config/node';
+import { nodeConfig } from '@clinic-platform/vitest-config/node';
 import { defineConfig, mergeConfig } from 'vitest/config';
 
 export default mergeConfig(

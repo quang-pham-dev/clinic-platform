@@ -42,36 +42,36 @@ Top-level (runs via Turborepo):
 
 Package-level (run inside a workspace or use pnpm filters):
 
-- `pnpm --filter @seaguntech/utils test`
-- `pnpm --filter @seaguntech/logger test`
-- `pnpm --filter @seaguntech/ui test`
+- `pnpm --filter @clinic-platform/utils test`
+- `pnpm --filter @clinic-platform/logger test`
+- `pnpm --filter @clinic-platform/ui test`
 
 Turbo filters (handy for lint/build/test per package):
 
-- `pnpm test -- --filter @seaguntech/utils`
-- `pnpm lint -- --filter @seaguntech/ui`
-- `pnpm build -- --filter @seaguntech/web`
+- `pnpm test -- --filter @clinic-platform/utils`
+- `pnpm lint -- --filter @clinic-platform/ui`
+- `pnpm build -- --filter @clinic-platform/web`
 
 ### Run a Single Test
 
 Tests live in `packages/*/tests`. Each package uses Vitest.
 
 - Single file:
-  - `pnpm --filter @seaguntech/utils test -- tests/formatDate.test.ts`
-  - `pnpm --filter @seaguntech/ui test -- tests/utils.test.ts`
+  - `pnpm --filter @clinic-platform/utils test -- tests/formatDate.test.ts`
+  - `pnpm --filter @clinic-platform/ui test -- tests/utils.test.ts`
 - Single test name:
-  - `pnpm --filter @seaguntech/utils test -- -t "formatDate"`
+  - `pnpm --filter @clinic-platform/utils test -- -t "formatDate"`
 
 ### Storybook
 
 - `pnpm dev:storybook` (turborepo wrapper)
-- Or run locally in app: `pnpm --filter @seaguntech/storybook dev`
+- Or run locally in app: `pnpm --filter @clinic-platform/storybook dev`
 
 ## Code Style Guidelines
 
 ### Formatting (Prettier)
 
-Configured via `@seaguntech/prettier-config/base`.
+Configured via `@clinic-platform/prettier-config/base`.
 
 - Indentation: 2 spaces
 - Semicolons: required
@@ -85,7 +85,7 @@ Configured via `@seaguntech/prettier-config/base`.
 
 ### Linting (ESLint)
 
-Base config is `@seaguntech/eslint-config/base` (ESLint 9 flat config).
+Base config is `@clinic-platform/eslint-config/base` (ESLint 9 flat config).
 
 - JS + TS recommended rules enabled
 - Prettier conflicts disabled
@@ -102,7 +102,7 @@ React/Next/Storybook packages extend additional rules:
 
 ### TypeScript
 
-Shared config: `@seaguntech/typescript-config/base.json`.
+Shared config: `@clinic-platform/typescript-config/base.json`.
 
 - `strict: true`
 - `noUncheckedIndexedAccess: true`
@@ -136,7 +136,7 @@ Shared config: `@seaguntech/typescript-config/base.json`.
 - Utility helpers available:
   - `invariant(condition, message)` for runtime assertions
   - `assertNever(value)` for exhaustive checks
-- For logging, use `@seaguntech/logger` where appropriate.
+- For logging, use `@clinic-platform/logger` where appropriate.
 
 ### React / UI Patterns
 
@@ -149,7 +149,7 @@ Shared config: `@seaguntech/typescript-config/base.json`.
 ### Testing
 
 - Tests are colocated in `packages/*/tests`.
-- Vitest is the test runner; configs come from `@seaguntech/vitest-config`.
+- Vitest is the test runner; configs come from `@clinic-platform/vitest-config`.
 - Coverage defaults to 80% across lines/branches/functions/statements.
 
 ## Changesets / Releases

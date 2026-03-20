@@ -1,5 +1,5 @@
 {
-  "name": "@seaguntech/storybook",
+  "name": "@clinic-platform/storybook",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -15,15 +15,15 @@
     "clean": "rm -rf dist node_modules"
   },
   "dependencies": {
-    "@seaguntech/ui": "workspace:*",
+    "@clinic-platform/ui": "workspace:*",
     "react": "catalog:react19",
     "react-dom": "catalog:react19"
   },
   "devDependencies": {
-    "@seaguntech/eslint-config": "workspace:*",
-    "@seaguntech/prettier-config": "workspace:*",
-    "@seaguntech/design-system": "workspace:*",
-    "@seaguntech/typescript-config": "workspace:*",
+    "@clinic-platform/eslint-config": "workspace:*",
+    "@clinic-platform/prettier-config": "workspace:*",
+    "@clinic-platform/design-system": "workspace:*",
+    "@clinic-platform/typescript-config": "workspace:*",
     "@types/node": "catalog:",
     "@types/react": "catalog:react19",
     "@types/react-dom": "catalog:react19",
@@ -41,5 +41,5 @@
     "vite": "catalog:vite-ecosystem",
     "vite-tsconfig-paths": "catalog:vite-ecosystem"
   },
-  "prettier": "@seaguntech/prettier-config/base"
+  "prettier": "@clinic-platform/prettier-config/base"
 }

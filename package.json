@@ -1,17 +1,17 @@
 {
-  "name": "seaguntech-monorepo-template",
-  "description": "Seaguntech monorepo with Turborepo, pnpm, and Tailwind v4",
+  "name": "clinic-platform",
+  "description": "Clinic Platform monorepo with Turborepo, pnpm, and Tailwind v4",
   "private": true,
   "version": "0.1.0",
-  "author": "Quang Pham <quangpham.software.engineer@gmail.com>",
+  "author": "Quang Pham <quangpham.developer@gmail.com>",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/seaguntech/seaguntech-monorepo-template.git"
+    "url": "https://github.com/quang-pham-dev/clinic-platform.git"
   },
-  "homepage": "https://github.com/seaguntech/seaguntech-monorepo-template",
+  "homepage": "https://github.com/quang-pham-dev/clinic-platform",
   "bugs": {
-    "url": "https://github.com/seaguntech/seaguntech-monorepo-template/issues"
+    "url": "https://github.com/quang-pham-dev/clinic-platform/issues"
   },
   "packageManager": "pnpm@10.25.0",
   "engines": {
@@ -20,12 +20,12 @@
   },
   "scripts": {
     "dev": "turbo watch dev",
-    "dev:web": "turbo watch dev --filter @seaguntech/web",
-    "dev:storybook": "turbo watch dev --filter @seaguntech/storybook",
+    "dev:web": "turbo watch dev --filter @clinic-platform/web",
+    "dev:storybook": "turbo watch dev --filter @clinic-platform/storybook",
     "build": "turbo run build",
     "build:apps": "turbo run build --filter=\"./apps/*\"",
     "build:packages": "turbo run build --filter=\"./packages/*\"",
-    "build:storybook": "turbo run build --filter @seaguntech/storybook",
+    "build:storybook": "turbo run build --filter @clinic-platform/storybook",
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
     "format": "turbo run format",
@@ -43,10 +43,10 @@
     "prepare": "husky"
   },
   "devDependencies": {
-    "@seaguntech/eslint-config": "workspace:*",
-    "@seaguntech/prettier-config": "workspace:*",
-    "@seaguntech/typescript-config": "workspace:*",
-    "@seaguntech/vitest-config": "workspace:*",
+    "@clinic-platform/eslint-config": "workspace:*",
+    "@clinic-platform/prettier-config": "workspace:*",
+    "@clinic-platform/typescript-config": "workspace:*",
+    "@clinic-platform/vitest-config": "workspace:*",
     "@changesets/cli": "catalog:",
     "@commitlint/cli": "catalog:",
     "@commitlint/config-conventional": "catalog:",
@@ -66,5 +66,5 @@
       "prettier --write"
     ]
   },
-  "prettier": "@seaguntech/prettier-config/base"
+  "prettier": "@clinic-platform/prettier-config/base"
 }

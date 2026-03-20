@@ -1,6 +1,6 @@
 import { ThemeToggle } from '@/components/theme-toggle';
-import { Button } from '@seaguntech/ui';
-import { formatDate } from '@seaguntech/utils';
+import { Button } from '@clinic-platform/ui';
+import { formatDate } from '@clinic-platform/utils';
 
 export default function Home() {
   return (
@@ -11,7 +11,7 @@ export default function Home() {
             Today is {formatDate(new Date())}
           </p>
           <h1 className="text-3xl font-semibold">
-            Seaguntech Monorepo Starter
+            Clinic Platform Starter
           </h1>
         </div>
         <p className="text-base text-muted-foreground">

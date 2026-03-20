@@ -1,4 +1,4 @@
-import { storybookConfig } from '@seaguntech/eslint-config/storybook';
+import { storybookConfig } from '@clinic-platform/eslint-config/storybook';
 import { defineConfig } from 'eslint/config';
 
 export default defineConfig([

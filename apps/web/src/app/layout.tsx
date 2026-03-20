@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Seaguntech Monorepo Starter',
+  title: 'Clinic Platform Starter',
   description: 'Reusable monorepo template with shared packages.',
 };
 

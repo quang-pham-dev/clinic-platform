@@ -1,4 +1,4 @@
-# @seaguntech/vitest-config
+# @clinic-platform/vitest-config
 
 <div align="center">
 
@@ -21,14 +21,14 @@ Add the dependency to your package:
 ```json
 {
   "devDependencies": {
-    "@seaguntech/vitest-config": "workspace:*"
+    "@clinic-platform/vitest-config": "workspace:*"
   }
 }
 ```
 
 ## 🛠 Available Configurations
 
-### `@seaguntech/vitest-config/base`
+### `@clinic-platform/vitest-config/base`
 
 The foundational configuration for any TypeScript project.
 
@@ -37,7 +37,7 @@ The foundational configuration for any TypeScript project.
   - V8 coverage provider with 80% thresholds.
   - Multi-reporter output (`text`, `json`, `html`, `lcov`).
 
-### `@seaguntech/vitest-config/react`
+### `@clinic-platform/vitest-config/react`
 
 Extended configuration for React-based applications and libraries.
 
@@ -46,7 +46,7 @@ Extended configuration for React-based applications and libraries.
   - Integrated `@vitejs/plugin-react` and `vite-tsconfig-paths`.
   - Helpers for React instance deduplication (crucial for React 19).
 
-### `@seaguntech/vitest-config/node`
+### `@clinic-platform/vitest-config/node`
 
 Tailored for backend utilities and CLI tools.
 
@@ -61,7 +61,7 @@ Tailored for backend utilities and CLI tools.
 In `vitest.config.ts`:
 
 ```typescript
-import { getReactAliases, reactConfig } from '@seaguntech/vitest-config/react';
+import { getReactAliases, reactConfig } from '@clinic-platform/vitest-config/react';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defineConfig, mergeConfig } from 'vitest/config';
@@ -90,7 +90,7 @@ export default mergeConfig(
 In `vitest.config.ts`:
 
 ```typescript
-import { nodeConfig } from '@seaguntech/vitest-config/node';
+import { nodeConfig } from '@clinic-platform/vitest-config/node';
 import { defineConfig, mergeConfig } from 'vitest/config';
 
 export default mergeConfig(
@@ -127,5 +127,5 @@ To modify testing standards:
 ---
 
 <div align="center">
-Part of the Seaguntech monorepo
+Part of the Clinic Platform monorepo
 </div>

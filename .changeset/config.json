@@ -7,7 +7,7 @@
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": ["@seaguntech/web", "@seaguntech/storybook"],
+  "ignore": ["@clinic-platform/web", "@clinic-platform/storybook"],
   "privatePackages": {
     "version": true,
     "tag": true

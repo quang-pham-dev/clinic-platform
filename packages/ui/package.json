@@ -1,15 +1,15 @@
 {
-  "name": "@seaguntech/ui",
+  "name": "@clinic-platform/ui",
   "version": "0.1.0",
   "license": "MIT",
-  "description": "Shared UI component library for the Seaguntech monorepo",
+  "description": "Shared UI component library for the Clinic Platform monorepo",
   "repository": {
     "type": "git",
-    "url": "https://github.com/seaguntech/seaguntech-monorepo-template.git"
+    "url": "https://github.com/quang-pham-dev/clinic-platform.git"
   },
-  "homepage": "https://github.com/seaguntech/seaguntech-monorepo-template",
+  "homepage": "https://github.com/quang-pham-dev/clinic-platform",
   "bugs": {
-    "url": "https://github.com/seaguntech/seaguntech-monorepo-template/issues"
+    "url": "https://github.com/quang-pham-dev/clinic-platform/issues"
   },
   "keywords": [
     "ui",
@@ -53,7 +53,7 @@
   "dependencies": {
     "@radix-ui/react-label": "catalog:radix-ui",
     "@radix-ui/react-slot": "catalog:radix-ui",
-    "@seaguntech/design-system": "workspace:*",
+    "@clinic-platform/design-system": "workspace:*",
     "class-variance-authority": "catalog:web-ui",
     "clsx": "catalog:web-ui",
     "lucide-react": "catalog:web-ui",
@@ -70,10 +70,10 @@
     "@types/react-dom": "catalog:react19",
     "@vitest/coverage-v8": "catalog:testing",
     "@vitest/ui": "catalog:testing",
-    "@seaguntech/eslint-config": "workspace:*",
-    "@seaguntech/prettier-config": "workspace:*",
-    "@seaguntech/typescript-config": "workspace:*",
-    "@seaguntech/vitest-config": "workspace:*",
+    "@clinic-platform/eslint-config": "workspace:*",
+    "@clinic-platform/prettier-config": "workspace:*",
+    "@clinic-platform/typescript-config": "workspace:*",
+    "@clinic-platform/vitest-config": "workspace:*",
     "eslint": "catalog:",
     "postcss": "catalog:web-ui",
     "prettier": "catalog:",
@@ -83,5 +83,5 @@
     "typescript": "catalog:",
     "vitest": "catalog:testing"
   },
-  "prettier": "@seaguntech/prettier-config/base"
+  "prettier": "@clinic-platform/prettier-config/base"
 }

@@ -40,7 +40,7 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
-  transpilePackages: ['@seaguntech/ui', '@seaguntech/utils'],
+  transpilePackages: ['@clinic-platform/ui', '@clinic-platform/utils'],
   async headers() {
     return [
       {

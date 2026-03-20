@@ -1,4 +1,4 @@
-import { nextJsConfig } from '@seaguntech/eslint-config/next-internal-library';
+import { nextJsConfig } from '@clinic-platform/eslint-config/next-internal-library';
 import { defineConfig } from 'eslint/config';
 
 export default defineConfig([

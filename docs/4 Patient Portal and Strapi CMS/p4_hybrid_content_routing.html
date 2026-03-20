@@ -1,0 +1,50 @@
+<style>
+.rb2{padding:4px 12px;border-radius:14px;border:.5px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-secondary);font-size:12px;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.rb2.on{border-color:var(--color-border-info);background:var(--color-background-info);color:var(--color-text-info);}
+.rw{font-size:13px;}
+.rt{font-weight:500;color:var(--color-text-primary);margin:0 0 2px;}
+.rs{color:var(--color-text-secondary);margin:0 0 6px;font-size:12px;}
+.rm{font-size:12px;color:var(--color-text-tertiary);margin:0;}
+.bg{font-size:11px;padding:1px 8px;border-radius:10px;}
+.bt{background:var(--color-background-teal,#E1F5EE);color:#085041;}
+.bp{background:#EEEDFE;color:#3C3489;}
+.bc{background:var(--color-background-warning);color:var(--color-text-warning);}
+#rp{padding:14px 16px;border-radius:10px;background:var(--color-background-secondary);border:.5px solid var(--color-border-tertiary);min-height:72px;margin-top:10px;}
+</style>
+<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
+<button class="rb2" onclick="show('home')">/ (home)</button>
+<button class="rb2" onclick="show('doctors')"> /doctors/:slug</button>
+<button class="rb2" onclick="show('articles')">/articles</button>
+<button class="rb2" onclick="show('faqs')">/faqs</button>
+<button class="rb2" onclick="show('consent')">/consent</button>
+<button class="rb2" onclick="show('appointments')">/my/appointments</button>
+<button class="rb2" onclick="show('records')">/my/records</button>
+<button class="rb2" onclick="show('uploads')">/my/uploads</button>
+<button class="rb2" onclick="show('booking')">/book/:slotId</button>
+</div>
+<div id="rp"><p style="margin:0;font-size:13px;color:var(--color-text-tertiary)">Click a route to see its data source and caching strategy</p></div>
+<script>
+const routes={
+home:{path:'/',type:'public',source:'Strapi REST API',render:'SSG + ISR (revalidate 1h)',auth:'None',cache:'CDN-cached · Next.js full-page cache',note:'Featured articles, latest FAQs, clinic announcements — all CMS content. No patient data.'},
+doctors:{path:'/doctors/[slug]',type:'public',source:'Strapi DoctorProfile content type',render:'SSG (generateStaticParams) + ISR on-demand',auth:'None',cache:'CDN-cached · revalidated via Strapi webhook on publish',note:'Public doctor bio, photo, specialties. doctorId field links to NestJS doctor for live slot count.'},
+articles:{path:'/articles · /articles/[slug]',type:'public',source:'Strapi Article content type',render:'SSG + ISR (revalidate 30min)',auth:'None',cache:'CDN-cached · Strapi webhook revalidates on publish/update',note:'Health blog. Articles authored by doctors in Strapi admin. Rich text rendered via @tailwindcss/typography.'},
+faqs:{path:'/faqs',type:'public',source:'Strapi FAQ content type',render:'SSG (static at build)',auth:'None',cache:'CDN-cached · low change frequency',note:'Help & usage guide content. Rarely changes — full SSG rebuild on Strapi publish webhook.'},
+consent:{path:'/consent/[version]',type:'public',source:'Strapi ConsentForm content type',render:'SSG + ISR (revalidate 24h)',auth:'None',cache:'CDN-cached · legal text is stable',note:'Patient sees this before first booking. Version field tracks consent acceptance in NestJS patient_consents table.'},
+appointments:{path:'/my/appointments',type:'protected',source:'NestJS GET /bookings (P1)',render:'Client-side fetch (CSR)',auth:'JWT — redirect to /login if missing',cache:'TanStack Query: staleTime 1min · invalidate on cancel',note:'Patient booking history + upcoming. Cancel button calls NestJS BookingStateMachine. Video call join button from P3 VideoModule.'},
+records:{path:'/my/records',type:'protected',source:'NestJS GET /medical-records (new P4)',render:'Client-side fetch (CSR)',auth:'JWT required',cache:'TanStack Query: staleTime 5min',note:'Lab results, prescriptions, visit summaries. Doctor uploads via admin dashboard. Patient can view and download signed S3 URLs.'},
+uploads:{path:'/my/uploads',type:'protected',source:'NestJS POST/GET /patient-files (new P4)',render:'Client-side fetch (CSR)',auth:'JWT required',cache:'TanStack Query: invalidate after upload',note:'Patient self-uploads (insurance card, symptom photos). Max 10MB per file. NestJS stores metadata; file goes to S3.'},
+booking:{path:'/book/[slotId]',type:'protected',source:'NestJS POST /bookings (P1) + Strapi DoctorProfile',render:'Hybrid: SSR for doctor profile, CSR for booking form',auth:'JWT required · guest redirect to register',cache:'Doctor profile: ISR · Booking form: no cache',note:'Booking flow. Doctor public info from Strapi (fast ISR). Booking submission to NestJS. Consent version checked before submit.'},
+};
+const labels={public:'<span class="bg bt">Strapi · public</span>',protected:'<span class="bg bp">NestJS · protected</span>'};
+function show(id){
+const r=routes[id];
+document.querySelectorAll('.rb2').forEach(b=>b.classList.remove('on'));
+event.target.classList.add('on');
+document.getElementById('rp').innerHTML=
+`<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><p class="rt">${r.path}</p>${labels[r.type]}</div>`+
+`<p class="rs"><b style="color:var(--color-text-primary)">Source:</b> ${r.source}</p>`+
+`<p class="rs"><b style="color:var(--color-text-primary)">Render:</b> ${r.render}</p>`+
+`<p class="rs"><b style="color:var(--color-text-primary)">Cache:</b> ${r.cache}</p>`+
+`<p class="rm">${r.note}</p>`;
+}
+</script>

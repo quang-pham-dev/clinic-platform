@@ -1,4 +1,4 @@
-import '@seaguntech/ui/styles.css';
+import '@clinic-platform/ui/styles.css';
 import type { Preview } from '@storybook/react';
 
 const applyThemeClass = (theme: 'light' | 'dark' | 'system') => {

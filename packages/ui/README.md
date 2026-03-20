@@ -1,17 +1,17 @@
-# @seaguntech/ui
+# @clinic-platform/ui
 
-Shared UI component library for the Seaguntech monorepo.
+Shared UI component library for the Clinic Platform monorepo.
 
 ## Install
 
 ```bash
-pnpm add @seaguntech/ui
+pnpm add @clinic-platform/ui
 ```
 
 ## Usage
 
 ```tsx
-import { Button } from '@seaguntech/ui';
+import { Button } from '@clinic-platform/ui';
 
 export function Example() {
   return <Button size="lg">Get started</Button>;
@@ -21,7 +21,7 @@ export function Example() {
 ### Layout primitives
 
 ```tsx
-import { Container, Grid, Stack } from '@seaguntech/ui';
+import { Container, Grid, Stack } from '@clinic-platform/ui';
 
 export function LayoutExample() {
   return (
@@ -43,10 +43,10 @@ export function LayoutExample() {
 Import the global design system once in your app:
 
 ```css
-@import '@seaguntech/ui/styles.css';
+@import '@clinic-platform/ui/styles.css';
 ```
 
 ## Notes
 
-- Tailwind CSS v4 tokens live in `@seaguntech/design-system`.
+- Tailwind CSS v4 tokens live in `@clinic-platform/design-system`.
 - Components use `class-variance-authority` and `cn` helper.

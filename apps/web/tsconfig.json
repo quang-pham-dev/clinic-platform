@@ -1,5 +1,5 @@
 {
-  "extends": "@seaguntech/typescript-config/nextjs-library.json",
+  "extends": "@clinic-platform/typescript-config/nextjs-library.json",
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
