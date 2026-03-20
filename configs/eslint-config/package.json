@@ -8,8 +8,7 @@
     "eslint",
     "config",
     "typescript",
-    "react",
-    "react-native"
+    "react"
   ],
   "scripts": {
     "clean": "rm -rf dist node_modules"
@@ -17,20 +16,15 @@
   "exports": {
     "./base": "./base.js",
     "./react-internal-library": "./react-internal-library.js",
-    "./next-internal-library": "./next-internal-library.js",
-    "./react-native-library": "./react-native-library.js",
-    "./storybook": "./storybook.js"
+    "./next-internal-library": "./next-internal-library.js"
   },
   "devDependencies": {
     "@eslint/js": "catalog:",
     "eslint": "catalog:",
     "@next/eslint-plugin-next": "catalog:eslint-plugins",
-    "@react-native/eslint-config": "catalog:eslint-plugins",
     "eslint-config-prettier": "catalog:eslint-plugins",
     "eslint-plugin-only-warn": "catalog:eslint-plugins",
     "eslint-plugin-react": "catalog:eslint-plugins",
-    "eslint-plugin-react-native": "catalog:eslint-plugins",
-    "eslint-plugin-storybook": "catalog:eslint-plugins",
     "eslint-plugin-react-hooks": "catalog:eslint-plugins",
     "eslint-plugin-turbo": "catalog:eslint-plugins",
     "globals": "catalog:eslint-plugins",
