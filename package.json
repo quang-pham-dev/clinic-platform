@@ -1,6 +1,6 @@
 {
   "name": "clinic-platform",
-  "description": "Clinic Platform monorepo with Turborepo, pnpm, and Tailwind v4",
+  "description": "Healthcare Clinic Platform — multi-app monorepo with Turborepo and pnpm",
   "private": true,
   "version": "0.1.0",
   "author": "Quang Pham <quangpham.developer@gmail.com>",
@@ -20,12 +20,9 @@
   },
   "scripts": {
     "dev": "turbo watch dev",
-    "dev:web": "turbo watch dev --filter @clinic-platform/web",
-    "dev:storybook": "turbo watch dev --filter @clinic-platform/storybook",
     "build": "turbo run build",
     "build:apps": "turbo run build --filter=\"./apps/*\"",
     "build:packages": "turbo run build --filter=\"./packages/*\"",
-    "build:storybook": "turbo run build --filter @clinic-platform/storybook",
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
     "format": "turbo run format",
@@ -35,11 +32,6 @@
     "test:watch": "turbo run test:watch",
     "test:coverage": "turbo run test:coverage",
     "clean": "turbo run clean && rm -rf node_modules",
-    "changeset": "changeset",
-    "version-packages": "changeset version",
-    "release": "turbo run build && changeset publish",
-    "init:template": "node scripts/init-template.mjs",
-    "init:template:dry-run": "node scripts/init-template.mjs --dry-run",
     "prepare": "husky"
   },
   "devDependencies": {
@@ -47,9 +39,9 @@
     "@clinic-platform/prettier-config": "workspace:*",
     "@clinic-platform/typescript-config": "workspace:*",
     "@clinic-platform/vitest-config": "workspace:*",
-    "@changesets/cli": "catalog:",
     "@commitlint/cli": "catalog:",
     "@commitlint/config-conventional": "catalog:",
+    "@trivago/prettier-plugin-sort-imports": "6.0.2",
     "eslint": "catalog:",
     "husky": "catalog:",
     "lint-staged": "catalog:",

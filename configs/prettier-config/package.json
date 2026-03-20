@@ -8,8 +8,7 @@
   },
   "exports": {
     ".": "./base.js",
-    "./base": "./base.js",
-    "./react-native-library": "./react-native-library.js"
+    "./base": "./base.js"
   },
   "dependencies": {
     "@trivago/prettier-plugin-sort-imports": "catalog:prettier-plugins"
