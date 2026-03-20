@@ -1,0 +1,62 @@
+{
+  "$schema": "https://turbo-2-8-20.turborepo.com/schema.json",
+  "globalDependencies": [],
+  "globalEnv": ["NODE_ENV", "LOG_LEVEL"],
+  "globalPassThroughEnv": ["CI"],
+  "ui": "tui",
+  "tasks": {
+    "transit": {
+      "dependsOn": ["^transit"]
+    },
+    "build": {
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", ".env", ".env.*"],
+      "outputs": ["dist/**", "build/**"]
+    },
+    "format": {
+      "dependsOn": ["transit"],
+      "inputs": ["$TURBO_DEFAULT$", ".prettierrc*", "prettier.config.*"]
+    },
+    "format:fix": {
+      "cache": false
+    },
+    "lint": {
+      "dependsOn": ["transit"],
+      "inputs": ["$TURBO_DEFAULT$", "eslint.config.*", ".eslintignore"]
+    },
+    "lint:fix": {
+      "cache": false
+    },
+    "check-types": {
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", "tsconfig*.json"]
+    },
+    "dev": {
+      "dependsOn": ["^build"],
+      "cache": false,
+      "persistent": false
+    },
+    "start": {
+      "dependsOn": ["^build"],
+      "cache": false,
+      "persistent": true
+    },
+    "clean": {
+      "cache": false
+    },
+    "test": {
+      "dependsOn": ["transit"],
+      "inputs": ["$TURBO_DEFAULT$", ".env", ".env.*"]
+    },
+    "test:watch": {
+      "dependsOn": ["transit"],
+      "cache": false,
+      "persistent": true
+    },
+    "test:coverage": {
+      "dependsOn": ["transit"],
+      "outputs": ["coverage/**"],
+      "inputs": ["$TURBO_DEFAULT$", ".env", ".env.*"]
+    }
+  }
+}

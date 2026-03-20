@@ -1,0 +1,70 @@
+{
+  "name": "seaguntech-monorepo-template",
+  "description": "Seaguntech monorepo with Turborepo, pnpm, and Tailwind v4",
+  "private": true,
+  "version": "0.1.0",
+  "author": "Quang Pham <quangpham.software.engineer@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/seaguntech/seaguntech-monorepo-template.git"
+  },
+  "homepage": "https://github.com/seaguntech/seaguntech-monorepo-template",
+  "bugs": {
+    "url": "https://github.com/seaguntech/seaguntech-monorepo-template/issues"
+  },
+  "packageManager": "pnpm@10.25.0",
+  "engines": {
+    "node": ">=20",
+    "pnpm": ">=10.0.0"
+  },
+  "scripts": {
+    "dev": "turbo watch dev",
+    "dev:web": "turbo watch dev --filter @seaguntech/web",
+    "dev:storybook": "turbo watch dev --filter @seaguntech/storybook",
+    "build": "turbo run build",
+    "build:apps": "turbo run build --filter=\"./apps/*\"",
+    "build:packages": "turbo run build --filter=\"./packages/*\"",
+    "build:storybook": "turbo run build --filter @seaguntech/storybook",
+    "lint": "turbo run lint",
+    "lint:fix": "turbo run lint:fix",
+    "format": "turbo run format",
+    "format:fix": "turbo run format:fix",
+    "check-types": "turbo run check-types",
+    "test": "turbo run test",
+    "test:watch": "turbo run test:watch",
+    "test:coverage": "turbo run test:coverage",
+    "clean": "turbo run clean && rm -rf node_modules",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "release": "turbo run build && changeset publish",
+    "init:template": "node scripts/init-template.mjs",
+    "init:template:dry-run": "node scripts/init-template.mjs --dry-run",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "@seaguntech/eslint-config": "workspace:*",
+    "@seaguntech/prettier-config": "workspace:*",
+    "@seaguntech/typescript-config": "workspace:*",
+    "@seaguntech/vitest-config": "workspace:*",
+    "@changesets/cli": "catalog:",
+    "@commitlint/cli": "catalog:",
+    "@commitlint/config-conventional": "catalog:",
+    "eslint": "catalog:",
+    "husky": "catalog:",
+    "lint-staged": "catalog:",
+    "prettier": "catalog:",
+    "turbo": "catalog:",
+    "typescript": "catalog:"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "*.{json,md,yml,yaml}": [
+      "prettier --write"
+    ]
+  },
+  "prettier": "@seaguntech/prettier-config/base"
+}

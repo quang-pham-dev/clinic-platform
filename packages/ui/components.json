@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema.json",
+  "style": "default",
+  "rsc": false,
+  "tsx": true,
+  "tailwind": {
+    "config": "tailwind.config.ts",
+    "css": "src/styles/globals.css",
+    "baseColor": "zinc",
+    "cssVariables": true,
+    "prefix": ""
+  },
+  "aliases": {
+    "components": "@seaguntech/ui/components",
+    "utils": "@seaguntech/ui/lib/utils",
+    "ui": "@seaguntech/ui/components",
+    "lib": "@seaguntech/ui/lib"
+  }
+}

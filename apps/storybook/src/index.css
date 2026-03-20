@@ -1,0 +1,9 @@
+@import '@seaguntech/design-system';
+
+@source './**/*.{ts,tsx}';
+@source '../../../packages/ui/src/**/*.{ts,tsx}';
+
+/*
+ * Storybook Global Styles
+ * Import the design system for component documentation
+ */

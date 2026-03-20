@@ -1,0 +1,23 @@
+{
+  "name": "@seaguntech/prettier-config",
+  "version": "0.0.0",
+  "private": true,
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "exports": {
+    ".": "./base.js",
+    "./base": "./base.js",
+    "./react-native-library": "./react-native-library.js"
+  },
+  "dependencies": {
+    "@trivago/prettier-plugin-sort-imports": "catalog:prettier-plugins"
+  },
+  "peerDependencies": {
+    "prettier": ">=3.0.0"
+  },
+  "devDependencies": {
+    "prettier": "catalog:"
+  }
+}

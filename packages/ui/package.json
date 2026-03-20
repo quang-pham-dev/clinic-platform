@@ -1,0 +1,87 @@
+{
+  "name": "@seaguntech/ui",
+  "version": "0.1.0",
+  "license": "MIT",
+  "description": "Shared UI component library for the Seaguntech monorepo",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/seaguntech/seaguntech-monorepo-template.git"
+  },
+  "homepage": "https://github.com/seaguntech/seaguntech-monorepo-template",
+  "bugs": {
+    "url": "https://github.com/seaguntech/seaguntech-monorepo-template/issues"
+  },
+  "keywords": [
+    "ui",
+    "react",
+    "tailwindcss",
+    "shadcn",
+    "component-library"
+  ],
+  "private": false,
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
+    },
+    "./styles.css": "./src/styles/globals.css"
+  },
+  "files": [
+    "dist",
+    "src/styles/globals.css"
+  ],
+  "sideEffects": [
+    "src/styles/globals.css"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup",
+    "lint": "eslint . --max-warnings 0",
+    "lint:fix": "eslint . --max-warnings 0 --fix",
+    "format": "prettier --check .",
+    "format:fix": "prettier --write .",
+    "check-types": "tsc --noEmit",
+    "clean": "rm -rf dist node_modules",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "@radix-ui/react-label": "catalog:radix-ui",
+    "@radix-ui/react-slot": "catalog:radix-ui",
+    "@seaguntech/design-system": "workspace:*",
+    "class-variance-authority": "catalog:web-ui",
+    "clsx": "catalog:web-ui",
+    "lucide-react": "catalog:web-ui",
+    "tailwind-merge": "catalog:web-ui"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@storybook/react": "catalog:storybook",
+    "@types/node": "catalog:",
+    "@types/react": "catalog:react19",
+    "@types/react-dom": "catalog:react19",
+    "@vitest/coverage-v8": "catalog:testing",
+    "@vitest/ui": "catalog:testing",
+    "@seaguntech/eslint-config": "workspace:*",
+    "@seaguntech/prettier-config": "workspace:*",
+    "@seaguntech/typescript-config": "workspace:*",
+    "@seaguntech/vitest-config": "workspace:*",
+    "eslint": "catalog:",
+    "postcss": "catalog:web-ui",
+    "prettier": "catalog:",
+    "storybook": "catalog:storybook",
+    "tailwindcss": "catalog:web-ui",
+    "tsup": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:testing"
+  },
+  "prettier": "@seaguntech/prettier-config/base"
+}
