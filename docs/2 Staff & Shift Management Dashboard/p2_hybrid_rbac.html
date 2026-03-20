@@ -1,0 +1,89 @@
+<style>
+.rb{padding:5px 13px;border-radius:16px;border:1px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-secondary);font-size:12px;cursor:pointer;transition:all .15s;}
+.rb.on{border-color:var(--color-border-info);background:var(--color-background-info);color:var(--color-text-info);}
+.pr{display:flex;align-items:center;padding:9px 0;border-bottom:1px solid var(--color-border-tertiary);gap:10px;font-size:13px;color:var(--color-text-primary);}
+.pr:last-child{border-bottom:none;}
+.pr span:first-child{flex:1;}
+.bg{font-size:11px;padding:2px 8px;border-radius:10px;white-space:nowrap;}
+.ba{background:var(--color-background-success);color:var(--color-text-success);}
+.bc{background:var(--color-background-warning);color:var(--color-text-warning);}
+.bd{background:var(--color-background-danger);color:var(--color-text-danger);}
+.bn{font-size:11px;color:var(--color-text-tertiary);}
+</style>
+<div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px">
+<button class="rb" onclick="show('admin')">admin</button>
+<button class="rb" onclick="show('head_nurse')">head nurse</button>
+<button class="rb" onclick="show('nurse')">nurse</button>
+<button class="rb" onclick="show('receptionist')">receptionist</button>
+<button class="rb" onclick="show('doctor')">doctor</button>
+<button class="rb" onclick="show('patient')">patient</button>
+</div>
+<div id="panel" style="background:var(--color-background-secondary);border-radius:12px;padding:12px 16px;min-height:80px">
+<p style="margin:0;font-size:13px;color:var(--color-text-tertiary)">Select a role to view permissions</p>
+</div>
+<div style="display:flex;gap:18px;margin-top:12px;font-size:12px;color:var(--color-text-secondary);flex-wrap:wrap">
+<span><span class="bg ba">allow</span> Role guard passes</span>
+<span><span class="bg bc">CASL</span> Ownership check required</span>
+<span><span class="bg bd">deny</span> Blocked at guard level</span>
+</div>
+<script>
+const d={
+admin:[
+{a:"Manage all staff + departments",t:"a"},
+{a:"Create / edit any shift assignment",t:"a"},
+{a:"Approve shift swap requests",t:"a"},
+{a:"Broadcast message to any room",t:"a"},
+{a:"View all booking and schedule data",t:"a"},
+{a:"Deactivate any user account",t:"a"},
+],
+head_nurse:[
+{a:"View all shifts in own department",t:"a"},
+{a:"Create shift assignments",t:"c",n:"own department only"},
+{a:"Approve / reject shift swaps",t:"c",n:"own department only"},
+{a:"Broadcast to nurses in dept",t:"a"},
+{a:"View bookings (read-only)",t:"a"},
+{a:"Manage other departments",t:"d"},
+],
+nurse:[
+{a:"View own shift schedule",t:"a"},
+{a:"Request a shift swap",t:"a"},
+{a:"View teammates' shifts",t:"a"},
+{a:"Approve shift swap requests",t:"d"},
+{a:"Create or modify shift assignments",t:"d"},
+{a:"Send broadcast messages",t:"d"},
+],
+receptionist:[
+{a:"View daily shift schedule",t:"a"},
+{a:"Check in patients (update booking status)",t:"a"},
+{a:"View doctor available slots",t:"a"},
+{a:"Create or modify shift assignments",t:"d"},
+{a:"Approve shift swaps",t:"d"},
+{a:"Access staff management pages",t:"d"},
+],
+doctor:[
+{a:"Manage own schedule (time slots)",t:"c",n:"own slots only"},
+{a:"Confirm / complete own bookings",t:"c",n:"own patients only"},
+{a:"Add notes to own appointments",t:"c",n:"own appointments only"},
+{a:"View staff shift calendar",t:"d"},
+{a:"Assign staff to shifts",t:"d"},
+],
+patient:[
+{a:"Book an available slot",t:"a"},
+{a:"View own booking history",t:"a"},
+{a:"Cancel own booking",t:"c",n:"own bookings only"},
+{a:"View staff shift schedule",t:"d"},
+{a:"Access admin dashboard",t:"d"},
+],
+};
+const labels={admin:"Admin — full access",head_nurse:"Head nurse — department manager",nurse:"Nurse — individual staff",receptionist:"Receptionist — front desk",doctor:"Doctor — own schedule",patient:"Patient — self-service"};
+function show(role){
+document.querySelectorAll('.rb').forEach(b=>b.classList.remove('on'));
+event.target.classList.add('on');
+const rows=d[role].map(p=>{
+const badge=p.t==='a'?`<span class="bg ba">allow</span>`:p.t==='c'?`<span class="bg bc">CASL</span>`:`<span class="bg bd">deny</span>`;
+const note=p.n?`<span class="bn">${p.n}</span>`:'';
+return`<div class="pr"><span>${p.a}</span>${note}${badge}</div>`;
+}).join('');
+document.getElementById('panel').innerHTML=`<p style="margin:0 0 10px;font-size:13px;font-weight:500;color:var(--color-text-primary)">${labels[role]}</p>`+rows;
+}
+</script>

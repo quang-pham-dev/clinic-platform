@@ -1,5 +1,5 @@
 {
-  "extends": "@seaguntech/typescript-config/base.json",
+  "extends": "@clinic-platform/typescript-config/base.json",
   "compilerOptions": {
     "allowImportingTsExtensions": true,
     "noEmit": true

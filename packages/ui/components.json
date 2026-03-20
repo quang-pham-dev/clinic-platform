@@ -11,9 +11,9 @@
     "prefix": ""
   },
   "aliases": {
-    "components": "@seaguntech/ui/components",
-    "utils": "@seaguntech/ui/lib/utils",
-    "ui": "@seaguntech/ui/components",
-    "lib": "@seaguntech/ui/lib"
+    "components": "@clinic-platform/ui/components",
+    "utils": "@clinic-platform/ui/lib/utils",
+    "ui": "@clinic-platform/ui/components",
+    "lib": "@clinic-platform/ui/lib"
   }
 }

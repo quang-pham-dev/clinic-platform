@@ -1,0 +1,93 @@
+<style>
+.ct{cursor:pointer;}.ct rect{transition:opacity .15s;}.ct:hover rect{opacity:.82;}.ct.active rect{stroke-width:2!important;}
+#cp{padding:12px 16px;border-radius:8px;background:var(--color-background-secondary);border:.5px solid var(--color-border-tertiary);margin-top:12px;min-height:90px;}
+.field{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--color-border-tertiary);font-size:12px;}
+.field:last-child{border-bottom:none;}
+.ft{font-family:var(--font-mono);font-size:11px;padding:2px 7px;border-radius:8px;background:var(--color-background-tertiary);color:var(--color-text-secondary);white-space:nowrap;}
+.fk{font-size:11px;color:var(--color-text-tertiary);}
+</style>
+<svg width="100%" viewBox="0 0 680 130">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</marker>
+</defs>
+<g id="article" class="ct c-purple" onclick="sel('article')">
+<rect x="20" y="20" width="148" height="88" rx="8" stroke-width="0.5"/>
+<text class="th" x="94" y="40" text-anchor="middle" dominant-baseline="central">Article</text>
+<text class="ts" x="94" y="60" text-anchor="middle" dominant-baseline="central">Health blog posts</text>
+<text class="ts" x="94" y="78" text-anchor="middle" dominant-baseline="central">by doctors/admin</text>
+<text class="ts" x="94" y="96" text-anchor="middle" dominant-baseline="central">SSG + ISR</text>
+</g>
+<g id="faq" class="ct c-teal" onclick="sel('faq')">
+<rect x="185" y="20" width="148" height="88" rx="8" stroke-width="0.5"/>
+<text class="th" x="259" y="40" text-anchor="middle" dominant-baseline="central">FAQ</text>
+<text class="ts" x="259" y="60" text-anchor="middle" dominant-baseline="central">Portal guidance</text>
+<text class="ts" x="259" y="78" text-anchor="middle" dominant-baseline="central">grouped by category</text>
+<text class="ts" x="259" y="96" text-anchor="middle" dominant-baseline="central">SSG</text>
+</g>
+<g id="consent" class="ct c-amber" onclick="sel('consent')">
+<rect x="350" y="20" width="148" height="88" rx="8" stroke-width="0.5"/>
+<text class="th" x="424" y="40" text-anchor="middle" dominant-baseline="central">Consent form</text>
+<text class="ts" x="424" y="60" text-anchor="middle" dominant-baseline="central">Medical disclaimers</text>
+<text class="ts" x="424" y="78" text-anchor="middle" dominant-baseline="central">versioned content</text>
+<text class="ts" x="424" y="96" text-anchor="middle" dominant-baseline="central">ISR</text>
+</g>
+<g id="doctor_page" class="ct c-coral" onclick="sel('doctor_page')">
+<rect x="515" y="20" width="148" height="88" rx="8" stroke-width="0.5"/>
+<text class="th" x="589" y="40" text-anchor="middle" dominant-baseline="central">Doctor page</text>
+<text class="ts" x="589" y="60" text-anchor="middle" dominant-baseline="central">Public profiles</text>
+<text class="ts" x="589" y="78" text-anchor="middle" dominant-baseline="central">rich bio + photo</text>
+<text class="ts" x="589" y="96" text-anchor="middle" dominant-baseline="central">ISR + webhook</text>
+</g>
+</svg>
+<div id="cp"><p style="margin:0;font-size:13px;color:var(--color-text-tertiary)">Click a content type to see its fields</p></div>
+<script>
+const d={
+article:{label:'Article — health blog',fields:[
+{n:'title',t:'Text',k:'required'},
+{n:'slug',t:'UID',k:'unique · auto-generated from title'},
+{n:'excerpt',t:'Text',k:'short summary for card view'},
+{n:'body',t:'Rich Text (Blocks)',k:'full article content'},
+{n:'cover_image',t:'Media',k:'single image'},
+{n:'author',t:'Relation',k:'→ Doctor page (many-to-one)'},
+{n:'categories',t:'Relation',k:'→ Category (many-to-many)'},
+{n:'published_at',t:'DateTime',k:'Strapi draft/publish lifecycle'},
+{n:'seo_title',t:'Text',k:'optional override for <title>'},
+{n:'seo_description',t:'Text',k:'meta description'},
+],fetch:'GET /api/articles?populate=*&filters[slug][$eq]=:slug'},
+faq:{label:'FAQ — portal guidance',fields:[
+{n:'question',t:'Text',k:'required'},
+{n:'answer',t:'Rich Text',k:'supports markdown'},
+{n:'category',t:'Enumeration',k:'booking|video-call|records|general'},
+{n:'order',t:'Integer',k:'display order within category'},
+{n:'is_active',t:'Boolean',k:'hide without unpublishing'},
+],fetch:'GET /api/faqs?sort=order&filters[category][$eq]=:cat'},
+consent:{label:'Consent form — medical disclaimers',fields:[
+{n:'title',t:'Text',k:'e.g. "Telemedicine consent v2"'},
+{n:'version',t:'Text',k:'e.g. "2.1" — patients must re-sign on version change'},
+{n:'content',t:'Rich Text (Blocks)',k:'full legal text'},
+{n:'effective_date',t:'Date',k:'when this version takes effect'},
+{n:'form_type',t:'Enumeration',k:'telemedicine|general|procedure'},
+{n:'is_current',t:'Boolean',k:'only one current per form_type'},
+],fetch:'GET /api/consent-forms?filters[form_type][$eq]=:type&filters[is_current][$eq]=true'},
+doctor_page:{label:'Doctor page — public profiles',fields:[
+{n:'doctor_id',t:'Text',k:'matches NestJS doctors.id — used to merge data'},
+{n:'display_name',t:'Text',k:'public name (may differ from HR name)'},
+{n:'specialty_label',t:'Text',k:'human-readable specialty for display'},
+{n:'photo',t:'Media',k:'high-res profile photo'},
+{n:'bio_short',t:'Text',k:'2-3 sentence summary'},
+{n:'bio_long',t:'Rich Text',k:'full profile with experience'},
+{n:'languages',t:'JSON',k:'["Vietnamese","English"]'},
+{n:'achievements',t:'Component',k:'repeatable: { title, year }'},
+{n:'articles',t:'Relation',k:'→ Article (one-to-many)'},
+],fetch:'GET /api/doctor-pages?filters[doctor_id][$eq]=:id&populate=*'},
+};
+function sel(id){
+const s=d[id];
+const rows=s.fields.map(f=>`<div class="field"><span style="flex:1;color:var(--color-text-primary);font-size:12px">${f.n}</span><span class="ft">${f.t}</span><span class="fk">${f.k}</span></div>`).join('');
+document.getElementById('cp').innerHTML=`<p style="margin:0 0 8px;font-size:13px;font-weight:500;color:var(--color-text-primary)">${s.label}</p>${rows}<p style="margin:10px 0 0;font-size:11px;color:var(--color-text-tertiary);font-family:var(--font-mono)">${s.fetch}</p>`;
+document.querySelectorAll('.ct').forEach(e=>e.classList.remove('active'));
+document.getElementById(id).classList.add('active');
+}
+</script>

@@ -1,0 +1,76 @@
+<style>
+.gr{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;border:1px solid var(--color-border-tertiary);border-radius:10px;overflow:hidden;}
+.hd{padding:12px 10px;background:var(--color-background-secondary);border-bottom:1px solid var(--color-border-secondary);}
+.hd.pro{background:var(--color-background-info);}
+.pln{font-size:12px;font-weight:500;color:var(--color-text-secondary);}
+.pln.pro{color:var(--color-text-info);}
+.pr{font-size:20px;font-weight:500;color:var(--color-text-primary);}
+.pr.pro{color:var(--color-text-info);}
+.su{font-size:11px;color:var(--color-text-tertiary);}
+.sec{grid-column:1/-1;padding:5px 10px;font-size:11px;font-weight:500;color:var(--color-text-tertiary);letter-spacing:.4px;text-transform:uppercase;background:var(--color-background-tertiary);border-top:1px solid var(--color-border-tertiary);}
+.lb{padding:8px 10px;font-size:12px;color:var(--color-text-secondary);border-top:1px solid var(--color-border-tertiary);background:var(--color-background-primary);}
+.vl{padding:8px 10px;text-align:center;font-size:12px;border-top:1px solid var(--color-border-tertiary);background:var(--color-background-primary);color:var(--color-text-secondary);}
+.vl.pro{background:var(--color-background-info);}
+.ok{color:var(--color-text-success);font-size:14px;}
+.no{color:var(--color-text-tertiary);}
+.tg{display:flex;gap:12px;align-items:center;margin-bottom:10px;font-size:12px;color:var(--color-text-secondary);}
+</style>
+<div class="tg">
+Billing:
+<label style="cursor:pointer;display:flex;align-items:center;gap:4px"><input type="radio" name="b" checked onchange="upd(false)"> Monthly</label>
+<label style="cursor:pointer;display:flex;align-items:center;gap:4px"><input type="radio" name="b" onchange="upd(true)"> Annual <span style="color:var(--color-text-success)">save 20%</span></label>
+</div>
+<div class="gr">
+<div class="hd" style="text-align:left"><span class="pln">Feature</span></div>
+<div class="hd" style="text-align:center">
+<div class="pln">Basic</div>
+<div class="pr">$<span id="bp">29</span></div>
+<div class="su">/month per clinic</div>
+</div>
+<div class="hd pro" style="text-align:center">
+<div class="pln pro">Pro</div>
+<div class="pr pro">$<span id="pp">79</span></div>
+<div class="su">/month per clinic</div>
+</div>
+<div class="hd" style="text-align:center">
+<div class="pln">Enterprise</div>
+<div class="pr">$<span id="ep">199</span></div>
+<div class="su">/month per clinic</div>
+</div>
+
+<div class="sec">Core booking & auth — P1</div>
+<div class="lb">Bookings / month</div><div class="vl">200</div><div class="vl pro">1,000</div><div class="vl">Unlimited</div>
+<div class="lb">Doctor seats</div><div class="vl">3</div><div class="vl pro">15</div><div class="vl">Unlimited</div>
+<div class="lb">Patient portal</div><div class="vl"><span class="ok">✓</span></div><div class="vl pro"><span class="ok">✓</span></div><div class="vl"><span class="ok">✓</span></div>
+<div class="lb">Auth & RBAC</div><div class="vl"><span class="ok">✓</span></div><div class="vl pro"><span class="ok">✓</span></div><div class="vl"><span class="ok">✓</span></div>
+
+<div class="sec">Staff & shift management — P2</div>
+<div class="lb">Staff seats</div><div class="vl"><span class="no">—</span></div><div class="vl pro">50</div><div class="vl">Unlimited</div>
+<div class="lb">Shift scheduling</div><div class="vl"><span class="no">✗</span></div><div class="vl pro"><span class="ok">✓</span></div><div class="vl"><span class="ok">✓</span></div>
+<div class="lb">WS broadcasts</div><div class="vl"><span class="no">✗</span></div><div class="vl pro"><span class="ok">✓</span></div><div class="vl"><span class="ok">✓</span></div>
+
+<div class="sec">Telemedicine & notifications — P3</div>
+<div class="lb">Video consultations</div><div class="vl"><span class="no">✗</span></div><div class="vl pro"><span class="ok">✓</span></div><div class="vl"><span class="ok">✓</span></div>
+<div class="lb">Email notifications</div><div class="vl"><span class="ok">✓</span></div><div class="vl pro"><span class="ok">✓</span></div><div class="vl"><span class="ok">✓</span></div>
+<div class="lb">SMS notifications</div><div class="vl"><span class="no">✗</span></div><div class="vl pro"><span class="ok">✓</span></div><div class="vl"><span class="ok">✓</span></div>
+
+<div class="sec">Patient portal & CMS — P4</div>
+<div class="lb">Strapi CMS</div><div class="vl"><span class="no">✗</span></div><div class="vl pro"><span class="ok">✓</span></div><div class="vl"><span class="ok">✓</span></div>
+<div class="lb">Medical records</div><div class="vl"><span class="ok">✓</span></div><div class="vl pro"><span class="ok">✓</span></div><div class="vl"><span class="ok">✓</span></div>
+<div class="lb">Patient file upload</div><div class="vl"><span class="no">✗</span></div><div class="vl pro"><span class="ok">✓</span></div><div class="vl"><span class="ok">✓</span></div>
+
+<div class="sec">Platform — P5</div>
+<div class="lb">API access</div><div class="vl"><span class="no">✗</span></div><div class="vl pro"><span class="ok">✓</span></div><div class="vl"><span class="ok">✓</span></div>
+<div class="lb">Observability dashboard</div><div class="vl"><span class="no">✗</span></div><div class="vl pro"><span class="no">✗</span></div><div class="vl"><span class="ok">✓</span></div>
+<div class="lb">Custom subdomain</div><div class="vl"><span class="ok">✓</span></div><div class="vl pro"><span class="ok">✓</span></div><div class="vl"><span class="ok">✓</span></div>
+<div class="lb">SLA</div><div class="vl"><span class="no">None</span></div><div class="vl pro">99.5%</div><div class="vl">99.9%</div>
+<div class="lb">Support</div><div class="vl">Community</div><div class="vl pro">Priority email</div><div class="vl">Dedicated</div>
+</div>
+<script>
+function upd(annual){
+const r=annual?[23,63,159]:[29,79,199];
+document.getElementById('bp').textContent=r[0];
+document.getElementById('pp').textContent=r[1];
+document.getElementById('ep').textContent=r[2];
+}
+</script>

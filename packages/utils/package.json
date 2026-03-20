@@ -1,15 +1,15 @@
 {
-  "name": "@seaguntech/utils",
+  "name": "@clinic-platform/utils",
   "version": "0.1.0",
   "license": "MIT",
-  "description": "Shared utility functions for the Seaguntech monorepo",
+  "description": "Shared utility functions for the Clinic Platform monorepo",
   "repository": {
     "type": "git",
-    "url": "https://github.com/seaguntech/seaguntech-monorepo-template.git"
+    "url": "https://github.com/quang-pham-dev/clinic-platform.git"
   },
-  "homepage": "https://github.com/seaguntech/seaguntech-monorepo-template",
+  "homepage": "https://github.com/quang-pham-dev/clinic-platform",
   "bugs": {
-    "url": "https://github.com/seaguntech/seaguntech-monorepo-template/issues"
+    "url": "https://github.com/quang-pham-dev/clinic-platform/issues"
   },
   "keywords": [
     "utils",
@@ -45,10 +45,10 @@
     "test:coverage": "vitest run --coverage"
   },
   "devDependencies": {
-    "@seaguntech/eslint-config": "workspace:*",
-    "@seaguntech/prettier-config": "workspace:*",
-    "@seaguntech/typescript-config": "workspace:*",
-    "@seaguntech/vitest-config": "workspace:*",
+    "@clinic-platform/eslint-config": "workspace:*",
+    "@clinic-platform/prettier-config": "workspace:*",
+    "@clinic-platform/typescript-config": "workspace:*",
+    "@clinic-platform/vitest-config": "workspace:*",
     "@types/node": "catalog:",
     "eslint": "catalog:",
     "prettier": "catalog:",
@@ -58,5 +58,5 @@
     "@vitest/coverage-v8": "catalog:testing",
     "@vitest/ui": "catalog:testing"
   },
-  "prettier": "@seaguntech/prettier-config/base"
+  "prettier": "@clinic-platform/prettier-config/base"
 }

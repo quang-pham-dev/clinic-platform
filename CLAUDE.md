@@ -18,18 +18,18 @@ This is a **Turborepo + pnpm workspace** monorepo with the following structure:
 
 ### Workspace Naming Convention
 
-Internal packages use the `@seaguntech/*` prefix:
+Internal packages use the `@clinic-platform/*` prefix:
 
-- `@seaguntech/web` - Next.js app
-- `@seaguntech/storybook` - Storybook app
-- `@seaguntech/ui` - UI components (shadcn/ui based)
-- `@seaguntech/logger` - Logging utilities (pino)
-- `@seaguntech/utils` - Shared utilities
-- `@seaguntech/eslint-config` - ESLint configurations
-- `@seaguntech/prettier-config` - Prettier configurations
-- `@seaguntech/typescript-config` - TypeScript configurations
-- `@seaguntech/design-system` - Tailwind v4 design system
-- `@seaguntech/vitest-config` - Vitest configurations
+- `@clinic-platform/web` - Next.js app
+- `@clinic-platform/storybook` - Storybook app
+- `@clinic-platform/ui` - UI components (shadcn/ui based)
+- `@clinic-platform/logger` - Logging utilities (pino)
+- `@clinic-platform/utils` - Shared utilities
+- `@clinic-platform/eslint-config` - ESLint configurations
+- `@clinic-platform/prettier-config` - Prettier configurations
+- `@clinic-platform/typescript-config` - TypeScript configurations
+- `@clinic-platform/design-system` - Tailwind v4 design system
+- `@clinic-platform/vitest-config` - Vitest configurations
 
 ## Common Commands
 
@@ -129,19 +129,19 @@ The `^` prefix means "run this task on all dependencies first".
 
 ```bash
 # Use Turbo's --filter flag
-turbo run build --filter @seaguntech/ui
-turbo run test --filter @seaguntech/logger
-turbo run lint --filter @seaguntech/web
+turbo run build --filter @clinic-platform/ui
+turbo run test --filter @clinic-platform/logger
+turbo run lint --filter @clinic-platform/web
 ```
 
 ### Add dependencies to a package
 
 ```bash
 # Add to specific workspace
-pnpm add <package> --filter @seaguntech/ui
+pnpm add <package> --filter @clinic-platform/ui
 
 # Add dev dependency
-pnpm add -D <package> --filter @seaguntech/web
+pnpm add -D <package> --filter @clinic-platform/web
 
 # Use catalog version (centralized in pnpm-workspace.yaml)
 # Edit pnpm-workspace.yaml catalog section, then use "catalog:" in package.json
@@ -164,7 +164,7 @@ Apps and packages import these via workspace protocol:
 ```json
 {
   "devDependencies": {
-    "@seaguntech/eslint-config": "workspace:*"
+    "@clinic-platform/eslint-config": "workspace:*"
   }
 }
 ```
@@ -191,7 +191,7 @@ Turborepo is configured to use these environment variables:
 - **Coverage**: @vitest/coverage-v8
 - **UI**: @vitest/ui for interactive test viewer
 
-Each package with tests has its own `vitest.config.ts` extending `@seaguntech/vitest-config`.
+Each package with tests has its own `vitest.config.ts` extending `@clinic-platform/vitest-config`.
 
 ## UI Package Architecture
 

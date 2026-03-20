@@ -1,7 +1,7 @@
 'use client';
 
 import { useTheme } from '@/providers/theme-provider';
-import { Button } from '@seaguntech/ui';
+import { Button } from '@clinic-platform/ui';
 
 export function ThemeToggle() {
   const { resolvedTheme, setTheme } = useTheme();

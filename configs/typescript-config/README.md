@@ -1,4 +1,4 @@
-# @seaguntech/typescript-config
+# @clinic-platform/typescript-config
 
 <div align="center">
 
@@ -21,7 +21,7 @@ This package is automatically available to workspace packages:
 ```json
 {
   "devDependencies": {
-    "@seaguntech/typescript-config": "workspace:*"
+    "@clinic-platform/typescript-config": "workspace:*"
   }
 }
 ```
@@ -34,7 +34,7 @@ The foundational TypeScript configuration with strict type checking.
 
 ```json
 {
-  "extends": "@seaguntech/typescript-config/base.json"
+  "extends": "@clinic-platform/typescript-config/base.json"
 }
 ```
 
@@ -52,7 +52,7 @@ Optimized configuration for React Native library packages.
 
 ```json
 {
-  "extends": "@seaguntech/typescript-config/react-native-library.json"
+  "extends": "@clinic-platform/typescript-config/react-native-library.json"
 }
 ```
 
@@ -70,7 +70,7 @@ Optimized configuration for React Native library packages.
 
 ```json
 {
-  "extends": "@seaguntech/typescript-config/react-native-library.json",
+  "extends": "@clinic-platform/typescript-config/react-native-library.json",
   "compilerOptions": {
     "outDir": "dist"
   },
@@ -83,7 +83,7 @@ Optimized configuration for React Native library packages.
 
 ```json
 {
-  "extends": "@seaguntech/typescript-config/base.json",
+  "extends": "@clinic-platform/typescript-config/base.json",
   "compilerOptions": {
     "outDir": "dist"
   },
@@ -168,7 +168,7 @@ You can override any setting in your package's `tsconfig.json`:
 
 ```json
 {
-  "extends": "@seaguntech/typescript-config/react-native-library.json",
+  "extends": "@clinic-platform/typescript-config/react-native-library.json",
   "compilerOptions": {
     "outDir": "dist",
     "baseUrl": ".",
@@ -186,7 +186,7 @@ You can override any setting in your package's `tsconfig.json`:
 ```json
 // ❌ Don't disable strict mode
 {
-  "extends": "@seaguntech/typescript-config/base.json",
+  "extends": "@clinic-platform/typescript-config/base.json",
   "compilerOptions": {
     "strict": false
   }
@@ -194,7 +194,7 @@ You can override any setting in your package's `tsconfig.json`:
 
 // ✅ Keep strict mode enabled
 {
-  "extends": "@seaguntech/typescript-config/base.json"
+  "extends": "@clinic-platform/typescript-config/base.json"
 }
 ```
 
@@ -203,12 +203,12 @@ You can override any setting in your package's `tsconfig.json`:
 ```json
 // ✅ For React Native components
 {
-  "extends": "@seaguntech/typescript-config/react-native-library.json"
+  "extends": "@clinic-platform/typescript-config/react-native-library.json"
 }
 
 // ✅ For utility packages
 {
-  "extends": "@seaguntech/typescript-config/base.json"
+  "extends": "@clinic-platform/typescript-config/base.json"
 }
 ```
 
@@ -216,7 +216,7 @@ You can override any setting in your package's `tsconfig.json`:
 
 ```json
 {
-  "extends": "@seaguntech/typescript-config/base.json",
+  "extends": "@clinic-platform/typescript-config/base.json",
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "**/*.test.ts"]
 }
@@ -272,5 +272,5 @@ To modify TypeScript configurations:
 ---
 
 <div align="center">
-Part of the Seaguntech monorepo
+Part of the Clinic Platform monorepo
 </div>

@@ -1,6 +1,6 @@
-# @seaguntech/design-system
+# @clinic-platform/design-system
 
-Shared Tailwind CSS v4 design system for the Seaguntech monorepo. This package
+Shared Tailwind CSS v4 design system for the Clinic Platform monorepo. This package
 ships tokens, themes, base styles, and custom utilities as CSS, plus a PostCSS
 config that enables `@tailwindcss/postcss`.
 
@@ -16,32 +16,32 @@ config that enables `@tailwindcss/postcss`.
 ```json
 {
   "devDependencies": {
-    "@seaguntech/design-system": "workspace:*"
+    "@clinic-platform/design-system": "workspace:*"
   }
 }
 ```
 
 ## Exports
 
-- `@seaguntech/design-system` -> `globals.css`
-- `@seaguntech/design-system/globals` -> `globals.css`
-- `@seaguntech/design-system/design-tokens` -> `design-tokens.css`
-- `@seaguntech/design-system/theme-light` -> `theme-light.css`
-- `@seaguntech/design-system/theme-dark` -> `theme-dark.css`
-- `@seaguntech/design-system/postcss-config` -> `postcss-config.js`
+- `@clinic-platform/design-system` -> `globals.css`
+- `@clinic-platform/design-system/globals` -> `globals.css`
+- `@clinic-platform/design-system/design-tokens` -> `design-tokens.css`
+- `@clinic-platform/design-system/theme-light` -> `theme-light.css`
+- `@clinic-platform/design-system/theme-dark` -> `theme-dark.css`
+- `@clinic-platform/design-system/postcss-config` -> `postcss-config.js`
 
 ## Usage
 
 1. Configure PostCSS in your app or package:
 
 ```js
-export { default } from '@seaguntech/design-system/postcss-config';
+export { default } from '@clinic-platform/design-system/postcss-config';
 ```
 
 2. Import the globals once in your main CSS entry point:
 
 ```css
-@import '@seaguntech/design-system';
+@import '@clinic-platform/design-system';
 
 /* package-specific styles */
 ```
@@ -71,10 +71,10 @@ export { default } from '@seaguntech/design-system/postcss-config';
 - Use `@source` in each app CSS entry to include monorepo packages in class scanning.
 - Keep the design-system source of truth in CSS (`@theme`, `@utility`, `@custom-variant`).
 
-## Migration (from @seaguntech/tailwind-config)
+## Migration (from @clinic-platform/tailwind-config)
 
-- Replace package dependency with `@seaguntech/design-system`
-- Update imports to `@seaguntech/design-system` and `/postcss-config`
+- Replace package dependency with `@clinic-platform/design-system`
+- Update imports to `@clinic-platform/design-system` and `/postcss-config`
 
 ## Contributing
 

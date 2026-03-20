@@ -1,5 +1,5 @@
 {
-  "extends": "@seaguntech/typescript-config/react-library.json",
+  "extends": "@clinic-platform/typescript-config/react-library.json",
   "compilerOptions": {
     "outDir": "dist",
     "baseUrl": ".",

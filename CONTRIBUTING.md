@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for contributing! This repository is the Seaguntech monorepo template.
+Thanks for contributing! This repository is the Clinic Platform monorepo template.
 
 ## Development Setup
 

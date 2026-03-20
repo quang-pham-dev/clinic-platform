@@ -1,0 +1,63 @@
+<style>
+.vs{cursor:pointer;}.vs rect{transition:opacity .15s;}.vs:hover rect{opacity:.82;}.vs.active rect{stroke-width:2!important;}
+#vi{padding:12px 16px;border-radius:8px;background:var(--color-background-secondary);border:.5px solid var(--color-border-tertiary);margin-top:12px;min-height:80px;}
+</style>
+<svg width="100%" viewBox="0 0 680 364">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</marker>
+</defs>
+
+<line x1="180" y1="88" x2="180" y2="148" class="arr" marker-end="url(#arrow)"/>
+<text class="ts" x="192" y="122" dominant-baseline="central">system auto</text>
+<path d="M 280 56 L 340 56 L 340 104 L 398 104" fill="none" class="arr" marker-end="url(#arrow)" stroke-opacity="0.7"/>
+<text class="ts" x="290" y="50" dominant-baseline="central">5-min timeout</text>
+<line x1="180" y1="208" x2="180" y2="268" class="arr" marker-end="url(#arrow)"/>
+<text class="ts" x="192" y="242" dominant-baseline="central">either party ends</text>
+<path d="M 280 176 L 340 176 L 340 224 L 398 224" fill="none" class="arr" marker-end="url(#arrow)" stroke-opacity="0.7"/>
+<text class="ts" x="290" y="170" dominant-baseline="central">ICE failure</text>
+
+<g id="waiting" class="vs c-amber" onclick="sel('waiting')">
+<rect x="80" y="30" width="200" height="56" rx="8" stroke-width="0.5"/>
+<text class="th" x="180" y="49" text-anchor="middle" dominant-baseline="central">Waiting</text>
+<text class="ts" x="180" y="67" text-anchor="middle" dominant-baseline="central">Both parties must join</text>
+</g>
+<g id="active" class="vs c-teal" onclick="sel('active')">
+<rect x="80" y="150" width="200" height="56" rx="8" stroke-width="0.5"/>
+<text class="th" x="180" y="169" text-anchor="middle" dominant-baseline="central">Active</text>
+<text class="ts" x="180" y="187" text-anchor="middle" dominant-baseline="central">P2P call live</text>
+</g>
+<g id="ended" class="vs c-gray" onclick="sel('ended')">
+<rect x="80" y="270" width="200" height="56" rx="8" stroke-width="0.5"/>
+<text class="th" x="180" y="289" text-anchor="middle" dominant-baseline="central">Ended</text>
+<text class="ts" x="180" y="307" text-anchor="middle" dominant-baseline="central">Terminal state</text>
+</g>
+<g id="missed" class="vs c-red" onclick="sel('missed')">
+<rect x="400" y="78" width="200" height="56" rx="8" stroke-width="0.5"/>
+<text class="th" x="500" y="97" text-anchor="middle" dominant-baseline="central">Missed</text>
+<text class="ts" x="500" y="115" text-anchor="middle" dominant-baseline="central">Terminal state</text>
+</g>
+<g id="failed" class="vs c-coral" onclick="sel('failed')">
+<rect x="400" y="198" width="200" height="56" rx="8" stroke-width="0.5"/>
+<text class="th" x="500" y="217" text-anchor="middle" dominant-baseline="central">Failed</text>
+<text class="ts" x="500" y="235" text-anchor="middle" dominant-baseline="central">Terminal state</text>
+</g>
+</svg>
+<div id="vi"><p style="margin:0;font-size:13px;color:var(--color-text-tertiary)">Click a state to see details</p></div>
+<script>
+const d={
+waiting:{label:'Waiting',desc:'Session created and room_id assigned. A BullMQ video-queue timeout job is scheduled for 5 minutes. Slot is reserved but the appointment is not yet active.',by:'POST /video-sessions — system after booking is confirmed',transitions:['Active — both parties connect and WebRTC P2P succeeds','Missed — 5-minute BullMQ timeout job fires first']},
+active:{label:'Active',desc:'WebRTC P2P established. Video, audio, screen share, and in-call chat are live. Timeout job cancelled. Server only relays chat messages and file-share signals.',by:'System — ICE negotiation succeeds (both browsers connected)',transitions:['Ended — either party closes the call, or session duration limit reached','Failed — WebRTC ICE disconnects or both parties lose network']},
+ended:{label:'Ended',desc:'Call closed normally. Session duration saved to video_sessions. In-call chat history persisted. BullMQ cleanup job scheduled to delete temp files after 24 h. No further transitions.',by:'Doctor, patient, or system duration limit',transitions:[]},
+missed:{label:'Missed',desc:'5-minute BullMQ timeout fired before both parties joined. Session marked missed. Slot released. A follow-up notification is sent to both parties. No further transitions.',by:'BullMQ video-queue timeout worker',transitions:[]},
+failed:{label:'Failed',desc:'WebRTC ICE negotiation failed (often due to strict NAT without TURN relay) or both parties dropped network during an active call. Admin is notified. Session can be retried by creating a new video_sessions record.',by:'System — oniceconnectionstatechange = "failed" event',transitions:[]}
+};
+function sel(id){
+const s=d[id];
+const tr=s.transitions.length?'<ul style="margin:6px 0 0;padding-left:18px;font-size:12px;color:var(--color-text-secondary)">'+s.transitions.map(t=>`<li style="margin-bottom:2px">${t}</li>`).join('')+'</ul>':'<p style="margin:6px 0 0;font-size:12px;color:var(--color-text-tertiary)">No further transitions — terminal state</p>';
+document.getElementById('vi').innerHTML=`<p style="margin:0;font-size:13px;font-weight:500;color:var(--color-text-primary)">${s.label}</p><p style="margin:4px 0 0;font-size:12px;color:var(--color-text-secondary)">${s.desc}</p><p style="margin:8px 0 0;font-size:12px;color:var(--color-text-tertiary)">Triggered by: ${s.by}</p>${tr}`;
+document.querySelectorAll('.vs').forEach(e=>e.classList.remove('active'));
+document.getElementById(id).classList.add('active');
+}
+</script>

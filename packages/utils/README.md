@@ -1,17 +1,17 @@
-# @seaguntech/utils
+# @clinic-platform/utils
 
-Shared utility functions for the Seaguntech monorepo.
+Shared utility functions for the Clinic Platform monorepo.
 
 ## Install
 
 ```bash
-pnpm add @seaguntech/utils
+pnpm add @clinic-platform/utils
 ```
 
 ## Usage
 
 ```ts
-import { assertNever, formatDate, invariant } from '@seaguntech/utils';
+import { assertNever, formatDate, invariant } from '@clinic-platform/utils';
 
 invariant(user, 'User is required');
 console.log(formatDate(new Date()));

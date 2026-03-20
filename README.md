@@ -1,6 +1,6 @@
 <img width="2048" height="256" alt="background-readme-web" src="https://github.com/user-attachments/assets/bf92b234-1164-4b93-9e30-f5aab1fd66ed" />
 
-# Seaguntech Monorepo Template
+# Clinic Platform
 
 Seaguntech Turborepo + pnpm workspace template for product teams and OSS.
 
@@ -79,8 +79,8 @@ contact email across the template.
 ### Run a single test
 
 ```bash
-pnpm --filter @seaguntech/utils test -- tests/formatDate.test.ts
-pnpm --filter @seaguntech/utils test -- -t "formatDate"
+pnpm --filter @clinic-platform/utils test -- tests/formatDate.test.ts
+pnpm --filter @clinic-platform/utils test -- -t "formatDate"
 ```
 
 ## Design system (Tailwind v4)
@@ -88,7 +88,7 @@ pnpm --filter @seaguntech/utils test -- -t "formatDate"
 The design system is CSS-first. Import globals once per app/library:
 
 ```css
-@import '@seaguntech/design-system';
+@import '@clinic-platform/design-system';
 ```
 
 Tokens live in `packages/design-system/design-tokens.css` via `@theme`. Themes

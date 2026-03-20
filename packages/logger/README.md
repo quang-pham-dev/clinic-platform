@@ -1,17 +1,17 @@
-# @seaguntech/logger
+# @clinic-platform/logger
 
-Pino-based logger helpers for the Seaguntech monorepo.
+Pino-based logger helpers for the Clinic Platform monorepo.
 
 ## Install
 
 ```bash
-pnpm add @seaguntech/logger
+pnpm add @clinic-platform/logger
 ```
 
 ## Usage
 
 ```ts
-import { createLogger, logger } from '@seaguntech/logger';
+import { createLogger, logger } from '@clinic-platform/logger';
 
 logger.info('App started');
 

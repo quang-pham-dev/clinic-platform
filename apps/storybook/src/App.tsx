@@ -1,5 +1,5 @@
 import './App.css';
-import { Button } from '@seaguntech/ui';
+import { Button } from '@clinic-platform/ui';
 
 function App() {
   return (

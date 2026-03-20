@@ -1,4 +1,4 @@
-# @seaguntech/prettier-config
+# @clinic-platform/prettier-config
 
 <div align="center">
 
@@ -21,7 +21,7 @@ This package is automatically available to workspace packages:
 ```json
 {
   "devDependencies": {
-    "@seaguntech/prettier-config": "workspace:*"
+    "@clinic-platform/prettier-config": "workspace:*"
   }
 }
 ```
@@ -31,7 +31,7 @@ This package is automatically available to workspace packages:
 ### In `prettier.config.js`
 
 ```javascript
-const baseConfig = require('@seaguntech/prettier-config/base');
+const baseConfig = require('@clinic-platform/prettier-config/base');
 
 /** @type {import("prettier").Config} */
 module.exports = baseConfig;
@@ -40,7 +40,7 @@ module.exports = baseConfig;
 ### With Custom Overrides
 
 ```javascript
-const baseConfig = require('@seaguntech/prettier-config/base');
+const baseConfig = require('@clinic-platform/prettier-config/base');
 
 /** @type {import("prettier").Config} */
 module.exports = {
@@ -55,7 +55,7 @@ module.exports = {
 
 ```json
 {
-  "prettier": "@seaguntech/prettier-config/base"
+  "prettier": "@clinic-platform/prettier-config/base"
 }
 ```
 
@@ -118,7 +118,7 @@ function foo() {
 ```typescript
 // ✅ Correct
 const message = 'Hello World';
-import { Button } from '@seaguntech/ui';
+import { Button } from '@clinic-platform/ui';
 
 // ❌ Wrong (Prettier will auto-fix)
 const message = "Hello World";
@@ -310,7 +310,7 @@ const clean = { a: 1, b: 2, c: 3 };
 
 ```javascript
 // ✅ Use base config
-module.exports = require('@seaguntech/prettier-config/base');
+module.exports = require('@clinic-platform/prettier-config/base');
 
 // ❌ Don't create completely custom config
 module.exports = {
@@ -348,7 +348,7 @@ Ensure you have `eslint-config-prettier` installed to disable conflicting ESLint
 
 ```json
 {
-  "extends": ["@seaguntech/eslint-config", "prettier"]
+  "extends": ["@clinic-platform/eslint-config", "prettier"]
 }
 ```
 
@@ -376,5 +376,5 @@ To modify Prettier configuration:
 ---
 
 <div align="center">
-Part of the Seaguntech monorepo
+Part of the Clinic Platform monorepo
 </div>

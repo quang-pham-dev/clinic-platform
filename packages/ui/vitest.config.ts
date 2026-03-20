@@ -1,4 +1,4 @@
-import { reactConfig } from '@seaguntech/vitest-config/react';
+import { reactConfig } from '@clinic-platform/vitest-config/react';
 import { defineConfig, mergeConfig } from 'vitest/config';
 
 export default mergeConfig(

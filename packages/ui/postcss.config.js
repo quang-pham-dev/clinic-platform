@@ -1,3 +1,3 @@
-import postcssConfig from '@seaguntech/design-system/postcss-config';
+import postcssConfig from '@clinic-platform/design-system/postcss-config';
 
 export default postcssConfig;
