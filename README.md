@@ -1,121 +1,34 @@
-<img width="2048" height="256" alt="background-readme-web" src="https://github.com/user-attachments/assets/bf92b234-1164-4b93-9e30-f5aab1fd66ed" />
+# Healthcare Clinic Platform
 
-# Clinic Platform
+Welcome to the root repository of the Healthcare Clinic Platform. This is a multi-application monorepo powered by Turborepo and pnpm.
 
-Seaguntech Turborepo + pnpm workspace template for product teams and OSS.
+## Architecture & Documentation
 
-## Why this monorepo
+This project uses a 5-phase progressive architecture (from a single clinic booking system to a multi-tenant SaaS). 
+For the complete technical design, system models, and guidelines, please see the `docs/` folder.
 
-- Next.js web app + Storybook
-- Shared UI, utilities, and logger packages
-- Tailwind CSS v4 (CSS-first) design system
-- Centralized ESLint, Prettier, TypeScript, Vitest configs
-- Changesets release workflow
+- **[Monorepo Strategy & Workspace Layout](./docs/00-monorepo-strategy.md)**
+- **[Complete Documentation Hub](./docs/README.md)**
 
 ## Requirements
 
 - Node.js >= 20
-- pnpm 10.25.0
+- pnpm >= 10.0.0
 
 ## Quick Start
-
 ```bash
+# Install all dependencies across the workspace
 pnpm install
-pnpm init:template
+
+# Start the dev servers (API + Dashboards)
 pnpm dev
 ```
 
-### Run specific apps
+## Common Commands
 
-```bash
-pnpm dev:web
-pnpm dev:storybook
-```
-
-## Customize this template
-
-After cloning or forking:
-
-```bash
-pnpm init:template
-```
-
-The init script updates package scope, repo links, package names, and maintainer
-contact email across the template.
-
-- Preview only: `pnpm init:template:dry-run`
-- Re-run after first initialization: `pnpm init:template -- --force`
-
-## Workspace layout
-
-- `apps/web` - Next.js app (App Router)
-- `apps/storybook` - Storybook (React + Vite)
-- `packages/ui` - shared UI components
-- `packages/utils` - shared utilities
-- `packages/logger` - logging utilities
-- `packages/design-system` - Tailwind v4 design system
-- `configs/` - shared ESLint / Prettier / TS / Vitest configs
-- `docs/` - project documentation
-
-## Common scripts
-
-- `pnpm dev` - watch all dev tasks
-- `pnpm dev:web` - Next.js app only
-- `pnpm dev:storybook` - Storybook only
-- `pnpm build` - build all packages/apps
-- `pnpm build:apps` - build apps only
-- `pnpm build:packages` - build packages only
-- `pnpm build:storybook` - build Storybook bundle
-- `pnpm lint` - lint all workspaces
-- `pnpm lint:fix` - lint and auto-fix
-- `pnpm format` - Prettier check
-- `pnpm format:fix` - Prettier write
-- `pnpm check-types` - typecheck across repo
-- `pnpm test` - run all tests
-- `pnpm test:watch` - watch tests
-- `pnpm test:coverage` - coverage for all tests
-- `pnpm clean` - remove build output + node_modules
-
-### Run a single test
-
-```bash
-pnpm --filter @clinic-platform/utils test -- tests/formatDate.test.ts
-pnpm --filter @clinic-platform/utils test -- -t "formatDate"
-```
-
-## Design system (Tailwind v4)
-
-The design system is CSS-first. Import globals once per app/library:
-
-```css
-@import '@clinic-platform/design-system';
-```
-
-Tokens live in `packages/design-system/design-tokens.css` via `@theme`. Themes
-override semantic tokens in `theme-light.css` and `theme-dark.css`.
-
-## Releases
-
-Changesets is configured for package versioning.
-
-```bash
-pnpm changeset
-pnpm version-packages
-pnpm release
-```
-
-## Docs
-
-- `docs/GETTING_STARTED.md`
-- `docs/DEVELOPMENT.md`
-- `docs/ARCHITECTURE.md`
-- `docs/RELEASE.md`
-
-## Contributing & Security
-
-- See `CONTRIBUTING.md` for workflow and standards.
-- See `SECURITY.md` for vulnerability reporting.
-
-## License
-
-MIT
+- `pnpm dev` - Start all apps in watch mode
+- `pnpm build` - Build all apps and packages
+- `pnpm lint` - Run ESLint across the monorepo
+- `pnpm check-types` - Run TypeScript compiler checks
+- `pnpm test` - Run Vitest tests
+- `pnpm clean` - Remove node_modules and build outputs
