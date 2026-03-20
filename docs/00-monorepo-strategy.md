@@ -1,8 +1,8 @@
 # Monorepo & Workspace Strategy
 
 > **Document type:** Architecture Decision & Reference
-> **Version:** 1.0.0
-> **Last updated:** 2026-03-19
+> **Version:** 2.0.0
+> **Last updated:** 2026-03-20
 > **Scope:** Cross-cutting — applies to all phases (P1–P5)
 
 ---
@@ -30,19 +30,24 @@ clinic-platform/
 │
 ├── packages/
 │   ├── types/                  # Shared TypeScript types (DTOs, enums, API response shapes)
-│   ├── ui/                     # Shared React component library (design system)
-│   ├── api-client/             # Generated type-safe API client (from OpenAPI spec)
-│   ├── eslint-config/          # Shared ESLint + Prettier configuration
-│   └── tsconfig/               # Shared TypeScript base configurations
+│   ├── ui/                     # Shared React component library (design system components)
+│   ├── utils/                  # Shared utility functions (invariant, assertNever, formatDate)
+│   ├── logger/                 # Pino-based structured logging (core + HTTP)
+│   ├── design-system/          # Tailwind v4 CSS tokens, themes, globals
+│   └── api-client/             # Generated type-safe API client (from OpenAPI spec)
+│
+├── configs/
+│   ├── eslint-config/          # Shared ESLint flat configs (base, react, next)
+│   ├── prettier-config/        # Shared Prettier config + import sorting
+│   ├── typescript-config/      # Shared TypeScript base configurations
+│   └── vitest-config/          # Shared Vitest configs (base, node, react)
 │
 ├── tools/
 │   └── scripts/                # Workspace-level scripts (seed, migrate, codegen)
 │
+├── docs/                       # Architecture documentation (cross-cutting + per-phase)
 ├── pnpm-workspace.yaml         # Workspace root definition
-├── turbo.json                  # Turborepo pipeline configuration
-├── tsconfig.base.json          # Root TypeScript config (path aliases)
-├── .eslintrc.js                # Root ESLint config (extends packages/eslint-config)
-├── .prettierrc                 # Root Prettier config
+├── turbo.json                  # Turborepo task configuration
 └── package.json                # Root scripts, devDependencies
 ```
 
@@ -57,6 +62,7 @@ clinic-platform/
 - Content-addressable storage (faster installs, less disk usage)
 - Native workspace protocol (`workspace:*`)
 - Built-in `pnpm --filter` for scoped commands
+- Catalog feature for centralized dependency version management
 
 ### Build Orchestrator: Turborepo
 
@@ -67,27 +73,34 @@ clinic-platform/
 - Lower learning curve — team can be productive in <1 day
 
 ```jsonc
-// turbo.json
+// turbo.json (actual configuration)
 {
-  "$schema": "https://turbo.build/schema.json",
-  "globalDependencies": ["**/.env.*local"],
-  "pipeline": {
+  "$schema": "https://turbo-2-8-20.turborepo.com/schema.json",
+  "globalEnv": ["NODE_ENV", "LOG_LEVEL"],
+  "globalPassThroughEnv": ["CI"],
+  "ui": "tui",
+  "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**", ".next/**", "build/**"]
+      "inputs": ["$TURBO_DEFAULT$", ".env", ".env.*"],
+      "outputs": ["dist/**", "build/**"]
     },
     "dev": {
+      "dependsOn": ["^build"],
       "cache": false,
-      "persistent": true
+      "persistent": false
     },
     "lint": {
-      "dependsOn": ["^build"]
+      "dependsOn": ["transit"],
+      "inputs": ["$TURBO_DEFAULT$", "eslint.config.*", ".eslintignore"]
     },
     "test": {
-      "dependsOn": ["^build"]
+      "dependsOn": ["transit"],
+      "inputs": ["$TURBO_DEFAULT$", ".env", ".env.*"]
     },
-    "typecheck": {
-      "dependsOn": ["^build"]
+    "check-types": {
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", "tsconfig*.json"]
     }
   }
 }
@@ -119,13 +132,13 @@ packages/types/
 │   │   └── pagination.ts             # PaginationMeta, PaginatedResponse<T>
 │   └── index.ts                      # Barrel export
 ├── tsconfig.json
-└── package.json                      # name: "@clinic/types"
+└── package.json                      # name: "@clinic-platform/types"
 ```
 
 **Usage in apps:**
 ```typescript
 // apps/dashboard/src/features/bookings/api/bookings.api.ts
-import { BookingResponse, PaginatedResponse } from '@clinic/types';
+import { BookingResponse, PaginatedResponse } from '@clinic-platform/types';
 
 export const fetchBookings = async (): Promise<PaginatedResponse<BookingResponse>> => { ... };
 ```
@@ -133,9 +146,9 @@ export const fetchBookings = async (): Promise<PaginatedResponse<BookingResponse
 **Usage in API:**
 ```typescript
 // apps/api/src/modules/bookings/dto/create-booking.dto.ts
-// Note: API DTOs use class-validator decorators — they IMPORT types from @clinic/types
+// Note: API DTOs use class-validator decorators — they IMPORT types from @clinic-platform/types
 // but define their own DTO classes with validation decorators
-import type { CreateBookingDto as ICreateBookingDto } from '@clinic/types';
+import type { CreateBookingDto as ICreateBookingDto } from '@clinic-platform/types';
 ```
 
 ### 4.2 `packages/ui`
@@ -159,14 +172,62 @@ packages/ui/
 │   │   ├── useMediaQuery.ts
 │   │   └── useTheme.ts
 │   ├── styles/
-│   │   ├── tokens.css                # CSS custom properties (colors, spacing, fonts)
+│   │   ├── globals.css               # Global styles importing design system
 │   │   └── reset.css
 │   └── index.ts
 ├── tsconfig.json
-└── package.json                      # name: "@clinic/ui"
+└── package.json                      # name: "@clinic-platform/ui"
 ```
 
-### 4.3 `packages/api-client`
+### 4.3 `packages/utils`
+
+Shared utility functions used across all apps and packages.
+
+```
+packages/utils/
+├── src/
+│   ├── invariant.ts                  # Runtime assertion utility
+│   ├── assertNever.ts                # Exhaustive check utility
+│   ├── formatDate.ts                 # Date formatting helpers
+│   └── index.ts                      # Barrel export
+├── tsconfig.json
+└── package.json                      # name: "@clinic-platform/utils"
+```
+
+### 4.4 `packages/logger`
+
+Pino-based structured logging used by the NestJS API and any server-side processes.
+
+```
+packages/logger/
+├── src/
+│   ├── core.ts                       # Core logger configuration
+│   ├── http.ts                       # HTTP request logging (pino-http)
+│   └── index.ts
+├── tsconfig.json
+└── package.json                      # name: "@clinic-platform/logger"
+```
+
+### 4.5 `packages/design-system`
+
+Tailwind CSS v4 design system providing tokens, themes, and PostCSS config.
+
+```
+packages/design-system/
+├── design-tokens.css                 # CSS custom properties (@theme)
+├── theme-light.css                   # Light theme semantic overrides
+├── theme-dark.css                    # Dark theme semantic overrides
+├── globals.css                       # Global styles, reset, base layer
+├── postcss-config.js                 # PostCSS config with Tailwind v4
+└── package.json                      # name: "@clinic-platform/design-system"
+```
+
+**Usage in apps:**
+```css
+@import '@clinic-platform/design-system';
+```
+
+### 4.6 `packages/api-client`
 
 Type-safe API client generated from the NestJS OpenAPI spec. Consumed by all frontend apps.
 
@@ -178,37 +239,38 @@ packages/api-client/
 │   └── index.ts
 ├── orval.config.ts                   # Code generation config
 ├── tsconfig.json
-└── package.json                      # name: "@clinic/api-client"
+└── package.json                      # name: "@clinic-platform/api-client"
 ```
 
 **Generation flow:**
 ```bash
 # In CI or as a dev script:
 # 1. NestJS generates OpenAPI spec
-pnpm --filter api swagger:export      # outputs openapi.json
+pnpm --filter @clinic-platform/api swagger:export      # outputs openapi.json
 
 # 2. api-client generates typed client from spec
-pnpm --filter @clinic/api-client generate
+pnpm --filter @clinic-platform/api-client generate
 ```
 
-### 4.4 `packages/eslint-config`
+### 4.7 `configs/eslint-config`
 
 ```
-packages/eslint-config/
+configs/eslint-config/
 ├── base.js                           # Shared rules (TypeScript, imports, Prettier)
-├── react.js                          # React-specific (hooks rules, JSX a11y)
-├── nestjs.js                         # NestJS-specific (decorator ordering, DI patterns)
-└── package.json                      # name: "@clinic/eslint-config"
+├── react-internal-library.js         # React-specific (hooks rules, JSX)
+├── next-internal-library.js          # Next.js-specific (@next/next recommended)
+└── package.json                      # name: "@clinic-platform/eslint-config"
 ```
 
-### 4.5 `packages/tsconfig`
+### 4.8 `configs/typescript-config`
 
 ```
-packages/tsconfig/
+configs/typescript-config/
 ├── base.json                         # Strict mode, module resolution, paths
-├── react.json                        # Extends base + JSX, React types
-├── nestjs.json                       # Extends base + decorators, emit
-└── package.json                      # name: "@clinic/tsconfig"
+├── react-library.json                # Extends base + JSX, React types
+├── nextjs.json                       # Extends base + Next.js specifics
+├── nextjs-library.json               # Extends base + Next.js library
+└── package.json                      # name: "@clinic-platform/typescript-config"
 ```
 
 ---
@@ -220,6 +282,7 @@ packages/tsconfig/
 packages:
   - 'apps/*'
   - 'packages/*'
+  - 'configs/*'
   - 'tools/*'
 ```
 
@@ -232,28 +295,28 @@ packages:
 pnpm install
 
 # Run all apps in dev mode
-pnpm turbo dev
+pnpm dev
 
-# Run only the dashboard and API
-pnpm turbo dev --filter=dashboard --filter=api
+# Run specific apps using turbo filter
+pnpm dev --filter=@clinic-platform/dashboard --filter=@clinic-platform/api
 
 # Build everything (with caching)
-pnpm turbo build
+pnpm build
 
 # Lint all packages
-pnpm turbo lint
+pnpm lint
 
 # Type-check all packages
-pnpm turbo typecheck
+pnpm check-types
 
 # Run tests for a specific app
-pnpm turbo test --filter=api
+pnpm test --filter=@clinic-platform/api
 
 # Add a dependency to a specific app
-pnpm --filter dashboard add @tanstack/react-query
+pnpm --filter @clinic-platform/dashboard add @tanstack/react-query
 
 # Add a workspace dependency
-pnpm --filter dashboard add @clinic/types --workspace
+pnpm --filter @clinic-platform/dashboard add @clinic-platform/types --workspace
 ```
 
 ---
@@ -262,12 +325,16 @@ pnpm --filter dashboard add @clinic/types --workspace
 
 | Need | Package | Example |
 |------|---------|---------|
-| API response type | `@clinic/types` | `BookingResponse`, `PaginatedResponse<T>` |
-| Enum shared across FE+BE | `@clinic/types` | `Role`, `AppointmentStatus` |
-| React component | `@clinic/ui` | `<Button>`, `<Modal>`, `<DataTable>` |
-| Call NestJS API from FE | `@clinic/api-client` | `bookingService.create(dto)` |
-| ESLint config | `@clinic/eslint-config` | `extends: ['@clinic/eslint-config/react']` |
-| TypeScript config | `@clinic/tsconfig` | `extends: '@clinic/tsconfig/react.json'` |
+| API response type | `@clinic-platform/types` | `BookingResponse`, `PaginatedResponse<T>` |
+| Enum shared across FE+BE | `@clinic-platform/types` | `Role`, `AppointmentStatus` |
+| React component | `@clinic-platform/ui` | `<Button>`, `<Modal>`, `<DataTable>` |
+| Utility function | `@clinic-platform/utils` | `invariant()`, `assertNever()`, `formatDate()` |
+| Structured logging | `@clinic-platform/logger` | `logger.info()`, `httpLogger()` |
+| CSS tokens / themes | `@clinic-platform/design-system` | `@import '@clinic-platform/design-system'` |
+| Call NestJS API from FE | `@clinic-platform/api-client` | `bookingService.create(dto)` |
+| ESLint config | `@clinic-platform/eslint-config` | `import config from '@clinic-platform/eslint-config/base'` |
+| TypeScript config | `@clinic-platform/typescript-config` | `"extends": "@clinic-platform/typescript-config/react-library.json"` |
+| Vitest config | `@clinic-platform/vitest-config` | `import config from '@clinic-platform/vitest-config'` |
 
 ---
 

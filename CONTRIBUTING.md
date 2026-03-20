@@ -16,13 +16,7 @@ pnpm dev
 - `pnpm test`
 - `pnpm build`
 
-## Changesets
 
-We use Changesets for versioning packages:
-
-```bash
-pnpm changeset
-```
 
 ## Commit Messages
 

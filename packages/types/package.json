@@ -1,23 +1,9 @@
 {
-  "name": "@clinic-platform/logger",
+  "name": "@clinic-platform/types",
   "version": "0.1.0",
   "license": "MIT",
-  "description": "Pino-based logger utilities for the Clinic Platform monorepo",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/quang-pham-dev/clinic-platform.git"
-  },
-  "homepage": "https://github.com/quang-pham-dev/clinic-platform",
-  "bugs": {
-    "url": "https://github.com/quang-pham-dev/clinic-platform/issues"
-  },
-  "keywords": [
-    "logger",
-    "pino",
-    "typescript",
-    "observability"
-  ],
-  "private": false,
+  "description": "Shared TypeScript types, DTOs, and enums for the Healthcare Clinic Platform",
+  "private": true,
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -27,11 +13,6 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.js"
-    },
-    "./http": {
-      "types": "./dist/http.d.ts",
-      "import": "./dist/http.js",
-      "require": "./dist/http.js"
     }
   },
   "files": [
@@ -49,11 +30,6 @@
     "test": "vitest run --passWithNoTests",
     "test:coverage": "vitest run --coverage --passWithNoTests"
   },
-  "dependencies": {
-    "pino": "catalog:logger-libs",
-    "pino-http": "catalog:logger-libs",
-    "pino-pretty": "catalog:logger-libs"
-  },
   "devDependencies": {
     "@clinic-platform/eslint-config": "workspace:*",
     "@clinic-platform/prettier-config": "workspace:*",
@@ -65,8 +41,7 @@
     "tsup": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:testing",
-    "@vitest/coverage-v8": "catalog:testing",
-    "@vitest/ui": "catalog:testing"
+    "@vitest/coverage-v8": "catalog:testing"
   },
   "prettier": "@clinic-platform/prettier-config/base"
 }

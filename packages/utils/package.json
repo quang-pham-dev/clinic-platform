@@ -41,8 +41,8 @@
     "format:fix": "prettier --write .",
     "check-types": "tsc --noEmit",
     "clean": "rm -rf dist node_modules",
-    "test": "vitest run",
-    "test:coverage": "vitest run --coverage"
+    "test": "vitest run --passWithNoTests",
+    "test:coverage": "vitest run --coverage --passWithNoTests"
   },
   "devDependencies": {
     "@clinic-platform/eslint-config": "workspace:*",
