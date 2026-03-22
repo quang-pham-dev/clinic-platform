@@ -32,6 +32,11 @@
       "types": "./dist/http.d.ts",
       "import": "./dist/http.js",
       "require": "./dist/http.js"
+    },
+    "./nestjs": {
+      "types": "./dist/nestjs.d.ts",
+      "import": "./dist/nestjs.js",
+      "require": "./dist/nestjs.js"
     }
   },
   "files": [
@@ -50,9 +55,22 @@
     "test:coverage": "vitest run --coverage --passWithNoTests"
   },
   "dependencies": {
+    "nestjs-pino": "catalog:logger-libs",
     "pino": "catalog:logger-libs",
     "pino-http": "catalog:logger-libs",
     "pino-pretty": "catalog:logger-libs"
+  },
+  "peerDependencies": {
+    "@nestjs/common": ">=10.0.0",
+    "@nestjs/core": ">=10.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@nestjs/common": {
+      "optional": true
+    },
+    "@nestjs/core": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@clinic-platform/eslint-config": "workspace:*",

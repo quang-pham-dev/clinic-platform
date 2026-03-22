@@ -12,4 +12,5 @@ module.exports = {
   plugins: ['@trivago/prettier-plugin-sort-imports'],
   importOrderSeparation: true,
   importOrderSortSpecifiers: true,
+  importOrderParserPlugins: ['typescript', 'decorators-legacy', 'jsx'],
 };
