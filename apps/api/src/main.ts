@@ -1,6 +1,6 @@
 import { AppModule } from './app.module';
 import { Logger } from '@clinic-platform/logger/nestjs';
-import { type LoggerService, ValidationPipe } from '@nestjs/common';
+import { type LoggerService, type Type, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -12,7 +12,7 @@ async function bootstrap() {
     bufferLogs: true,
   });
 
-  const loggerRef = app.get(Logger) as LoggerService;
+  const loggerRef = app.get(Logger as Type<LoggerService>);
   app.useLogger(loggerRef);
 
   const configService = app.get(ConfigService);
