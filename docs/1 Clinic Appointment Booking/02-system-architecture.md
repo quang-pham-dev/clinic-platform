@@ -155,7 +155,8 @@ src/
 ├── config/
 │   ├── database.config.ts
 │   ├── redis.config.ts
-│   └── jwt.config.ts
+│   ├── jwt.config.ts
+│   └── data-source.ts
 │
 └── database/
     ├── migrations/                  # TypeORM migration files

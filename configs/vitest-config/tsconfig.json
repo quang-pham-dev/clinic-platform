@@ -1,8 +1,9 @@
 {
   "extends": "@clinic-platform/typescript-config/base.json",
   "compilerOptions": {
-    "allowImportingTsExtensions": true,
     "noEmit": true
   },
-  "include": ["*.ts"]
+  "include": [
+    "*.js"
+  ]
 }

@@ -1,0 +1,11 @@
+{
+  "extends": "@clinic-platform/typescript-config/nestjs.json",
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["src/*"]
+    },
+    "types": ["vitest/globals"]
+  },
+  "include": ["src", "test"]
+}

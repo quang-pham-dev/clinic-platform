@@ -16,7 +16,8 @@
   "exports": {
     "./base": "./base.js",
     "./react-internal-library": "./react-internal-library.js",
-    "./next-internal-library": "./next-internal-library.js"
+    "./next-internal-library": "./next-internal-library.js",
+    "./nestjs": "./nestjs.js"
   },
   "devDependencies": {
     "@eslint/js": "catalog:",
