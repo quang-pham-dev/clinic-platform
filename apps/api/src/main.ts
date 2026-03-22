@@ -12,7 +12,7 @@ async function bootstrap() {
     bufferLogs: true,
   });
 
-  const loggerRef = app.get(Logger);
+  const loggerRef = app.get<Logger>(Logger);
   app.useLogger(loggerRef);
 
   const configService = app.get(ConfigService);
