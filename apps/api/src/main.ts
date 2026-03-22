@@ -12,7 +12,8 @@ async function bootstrap() {
     bufferLogs: true,
   });
 
-  app.useLogger(app.get(Logger));
+  const loggerRef = app.get(Logger);
+  app.useLogger(loggerRef);
 
   const configService = app.get(ConfigService);
   const port = configService.get<number>('PORT', 3000);
@@ -69,10 +70,11 @@ async function bootstrap() {
   app.enableShutdownHooks();
 
   await app.listen(port);
-  const logger = app.get(Logger);
-  logger.log(`🚀 API running on http://localhost:${port}/api/v1 [${nodeEnv}]`);
+  loggerRef.log(
+    `🚀 API running on http://localhost:${port}/api/v1 [${nodeEnv}]`,
+  );
   if (nodeEnv !== 'production') {
-    logger.log(`📚 Swagger docs: http://localhost:${port}/api/docs`);
+    loggerRef.log(`📚 Swagger docs: http://localhost:${port}/api/docs`);
   }
 }
 
