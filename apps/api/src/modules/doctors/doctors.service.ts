@@ -1,5 +1,6 @@
 import { CreateDoctorDto } from './dto/create-doctor.dto';
 import { Doctor } from './entities/doctor.entity';
+import { CacheService } from '@/common/cache/cache.service';
 import { buildPaginationMeta } from '@/common/helpers/pagination.helper';
 import { JwtPayload } from '@/common/types/jwt-payload.interface';
 import { Role } from '@/common/types/role.enum';
@@ -9,6 +10,7 @@ import {
   ConflictException,
   ForbiddenException,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -22,12 +24,18 @@ interface FindAllOpts {
   limit: number;
 }
 
+const DOCTORS_LIST_CACHE_TTL = 300; // 5 minutes
+const DOCTOR_ONE_CACHE_TTL = 300;
+
 @Injectable()
 export class DoctorsService {
+  private readonly logger = new Logger(DoctorsService.name);
+
   constructor(
     @InjectRepository(Doctor)
     private readonly doctorsRepository: Repository<Doctor>,
     private readonly dataSource: DataSource,
+    private readonly cacheService: CacheService,
   ) {}
 
   async create(dto: CreateDoctorDto) {
@@ -40,7 +48,7 @@ export class DoctorsService {
 
     const passwordHash = await bcrypt.hash(dto.password, 12);
 
-    return this.dataSource.transaction(async (manager) => {
+    const result = await this.dataSource.transaction(async (manager) => {
       // Create User
       const user = manager.create(User, {
         email: dto.email.toLowerCase(),
@@ -69,9 +77,27 @@ export class DoctorsService {
 
       return this.findOne(savedDoctor.id);
     });
+
+    // Invalidate list cache after new doctor created
+    await this.cacheService.delByPattern('doctors:list:*');
+    this.logger.log(`Doctor created, list cache invalidated`);
+
+    return result;
   }
 
   async findAll(opts: FindAllOpts) {
+    const cacheKey = `doctors:list:${opts.specialty ?? ''}:${opts.isAccepting ?? ''}:${opts.page}:${opts.limit}`;
+
+    const cached = await this.cacheService.get<{
+      data: ReturnType<DoctorsService['toPublicDoctor']>[];
+      meta: ReturnType<typeof buildPaginationMeta>;
+    }>(cacheKey);
+
+    if (cached) {
+      this.logger.debug(`Cache HIT: ${cacheKey}`);
+      return cached;
+    }
+
     const qb = this.doctorsRepository
       .createQueryBuilder('doctor')
       .leftJoinAndSelect('doctor.user', 'user')
@@ -91,19 +117,44 @@ export class DoctorsService {
 
     const [doctors, total] = await qb.getManyAndCount();
 
-    return {
+    const result = {
       data: doctors.map((d) => this.toPublicDoctor(d)),
       meta: buildPaginationMeta(total, opts.page, opts.limit),
     };
+
+    await this.cacheService.set(cacheKey, result, {
+      ttl: DOCTORS_LIST_CACHE_TTL,
+    });
+    this.logger.debug(`Cache MISS, stored: ${cacheKey}`);
+
+    return result;
   }
 
   async findOne(id: string) {
+    const cacheKey = `doctors:one:${id}`;
+
+    const cached =
+      await this.cacheService.get<ReturnType<DoctorsService['toPublicDoctor']>>(
+        cacheKey,
+      );
+
+    if (cached) {
+      this.logger.debug(`Cache HIT: ${cacheKey}`);
+      return cached;
+    }
+
     const doctor = await this.doctorsRepository.findOne({
       where: { id },
       relations: ['user', 'user.profile'],
     });
     if (!doctor) throw new NotFoundException({ code: 'DOCTOR_NOT_FOUND' });
-    return this.toPublicDoctor(doctor);
+
+    const result = this.toPublicDoctor(doctor);
+    await this.cacheService.set(cacheKey, result, {
+      ttl: DOCTOR_ONE_CACHE_TTL,
+    });
+
+    return result;
   }
 
   async findByUserId(userId: string): Promise<Doctor | null> {
@@ -120,6 +171,14 @@ export class DoctorsService {
     }
 
     await this.doctorsRepository.save({ ...doctor, ...dto });
+
+    // Invalidate stale caches
+    await Promise.all([
+      this.cacheService.del(`doctors:one:${id}`),
+      this.cacheService.delByPattern('doctors:list:*'),
+    ]);
+    this.logger.log(`Doctor ${id} updated, cache invalidated`);
+
     return this.findOne(id);
   }
 

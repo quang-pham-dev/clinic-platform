@@ -25,7 +25,7 @@ export class RegisterDto {
   })
   password: string;
 
-  @ApiProperty({ example: 'Nguyen Van A' })
+  @ApiProperty({ example: 'Sean Harvey' })
   @IsString()
   @MaxLength(255)
   fullName: string;

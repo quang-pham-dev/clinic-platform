@@ -397,7 +397,7 @@ npm run migration:show
     "email": "dr.nguyen@clinic.local",
     "password": "Doctor@123",
     "role": "doctor",
-    "profile": { "full_name": "Dr. Nguyen Van A" },
+    "profile": { "full_name": "Dr. Sean Harvey" },
     "doctor": {
       "specialty": "General Practice",
       "license_number": "GP-001",
