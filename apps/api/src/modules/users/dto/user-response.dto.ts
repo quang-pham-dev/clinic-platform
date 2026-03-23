@@ -1,6 +1,6 @@
+import { Role } from '@/common/types/role.enum';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Exclude, Expose, Type } from 'class-transformer';
-import { Role } from '@/common/types/role.enum';
 
 export class UserProfileResponseDto {
   @Expose()

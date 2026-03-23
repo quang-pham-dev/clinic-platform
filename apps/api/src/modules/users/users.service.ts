@@ -154,7 +154,8 @@ export class UsersService {
       return savedUser;
     };
 
-    return manager ? run(manager) : this.usersRepository.manager.transaction(run);
+    return manager
+      ? run(manager)
+      : this.usersRepository.manager.transaction(run);
   }
 }
-

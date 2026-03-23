@@ -55,11 +55,7 @@ export class AuthController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @Post('logout')
   @ApiOperation({ summary: 'Invalidate refresh token and log out' })
-  async logout(
-    @CurrentUser() user: JwtPayload,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    @Body() _dto: LogoutDto,
-  ) {
+  async logout(@CurrentUser() user: JwtPayload, @Body() _dto: LogoutDto) {
     await this.authService.logout(user.sub);
   }
 }

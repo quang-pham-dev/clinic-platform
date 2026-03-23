@@ -6,7 +6,6 @@ import { User } from '@/modules/users/entities/user.entity';
 import { ConflictException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import * as bcrypt from 'bcrypt';
 import { DataSource } from 'typeorm';
 
 vi.mock('bcrypt', () => ({
@@ -16,9 +15,6 @@ vi.mock('bcrypt', () => ({
 
 describe('DoctorsService', () => {
   let service: DoctorsService;
-  let dataSource: any;
-  let cacheService: any;
-  let doctorsRepository: any;
 
   const mockCacheService = {
     get: vi.fn(),
@@ -45,15 +41,15 @@ describe('DoctorsService', () => {
       providers: [
         DoctorsService,
         { provide: CacheService, useValue: mockCacheService },
-        { provide: getRepositoryToken(Doctor), useValue: mockDoctorsRepository },
+        {
+          provide: getRepositoryToken(Doctor),
+          useValue: mockDoctorsRepository,
+        },
         { provide: DataSource, useValue: mockDataSource },
       ],
     }).compile();
 
     service = module.get<DoctorsService>(DoctorsService);
-    dataSource = module.get<DataSource>(DataSource);
-    cacheService = module.get<CacheService>(CacheService);
-    doctorsRepository = module.get(getRepositoryToken(Doctor));
 
     vi.clearAllMocks();
   });
@@ -83,14 +79,24 @@ describe('DoctorsService', () => {
 
       const mockManager = {
         create: vi.fn().mockImplementation((entity, data) => data),
-        save: vi.fn().mockImplementation((data) => ({ ...data, id: 'uuid-123' })),
+        save: vi
+          .fn()
+          .mockImplementation((data) => ({ ...data, id: 'uuid-123' })),
       };
 
       mockDataSource.transaction.mockImplementation((cb) => cb(mockManager));
 
       const findOneSpy = vi.spyOn(service, 'findOne').mockResolvedValueOnce({
         id: 'uuid-123',
-      } as any);
+        userId: '',
+        specialty: '',
+        licenseNumber: '',
+        bio: '',
+        consultationFee: 0,
+        isAcceptingPatients: true,
+        profile: null,
+        createdAt: new Date(),
+      });
 
       const dto: CreateDoctorDto = {
         email: 'test@example.com',
@@ -104,8 +110,10 @@ describe('DoctorsService', () => {
       const result = await service.create(dto);
 
       expect(mockDataSource.transaction).toHaveBeenCalled();
-      expect(mockCacheService.delByPattern).toHaveBeenCalledWith('doctors:list:*');
-      expect(result).toEqual({ id: 'uuid-123' });
+      expect(mockCacheService.delByPattern).toHaveBeenCalledWith(
+        'doctors:list:*',
+      );
+      expect(result).toEqual(expect.objectContaining({ id: 'uuid-123' }));
       expect(findOneSpy).toHaveBeenCalledWith('uuid-123');
     });
   });
@@ -138,7 +146,7 @@ describe('DoctorsService', () => {
       expect(mockCacheService.set).toHaveBeenCalledWith(
         'doctors:one:uuid-123',
         expect.anything(),
-        { ttl: 300 }
+        { ttl: 300 },
       );
       expect(result.id).toBe('uuid-123');
     });
@@ -147,7 +155,9 @@ describe('DoctorsService', () => {
       mockCacheService.get.mockResolvedValueOnce(null);
       mockDoctorsRepository.findOne.mockResolvedValueOnce(null);
 
-      await expect(service.findOne('uuid-invalid')).rejects.toThrow(NotFoundException);
+      await expect(service.findOne('uuid-invalid')).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 });

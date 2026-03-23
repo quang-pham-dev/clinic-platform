@@ -26,8 +26,7 @@ export class CacheService {
     this.client = new Redis({
       host: this.configService.get<string>('redis.host', 'localhost'),
       port: this.configService.get<number>('redis.port', 6379),
-      password:
-        this.configService.get<string>('redis.password') || undefined,
+      password: this.configService.get<string>('redis.password') || undefined,
       lazyConnect: true,
       keyPrefix: 'cache:',
     });
@@ -73,10 +72,7 @@ export class CacheService {
         await this.client.del(...keys);
       }
     } catch (err) {
-      this.logger.warn(
-        `Cache DEL by pattern failed for "${pattern}"`,
-        err,
-      );
+      this.logger.warn(`Cache DEL by pattern failed for "${pattern}"`, err);
     }
   }
 

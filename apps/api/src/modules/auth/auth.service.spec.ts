@@ -3,6 +3,7 @@ import { RedisService } from './redis/redis.service';
 import { Role } from '@/common/types/role.enum';
 import { UserProfile } from '@/modules/users/entities/user-profile.entity';
 import { User } from '@/modules/users/entities/user.entity';
+import { UsersService } from '@/modules/users/users.service';
 import { ConflictException, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
@@ -61,6 +62,17 @@ describe('AuthService', () => {
     deleteRefreshToken: vi.fn(),
   };
 
+  const mockUsersService = {
+    findByEmail: vi.fn().mockResolvedValue(null),
+    findForAuth: vi.fn().mockResolvedValue(null),
+    findById: vi.fn().mockResolvedValue(mockUser),
+    findMe: vi
+      .fn()
+      .mockResolvedValue({ id: 'user123', profile: { fullName: 'Test User' } }),
+    create: vi.fn(),
+    createWithProfile: vi.fn().mockResolvedValue(mockUser),
+  };
+
   const mockQueryRunner = {
     manager: {
       create: vi.fn(),
@@ -82,6 +94,11 @@ describe('AuthService', () => {
       providers: [
         AuthService,
         { provide: getRepositoryToken(User), useValue: mockUserRepository },
+        {
+          provide: getRepositoryToken(UserProfile),
+          useValue: mockUserRepository,
+        },
+        { provide: UsersService, useValue: mockUsersService },
         { provide: JwtService, useValue: mockJwtService },
         { provide: ConfigService, useValue: mockConfigService },
         { provide: RedisService, useValue: mockRedisService },
@@ -102,7 +119,7 @@ describe('AuthService', () => {
 
   describe('validateUser', () => {
     it('should return user for valid credentials', async () => {
-      mockUserRepository.findOne.mockResolvedValueOnce(mockUser);
+      mockUsersService.findForAuth.mockResolvedValueOnce(mockUser);
       const result = await authService.validateUser(
         'test@example.com',
         'validPassword',
@@ -112,7 +129,7 @@ describe('AuthService', () => {
     });
 
     it('should return null if user not found', async () => {
-      mockUserRepository.findOne.mockResolvedValueOnce(null);
+      mockUsersService.findForAuth.mockResolvedValueOnce(null);
       const result = await authService.validateUser(
         'test@example.com',
         'validPassword',
@@ -121,7 +138,7 @@ describe('AuthService', () => {
     });
 
     it('should return null for invalid password', async () => {
-      mockUserRepository.findOne.mockResolvedValueOnce(mockUser);
+      mockUsersService.findForAuth.mockResolvedValueOnce(mockUser);
       const result = await authService.validateUser(
         'test@example.com',
         'invalidPassword',
@@ -130,7 +147,7 @@ describe('AuthService', () => {
     });
 
     it('should return null if user is deactivated', async () => {
-      mockUserRepository.findOne.mockResolvedValueOnce({
+      mockUsersService.findForAuth.mockResolvedValueOnce({
         ...mockUser,
         isActive: false,
       });
@@ -151,28 +168,19 @@ describe('AuthService', () => {
     };
 
     it('should throw ConflictException if user exists', async () => {
-      mockUserRepository.findOne.mockResolvedValueOnce(mockUser);
+      mockUsersService.findForAuth.mockResolvedValueOnce(mockUser);
       await expect(authService.register(registerDto)).rejects.toThrow(
         ConflictException,
       );
     });
 
     it('should register a new user successfully', async () => {
-      mockUserRepository.findOne.mockResolvedValueOnce(null);
-      mockQueryRunner.manager.create.mockReturnValueOnce({
+      mockUsersService.findForAuth.mockResolvedValueOnce(null);
+      mockUsersService.createWithProfile.mockResolvedValueOnce({
         ...mockUser,
         email: registerDto.email,
+        id: 'user123',
       });
-      mockQueryRunner.manager.save
-        .mockResolvedValueOnce({
-          ...mockUser,
-          email: registerDto.email,
-          id: 'user123',
-        })
-        .mockResolvedValueOnce({
-          ...mockUserProfile,
-          fullName: registerDto.fullName,
-        });
 
       const result = await authService.register(registerDto);
 
@@ -182,12 +190,10 @@ describe('AuthService', () => {
     });
 
     it('should throw error if transaction fails', async () => {
-      mockUserRepository.findOne.mockResolvedValueOnce(null);
-      mockQueryRunner.manager.create.mockReturnValueOnce({
-        ...mockUser,
-        email: registerDto.email,
-      });
-      mockQueryRunner.manager.save.mockRejectedValueOnce(new Error('DB Error'));
+      mockUsersService.findForAuth.mockResolvedValueOnce(null);
+      mockUsersService.createWithProfile.mockRejectedValueOnce(
+        new Error('DB Error'),
+      );
 
       await expect(authService.register(registerDto)).rejects.toThrow(
         'DB Error',
@@ -241,18 +247,16 @@ describe('AuthService', () => {
 
     it('should throw UnauthorizedException if user not found in DB', async () => {
       mockRedisService.getRefreshToken.mockResolvedValueOnce('hashedData');
-      mockUserRepository.findOneOrFail = vi
-        .fn()
-        .mockRejectedValueOnce(new Error('Not found'));
+      mockUsersService.findById = vi.fn().mockResolvedValueOnce(null);
 
-      await expect(authService.refresh('validToken')).rejects.toThrow();
+      await expect(authService.refresh('validToken')).rejects.toThrow(
+        UnauthorizedException,
+      );
     });
 
     it('should issue new tokens on valid refresh', async () => {
       mockRedisService.getRefreshToken.mockResolvedValueOnce('hashedData');
-      mockUserRepository.findOneOrFail = vi
-        .fn()
-        .mockResolvedValueOnce(mockUser);
+      mockUsersService.findById = vi.fn().mockResolvedValueOnce(mockUser);
 
       const result = await authService.refresh('validToken');
 

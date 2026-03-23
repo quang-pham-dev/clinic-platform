@@ -11,4 +11,4 @@ import { TypeOrmModule } from '@nestjs/typeorm';
   providers: [DoctorsService],
   exports: [DoctorsService],
 })
-export class DoctorsModule { }
+export class DoctorsModule {}

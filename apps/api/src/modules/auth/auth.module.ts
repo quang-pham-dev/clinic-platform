@@ -18,4 +18,4 @@ import { PassportModule } from '@nestjs/passport';
   providers: [AuthService, RedisService, JwtStrategy, LocalStrategy],
   exports: [AuthService, RedisService],
 })
-export class AuthModule { }
+export class AuthModule {}

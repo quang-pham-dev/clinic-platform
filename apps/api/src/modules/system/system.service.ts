@@ -8,7 +8,7 @@ export class SystemService {
   constructor(
     @Inject(ConfigService)
     private readonly configService: ConfigService,
-  ) { }
+  ) {}
 
   getInfo() {
     return {

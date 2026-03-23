@@ -95,7 +95,9 @@ export class SlotsService {
     });
 
     const existingSet = new Set(
-      existing.map((e) => `${e.slotDate.toISOString().slice(0, 10)}|${e.startTime}`),
+      existing.map(
+        (e) => `${e.slotDate.toISOString().slice(0, 10)}|${e.startTime}`,
+      ),
     );
 
     const newSlots = slots.filter(

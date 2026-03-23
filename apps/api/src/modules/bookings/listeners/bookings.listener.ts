@@ -1,6 +1,6 @@
+import { BookingCreatedEvent } from '../events/booking-created.event';
 import { Injectable, Logger } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
-import { BookingCreatedEvent } from '../events/booking-created.event';
 
 @Injectable()
 export class BookingsListener {
