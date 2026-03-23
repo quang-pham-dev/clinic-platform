@@ -3,6 +3,7 @@ import { Public } from '../../common/decorators/public.decorator';
 import type { JwtPayload } from '../../common/types/jwt-payload.interface';
 import { User } from '../users/entities/user.entity';
 import { AuthService } from './auth.service';
+import { LoginDto } from './dto/login.dto';
 import { LogoutDto, RefreshTokenDto } from './dto/refresh-token.dto';
 import { RegisterDto } from './dto/register.dto';
 import { LocalAuthGuard } from './guards/local-auth.guard';
@@ -36,7 +37,7 @@ export class AuthController {
   @Throttle({ short: { limit: 5, ttl: 60000 } })
   @Post('login')
   @ApiOperation({ summary: 'Login and receive JWT token pair' })
-  async login(@CurrentUser() user: User) {
+  async login(@Body() dto: LoginDto, @CurrentUser() user: User) {
     const result = await this.authService.login(user);
     return { data: result };
   }

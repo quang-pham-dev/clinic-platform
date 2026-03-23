@@ -1,27 +1,28 @@
 import { RegisterDto } from './dto/register.dto';
 import { RedisService } from './redis/redis.service';
 import { JwtPayload } from '@/common/types/jwt-payload.interface';
-import { UserProfile } from '@/modules/users/entities/user-profile.entity';
 import { User } from '@/modules/users/entities/user.entity';
+import { UsersService } from '@/modules/users/users.service';
 import {
   ConflictException,
   Injectable,
+  Logger,
   UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource } from 'typeorm';
 
 const BCRYPT_ROUNDS_PASSWORDS = 12;
 const BCRYPT_ROUNDS_TOKENS = 10;
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
+
   constructor(
-    @InjectRepository(User)
-    private readonly usersRepository: Repository<User>,
+    private readonly usersService: UsersService,
     private readonly dataSource: DataSource,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
@@ -33,10 +34,7 @@ export class AuthService {
    * Returns null if invalid — never throw here (LocalStrategy throws for us).
    */
   async validateUser(email: string, password: string): Promise<User | null> {
-    const user = await this.usersRepository.findOne({
-      where: { email: email.toLowerCase() },
-      select: ['id', 'email', 'passwordHash', 'role', 'isActive'],
-    });
+    const user = await this.usersService.findForAuth(email);
 
     if (!user || !user.isActive) {
       return null; // INVALID_CREDENTIALS — don't reveal which field
@@ -54,9 +52,7 @@ export class AuthService {
   }
 
   async register(dto: RegisterDto) {
-    const existing = await this.usersRepository.findOne({
-      where: { email: dto.email.toLowerCase() },
-    });
+    const existing = await this.usersService.findForAuth(dto.email);
     if (existing) {
       throw new ConflictException({ code: 'EMAIL_ALREADY_EXISTS' });
     }
@@ -67,18 +63,17 @@ export class AuthService {
     );
 
     return this.dataSource.transaction(async (manager) => {
-      const user = manager.create(User, {
-        email: dto.email.toLowerCase(),
-        passwordHash,
-      });
-      const savedUser = await manager.save(user);
+      const savedUser = await this.usersService.createWithProfile(
+        { email: dto.email, passwordHash },
+        {
+          fullName: dto.fullName,
+          phone: dto.phone,
+          dateOfBirth: dto.dateOfBirth ? new Date(dto.dateOfBirth) : undefined,
+        },
+        manager,
+      );
 
-      await manager.save(UserProfile, {
-        userId: savedUser.id,
-        fullName: dto.fullName,
-        phone: dto.phone,
-        dateOfBirth: dto.dateOfBirth ? new Date(dto.dateOfBirth) : undefined,
-      });
+      this.logger.log(`User registered: userId=${savedUser.id}`);
 
       return {
         id: savedUser.id,
@@ -120,9 +115,10 @@ export class AuthService {
     const hash = await bcrypt.hash(refreshToken, BCRYPT_ROUNDS_TOKENS);
     await this.redisService.setRefreshToken(user.id, hash);
 
-    const profile = await this.dataSource.getRepository(UserProfile).findOne({
-      where: { userId: user.id },
-    });
+    this.logger.log(`User logged in: userId=${user.id}`);
+
+    // Fetch profile via UsersService (module-owned data access)
+    const me = await this.usersService.findMe(user.id).catch(() => null);
 
     return {
       accessToken,
@@ -132,7 +128,7 @@ export class AuthService {
         id: user.id,
         email: user.email,
         role: user.role,
-        fullName: profile?.fullName ?? null,
+        fullName: me?.profile?.fullName ?? null,
       },
     };
   }
@@ -157,14 +153,16 @@ export class AuthService {
       throw new UnauthorizedException({ code: 'REFRESH_TOKEN_INVALID' });
     }
 
-    const user = await this.usersRepository.findOneOrFail({
-      where: { id: payload.sub },
-    });
+    const user = await this.usersService.findById(payload.sub);
+    if (!user) {
+      throw new UnauthorizedException({ code: 'REFRESH_TOKEN_INVALID' });
+    }
 
     return this.login(user); // Issues new token pair and rotates Redis
   }
 
   async logout(userId: string): Promise<void> {
     await this.redisService.deleteRefreshToken(userId);
+    this.logger.log(`User logged out: userId=${userId}`);
   }
 }

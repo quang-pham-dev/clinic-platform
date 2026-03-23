@@ -3,6 +3,8 @@ import { TransformInterceptor } from './common/interceptors/transform.intercepto
 import databaseConfig from './config/database.config';
 import jwtConfig from './config/jwt.config';
 import redisConfig from './config/redis.config';
+import { HealthModule } from './modules/health/health.module';
+import { SystemModule } from './modules/system/system.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { RolesGuard } from './modules/auth/guards/roles.guard';
@@ -11,15 +13,18 @@ import { DoctorsModule } from './modules/doctors/doctors.module';
 import { SlotsModule } from './modules/slots/slots.module';
 import { UsersModule } from './modules/users/users.module';
 import { createNestLoggerModule } from '@clinic-platform/logger/nestjs';
+import { CacheModule } from './common/cache/cache.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
     // Config (global)
+    EventEmitterModule.forRoot(),
     ConfigModule.forRoot({
       isGlobal: true,
       load: [databaseConfig, redisConfig, jwtConfig],
@@ -28,6 +33,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
     // Logging
     createNestLoggerModule(),
+
+    // Redis-backed cache (global)
+    CacheModule,
 
     // TypeORM
     TypeOrmModule.forRootAsync({
@@ -40,6 +48,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     ThrottlerModule.forRoot([{ name: 'short', ttl: 60000, limit: 100 }]),
 
     // Feature modules
+    HealthModule,
+    SystemModule,
     AuthModule,
     UsersModule,
     DoctorsModule,
@@ -57,4 +67,4 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     { provide: APP_INTERCEPTOR, useClass: TransformInterceptor },
   ],
 })
-export class AppModule {}
+export class AppModule { }

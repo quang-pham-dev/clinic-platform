@@ -3,6 +3,8 @@ import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingStatusDto } from './dto/update-booking-status.dto';
 import { Appointment } from './entities/appointment.entity';
 import { BookingAuditLog } from './entities/booking-audit-log.entity';
+import { AppointmentsRepository } from './repositories/appointment.repository';
+import { BookingCreatedEvent } from './events/booking-created.event';
 import { buildPaginationMeta } from '@/common/helpers/pagination.helper';
 import { AppointmentStatus } from '@/common/types/appointment-status.enum';
 import { JwtPayload } from '@/common/types/jwt-payload.interface';
@@ -13,19 +15,22 @@ import {
   ConflictException,
   ForbiddenException,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Repository } from 'typeorm';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { DataSource } from 'typeorm';
 
 @Injectable()
 export class BookingsService {
+  private readonly logger = new Logger(BookingsService.name);
+
   constructor(
-    @InjectRepository(Appointment)
-    private readonly appointmentsRepository: Repository<Appointment>,
+    private readonly appointmentsRepository: AppointmentsRepository,
     private readonly dataSource: DataSource,
     private readonly bookingStateMachine: BookingStateMachine,
     private readonly doctorsService: DoctorsService,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   /**
@@ -33,6 +38,10 @@ export class BookingsService {
    * Prevents double-booking via pessimistic write lock + UNIQUE(slot_id) constraint.
    */
   async create(dto: CreateBookingDto, patient: JwtPayload) {
+    this.logger.log(
+      `Creating booking: patient=${patient.sub}, slot=${dto.slotId}`,
+    );
+
     return this.dataSource.transaction(async (manager) => {
       // Lock the slot row exclusively
       const slot = await manager
@@ -42,6 +51,9 @@ export class BookingsService {
         .getOne();
 
       if (!slot) {
+        this.logger.warn(
+          `Slot unavailable: slotId=${dto.slotId}, patient=${patient.sub}`,
+        );
         throw new ConflictException({ code: 'SLOT_UNAVAILABLE' });
       }
 
@@ -66,6 +78,16 @@ export class BookingsService {
         fromStatus: null,
         toStatus: AppointmentStatus.PENDING,
       });
+
+      this.logger.log(
+        `Booking created: appointmentId=${saved.id}, patient=${patient.sub}`,
+      );
+
+      // Async side-effect: dispatch event to listeners (e.g. notifications)
+      this.eventEmitter.emit(
+        'booking.created',
+        new BookingCreatedEvent(saved.id, patient.sub, slot.doctorId, slot.id),
+      );
 
       return this.findOne(saved.id, patient);
     });
@@ -127,18 +149,7 @@ export class BookingsService {
   }
 
   async findOne(id: string, actor: JwtPayload) {
-    const appt = await this.appointmentsRepository.findOne({
-      where: { id },
-      relations: [
-        'slot',
-        'doctor',
-        'doctor.user',
-        'doctor.user.profile',
-        'patient',
-        'patient.profile',
-        'auditLogs',
-      ],
-    });
+    const appt = await this.appointmentsRepository.findWithDetails(id);
 
     if (!appt) throw new NotFoundException({ code: 'APPOINTMENT_NOT_FOUND' });
 
@@ -185,6 +196,10 @@ export class BookingsService {
       dto.reason,
     );
 
+    this.logger.log(
+      `Status transition: appointment=${id}, ${appointment.status}→${dto.status}, actor=${actor.sub}(${actor.role})`,
+    );
+
     return this.dataSource.transaction(async (manager) => {
       if (rule.releaseSlot) {
         await manager.update(TimeSlot, appointment.slotId, {
@@ -213,10 +228,12 @@ export class BookingsService {
   async updateNotes(id: string, notes: string, actor: JwtPayload) {
     const appointment = await this.findOne(id, actor);
     await this.appointmentsRepository.save({ ...appointment, notes });
+    this.logger.log(`Notes updated: appointment=${id}, actor=${actor.sub}`);
     return this.findOne(id, actor);
   }
 
   async cancel(id: string, reason: string | undefined, actor: JwtPayload) {
+    this.logger.log(`Cancel booking: appointment=${id}, actor=${actor.sub}`);
     await this.updateStatus(
       id,
       { status: AppointmentStatus.CANCELLED, reason },

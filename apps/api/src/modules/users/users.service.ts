@@ -2,7 +2,7 @@ import { UserProfile } from './entities/user-profile.entity';
 import { User } from './entities/user.entity';
 import { buildPaginationMeta } from '@/common/helpers/pagination.helper';
 import { Role } from '@/common/types/role.enum';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository } from 'typeorm';
 
@@ -16,6 +16,7 @@ interface FindAllOptions {
 
 @Injectable()
 export class UsersService {
+  private readonly logger = new Logger(UsersService.name);
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
@@ -39,6 +40,7 @@ export class UsersService {
     if (!profile) throw new NotFoundException({ code: 'USER_NOT_FOUND' });
 
     await this.profilesRepository.save({ ...profile, ...dto });
+    this.logger.log(`Profile updated: userId=${userId}`);
     return this.findMe(userId);
   }
 
@@ -80,6 +82,7 @@ export class UsersService {
     if (!user) throw new NotFoundException({ code: 'USER_NOT_FOUND' });
 
     await this.usersRepository.save({ ...user, isActive: false });
+    this.logger.log(`User deactivated: userId=${userId}`);
     return { id: userId, isActive: false };
   }
 
@@ -101,4 +104,57 @@ export class UsersService {
       createdAt: user.createdAt,
     };
   }
+
+  /**
+   * Internal use only (AuthService).
+   * Returns the raw user with passwordHash for credential validation.
+   * Never expose this method via controller.
+   */
+  async findForAuth(email: string): Promise<User | null> {
+    return this.usersRepository.findOne({
+      where: { email: email.toLowerCase() },
+      select: ['id', 'email', 'passwordHash', 'role', 'isActive'],
+    });
+  }
+
+  /**
+   * Internal use only (AuthService).
+   * Returns user by ID without profile.
+   */
+  async findById(id: string): Promise<User | null> {
+    return this.usersRepository.findOne({ where: { id } });
+  }
+
+  /**
+   * Internal use only (AuthService).
+   * Creates User + UserProfile in a transaction.
+   */
+  async createWithProfile(
+    data: {
+      email: string;
+      passwordHash: string;
+      role?: Role;
+    },
+    profile: { fullName: string; phone?: string; dateOfBirth?: Date },
+    manager?: import('typeorm').EntityManager,
+  ): Promise<User> {
+    const run = async (em: import('typeorm').EntityManager) => {
+      const user = em.create(User, {
+        email: data.email.toLowerCase(),
+        passwordHash: data.passwordHash,
+        role: data.role,
+      });
+      const savedUser = await em.save(user);
+      await em.save(UserProfile, {
+        userId: savedUser.id,
+        fullName: profile.fullName,
+        phone: profile.phone,
+        dateOfBirth: profile.dateOfBirth,
+      });
+      return savedUser;
+    };
+
+    return manager ? run(manager) : this.usersRepository.manager.transaction(run);
+  }
 }
+

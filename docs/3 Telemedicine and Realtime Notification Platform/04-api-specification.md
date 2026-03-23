@@ -47,7 +47,7 @@ Doctor creates a new video session for a confirmed appointment.
     "appointment": {
       "id": "appointment-uuid",
       "slot": { "slotDate": "2026-04-01", "startTime": "09:00:00" },
-      "patient": { "id": "patient-uuid", "profile": { "fullName": "Nguyen Van A" } }
+      "patient": { "id": "patient-uuid", "profile": { "fullName": "Sean Harvey" } }
     },
     "initiatedBy": "doctor-uuid",
     "createdAt": "2026-04-01T08:55:00.000Z"
@@ -209,7 +209,7 @@ Retrieve in-call chat message history.
     {
       "id": "msg-uuid-2",
       "senderId": "patient-uuid",
-      "senderName": "Nguyen Van A",
+      "senderName": "Sean Harvey",
       "message": null,
       "messageType": "file",
       "fileUrl": "https://s3.../...",
@@ -319,7 +319,7 @@ Preview a rendered notification template with sample data.
 {
   "templateId": "template-uuid",
   "sampleData": {
-    "patientName": "Nguyen Van A",
+    "patientName": "Sean Harvey",
     "doctorName": "Dr. Tran Thi B",
     "date": "2026-04-01",
     "time": "09:00"
@@ -332,7 +332,7 @@ Preview a rendered notification template with sample data.
 {
   "data": {
     "subject": "Your appointment is confirmed",
-    "body": "Hi Nguyen Van A, your appointment with Dr. Tran Thi B on 2026-04-01 at 09:00 is confirmed."
+    "body": "Hi Sean Harvey, your appointment with Dr. Tran Thi B on 2026-04-01 at 09:00 is confirmed."
   }
 }
 ```

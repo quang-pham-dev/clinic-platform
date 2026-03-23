@@ -1,8 +1,13 @@
 import { AppModule } from './app.module';
 import { Logger } from '@clinic-platform/logger/nestjs';
-import { type LoggerService, type Type, ValidationPipe } from '@nestjs/common';
+import {
+  ClassSerializerInterceptor,
+  type LoggerService,
+  type Type,
+  ValidationPipe,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import helmet from 'helmet';
 
@@ -14,6 +19,9 @@ async function bootstrap() {
 
   const loggerRef = app.get(Logger as Type<LoggerService>);
   app.useLogger(loggerRef);
+
+  // Global output serialization — respects @Expose() / @Exclude() on response DTOs
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
   const configService = app.get(ConfigService);
   const port = configService.get<number>('PORT', 3000);

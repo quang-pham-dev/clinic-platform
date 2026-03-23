@@ -78,7 +78,7 @@ Register a new patient account.
 {
   "email": "patient@example.com",
   "password": "P@ssword123",        // min 8 chars, 1 upper, 1 number, 1 special
-  "fullName": "Nguyen Van A",
+  "fullName": "Sean Harvey",
   "phone": "0901234567",            // optional
   "dateOfBirth": "1990-01-15"       // optional, ISO 8601 date
 }
@@ -92,7 +92,7 @@ Register a new patient account.
     "email": "patient@example.com",
     "role": "patient",
     "profile": {
-      "fullName": "Nguyen Van A",
+      "fullName": "Sean Harvey",
       "phone": "0901234567"
     },
     "createdAt": "2026-03-19T08:00:00.000Z"
@@ -128,7 +128,7 @@ Authenticate and receive token pair.
       "id": "550e8400-e29b-41d4-a716-446655440000",
       "email": "patient@example.com",
       "role": "patient",
-      "fullName": "Nguyen Van A"
+      "fullName": "Sean Harvey"
     }
   }
 }
@@ -199,7 +199,7 @@ Get the current authenticated user's full profile.
     "role": "patient",
     "isActive": true,
     "profile": {
-      "fullName": "Nguyen Van A",
+      "fullName": "Sean Harvey",
       "phone": "0901234567",
       "dateOfBirth": "1990-01-15",
       "gender": "male",
@@ -220,7 +220,7 @@ Update the current user's profile.
 **Request body:** (all fields optional)
 ```jsonc
 {
-  "fullName": "Nguyen Van A Updated",
+  "fullName": "Sean Harvey Updated",
   "phone": "0909999999",
   "dateOfBirth": "1990-01-15",
   "gender": "male",
@@ -473,7 +473,7 @@ Patient creates a new booking.
     },
     "patient": {
       "id": "patient-uuid",
-      "profile": { "fullName": "Nguyen Van A" }
+      "profile": { "fullName": "Sean Harvey" }
     },
     "notes": "I have been experiencing chest pain",
     "createdAt": "2026-03-19T08:00:00.000Z"

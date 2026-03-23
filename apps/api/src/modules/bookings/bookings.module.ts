@@ -3,6 +3,8 @@ import { BookingsController } from './bookings.controller';
 import { BookingsService } from './bookings.service';
 import { Appointment } from './entities/appointment.entity';
 import { BookingAuditLog } from './entities/booking-audit-log.entity';
+import { BookingsListener } from './listeners/bookings.listener';
+import { AppointmentsRepository } from './repositories/appointment.repository';
 import { DoctorsModule } from '@/modules/doctors/doctors.module';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -13,6 +15,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     DoctorsModule,
   ],
   controllers: [BookingsController],
-  providers: [BookingsService, BookingStateMachine],
+  providers: [
+    BookingsService,
+    BookingStateMachine,
+    AppointmentsRepository,
+    BookingsListener,
+  ],
 })
 export class BookingsModule {}

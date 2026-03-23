@@ -65,7 +65,7 @@ async function seed() {
       );
       await profilesRepo.query(
         `INSERT INTO user_profiles (user_id, full_name) VALUES ($1, $2)`,
-        [doc1.id, 'Dr. Nguyen Van A'],
+        [doc1.id, 'Dr. Pham Ngoc Quang'],
       );
       await doctorsRepo.query(
         `INSERT INTO doctors (user_id, specialty, license_number, bio) VALUES ($1, $2, $3, $4)`,
