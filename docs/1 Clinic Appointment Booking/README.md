@@ -1,10 +1,11 @@
 # P1 — Clinic Appointment Booking System
+
 ### Master Documentation
 
 > **Project code:** `CLINIC-BOOKING-P1`
 > **Version:** 1.0.0
-> **Status:** Pre-development — pending team review
-> **Last updated:** 2026-03-19
+> **Status:** In development
+> **Last updated:** 2026-03-23
 
 ---
 
@@ -29,23 +30,176 @@ P1 establishes the core foundation: authentication, role-based access control, d
 
 ---
 
-## System at a Glance
+## System Architecture
 
+```mermaid
+graph TB
+    subgraph Client["🖥️ Client Layer"]
+        Dashboard["Vite + React Dashboard<br/>TanStack Router/Query/Table"]
+        MemberApp["Next.js Member App<br/>App Router + SSR"]
+    end
+
+    subgraph API["⚙️ NestJS API (Monolith)"]
+        Auth["AuthModule"]
+        Booking["BookingsModule"]
+        Doctor["DoctorsModule"]
+        Users["UsersModule"]
+        Slots["SlotsModule"]
+        Health["HealthModule"]
+        Infra["Shared Infrastructure<br/>Guards · Interceptors · Pipes · Filters"]
+    end
+
+    subgraph Data["💾 Data Layer"]
+        PG[("PostgreSQL 16<br/>Primary Data · ACID")]
+        Redis[("Redis 7<br/>Cache · Token Store")]
+    end
+
+    Dashboard -->|"HTTPS / REST"| API
+    MemberApp -->|"HTTPS / REST"| API
+    Auth --> PG
+    Auth --> Redis
+    Booking --> PG
+    Doctor --> PG
+    Users --> PG
+    Slots --> PG
+    Doctor --> Redis
 ```
-┌─────────────────────────────────────────────────────────┐
-│                       Client Layer                       │
-│   Vite + React Dashboard            │  Member Web App   │
-│   (TanStack Router/Query/Table)     │  (Next.js SSR)    │
-└─────────────────────┬───────────────┴──────────────────-┘
-                      │ HTTPS / REST
-┌─────────────────────▼───────────────────────────────────┐
-│                   NestJS API (monolith)                  │
-│  AuthModule │ BookingModule │ DoctorModule │ PatientModule│
-└─────────────────────┬───────────────────────────────────┘
-                      │
-          ┌───────────┴────────────┐
-          ▼                        ▼
-   PostgreSQL (primary)        Redis (cache / tokens)
+
+---
+
+## Database ERD
+
+```mermaid
+erDiagram
+    USERS ||--|| USER_PROFILES : "has"
+    USERS ||--o| DOCTORS : "is doctor"
+    USERS ||--o{ APPOINTMENTS : "books (patient)"
+    DOCTORS ||--o{ TIME_SLOTS : "owns"
+    DOCTORS ||--o{ APPOINTMENTS : "handles"
+    TIME_SLOTS ||--o| APPOINTMENTS : "used in"
+    APPOINTMENTS ||--o{ BOOKING_AUDIT_LOGS : "tracked by"
+
+    USERS {
+        uuid id PK
+        varchar email UK
+        varchar password_hash
+        enum role "patient | doctor | admin"
+        boolean is_active
+        timestamptz created_at
+        timestamptz deleted_at
+    }
+
+    USER_PROFILES {
+        uuid id PK
+        uuid user_id FK
+        varchar full_name
+        varchar phone
+        date date_of_birth
+        varchar gender
+        text address
+    }
+
+    DOCTORS {
+        uuid id PK
+        uuid user_id FK "UNIQUE"
+        varchar specialty
+        varchar license_number
+        text bio
+        decimal consultation_fee
+        boolean is_accepting_patients
+    }
+
+    TIME_SLOTS {
+        uuid id PK
+        uuid doctor_id FK
+        date slot_date
+        time start_time
+        time end_time
+        boolean is_available
+    }
+
+    APPOINTMENTS {
+        uuid id PK
+        uuid patient_id FK
+        uuid doctor_id FK
+        uuid slot_id FK "UNIQUE"
+        enum status "pending | confirmed | ..."
+        text notes
+        integer version
+        timestamptz created_at
+        timestamptz deleted_at
+    }
+
+    BOOKING_AUDIT_LOGS {
+        uuid id PK
+        uuid appointment_id FK
+        uuid actor_id
+        enum actor_role
+        enum from_status
+        enum to_status
+        text reason
+        timestamptz created_at
+    }
+```
+
+---
+
+## JWT Authentication Flow
+
+```mermaid
+sequenceDiagram
+    participant C as Client
+    participant API as NestJS API
+    participant R as Redis
+
+    Note over C,R: Login Flow
+    C->>API: POST /auth/login { email, password }
+    API->>API: LocalStrategy validates credentials
+    API->>API: Sign access_token (15min) + refresh_token (7d)
+    API->>R: SET user:refresh:{userId} = bcrypt(refresh_token) TTL 7d
+    API-->>C: { accessToken, refreshToken, expiresIn: 900 }
+
+    Note over C,R: Authenticated Request
+    C->>API: GET /bookings (Authorization: Bearer {accessToken})
+    API->>API: JwtStrategy verifies signature & expiry
+    API->>API: RolesGuard checks @Roles() metadata
+    API-->>C: 200 { data: [...] }
+
+    Note over C,R: Token Refresh (Rotation)
+    C->>API: POST /auth/refresh { refreshToken }
+    API->>API: Verify refresh_token signature
+    API->>R: GET user:refresh:{userId}
+    R-->>API: storedHash
+    API->>API: bcrypt.compare(token, storedHash)
+    API->>R: SET new hash, DELETE old hash
+    API-->>C: { accessToken (new), refreshToken (new) }
+
+    Note over C,R: Logout
+    C->>API: POST /auth/logout
+    API->>R: DEL user:refresh:{userId}
+    API-->>C: 204 No Content
+```
+
+---
+
+## Booking State Machine
+
+```mermaid
+stateDiagram-v2
+    [*] --> PENDING: Patient books slot
+
+    PENDING --> CONFIRMED: Doctor/Admin confirms
+    PENDING --> CANCELLED: Patient/Admin cancels
+
+    CONFIRMED --> IN_PROGRESS: Doctor starts consultation
+    CONFIRMED --> CANCELLED: Patient/Admin cancels
+    CONFIRMED --> NO_SHOW: Doctor/Admin marks no-show
+
+    IN_PROGRESS --> COMPLETED: Doctor completes
+
+    CANCELLED --> [*]
+    NO_SHOW --> [*]
+    COMPLETED --> [*]
 ```
 
 ---
@@ -74,18 +228,6 @@ P1 establishes the core foundation: authentication, role-based access control, d
 
 ---
 
-## Team Roles
-
-| Role | Responsibilities |
-|------|-----------------|
-| Tech Lead / Architect | System design, code review, merge approvals |
-| Backend Developer | NestJS API, DB schema, migrations |
-| Frontend Developer | Vite + React Dashboard (TanStack) + Next.js Member Web App |
-| QA | Integration tests, Postman collection, E2E |
-| PM | Acceptance criteria sign-off, sprint management |
-
----
-
 ## Key Design Decisions
 
 1. **Single `users` table** with a `role` enum — patients and doctors share the same identity table; `doctors` and `user_profiles` are extension tables. This simplifies auth and allows users to have multiple roles in the future.
@@ -103,7 +245,7 @@ P1 establishes the core foundation: authentication, role-based access control, d
 ## Glossary
 
 | Term | Definition |
-|------|-----------|
+|------|-----------:|
 | Appointment | A confirmed booking between a patient and a doctor |
 | Time slot | A fixed-duration availability window defined by a doctor |
 | Booking | The act of a patient requesting a time slot (may be pending or confirmed) |
