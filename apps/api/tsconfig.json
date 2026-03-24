@@ -1,6 +1,7 @@
 {
   "extends": "@clinic-platform/typescript-config/nestjs.json",
   "compilerOptions": {
+    "outDir": "dist",
     "baseUrl": "./",
     "paths": {
       "@/*": ["src/*"]
