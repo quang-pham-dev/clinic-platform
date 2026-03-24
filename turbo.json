@@ -14,14 +14,14 @@
       "outputs": ["dist/**", "build/**"]
     },
     "format": {
-      "dependsOn": ["transit"],
+      "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".prettierrc*", "prettier.config.*"]
     },
     "format:fix": {
       "cache": false
     },
     "lint": {
-      "dependsOn": ["transit"],
+      "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", "eslint.config.*", ".eslintignore"]
     },
     "lint:fix": {
@@ -45,16 +45,16 @@
       "cache": false
     },
     "test": {
-      "dependsOn": ["transit"],
+      "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env", ".env.*"]
     },
     "test:watch": {
-      "dependsOn": ["transit"],
+      "dependsOn": ["^build"],
       "cache": false,
       "persistent": true
     },
     "test:coverage": {
-      "dependsOn": ["transit"],
+      "dependsOn": ["^build"],
       "outputs": ["coverage/**"],
       "inputs": ["$TURBO_DEFAULT$", ".env", ".env.*"]
     }
