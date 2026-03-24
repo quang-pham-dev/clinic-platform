@@ -48,7 +48,7 @@ export class DoctorsService {
 
     const passwordHash = await bcrypt.hash(dto.password, 12);
 
-    const result = await this.dataSource.transaction(async (manager) => {
+    const savedDoctorId = await this.dataSource.transaction(async (manager) => {
       // Create User
       const user = manager.create(User, {
         email: dto.email.toLowerCase(),
@@ -75,14 +75,14 @@ export class DoctorsService {
       });
       const savedDoctor = await manager.save(doctor);
 
-      return this.findOne(savedDoctor.id);
+      return savedDoctor.id;
     });
 
     // Invalidate list cache after new doctor created
     await this.cacheService.delByPattern('doctors:list:*');
     this.logger.log(`Doctor created, list cache invalidated`);
 
-    return result;
+    return this.findOne(savedDoctorId);
   }
 
   async findAll(opts: FindAllOpts) {

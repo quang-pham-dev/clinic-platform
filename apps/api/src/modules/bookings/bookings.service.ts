@@ -42,7 +42,7 @@ export class BookingsService {
       `Creating booking: patient=${patient.sub}, slot=${dto.slotId}`,
     );
 
-    return this.dataSource.transaction(async (manager) => {
+    const savedId = await this.dataSource.transaction(async (manager) => {
       // Lock the slot row exclusively
       const slot = await manager
         .createQueryBuilder(TimeSlot, 'slot')
@@ -89,8 +89,10 @@ export class BookingsService {
         new BookingCreatedEvent(saved.id, patient.sub, slot.doctorId, slot.id),
       );
 
-      return this.findOne(saved.id, patient);
+      return saved.id;
     });
+
+    return this.findOne(savedId, patient);
   }
 
   async findAll(

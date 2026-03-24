@@ -7,7 +7,7 @@ export class SlotResponseDto {
   @ApiProperty()
   doctorId: string;
 
-  @ApiProperty({ example: '2024-01-01' })
+  @ApiProperty({ example: '2026-01-01' })
   slotDate: string;
 
   @ApiProperty({ example: '09:00:00' })

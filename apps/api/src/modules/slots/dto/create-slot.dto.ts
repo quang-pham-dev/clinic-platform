@@ -3,7 +3,7 @@ import { Type } from 'class-transformer';
 import { IsDateString, IsString, ValidateNested } from 'class-validator';
 
 export class CreateSlotDto {
-  @ApiProperty({ example: '2023-11-01' })
+  @ApiProperty({ example: '2026-11-01' })
   @IsDateString()
   slotDate: string;
 
