@@ -1,12 +1,5 @@
 /**
- * Appointment booking status.
- * Managed by BookingStateMachine — do not transition directly.
+ * Re-export from @clinic-platform/types — single source of truth.
+ * DO NOT define enums locally; always re-export from the shared types package.
  */
-export enum AppointmentStatus {
-  PENDING = 'pending',
-  CONFIRMED = 'confirmed',
-  IN_PROGRESS = 'in_progress',
-  COMPLETED = 'completed',
-  CANCELLED = 'cancelled',
-  NO_SHOW = 'no_show',
-}
+export { AppointmentStatus } from '@clinic-platform/types';

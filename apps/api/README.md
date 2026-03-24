@@ -56,22 +56,22 @@ This is the backend API for the **Clinic Appointment Booking System (P1)** — p
 
 ## 🛠️ Tech Stack
 
-| Category | Technology |
-|----------|-----------|
-| **Runtime** | Node.js 20+ |
-| **Framework** | NestJS 11 |
-| **Language** | TypeScript 5 (strict mode) |
-| **Database** | PostgreSQL 16 |
-| **Cache / Tokens** | Redis 7 (via `ioredis`) |
-| **ORM** | TypeORM 0.3 (migrations, decorators) |
-| **Auth** | Passport.js + `@nestjs/jwt` (HS256) |
-| **Validation** | `class-validator` + `class-transformer` |
-| **Logger** | Pino via `@clinic-platform/logger` |
-| **Testing** | Vitest + `@nestjs/testing` |
-| **API Docs** | Swagger (OpenAPI 3) — auto-generated |
-| **Security** | Helmet, Throttler, bcrypt |
-| **Package Manager** | pnpm 10 (workspace) |
-| **Build** | SWC (via `@swc/cli`) |
+| Category            | Technology                              |
+| ------------------- | --------------------------------------- |
+| **Runtime**         | Node.js 20+                             |
+| **Framework**       | NestJS 11                               |
+| **Language**        | TypeScript 5 (strict mode)              |
+| **Database**        | PostgreSQL 16                           |
+| **Cache / Tokens**  | Redis 7 (via `ioredis`)                 |
+| **ORM**             | TypeORM 0.3 (migrations, decorators)    |
+| **Auth**            | Passport.js + `@nestjs/jwt` (HS256)     |
+| **Validation**      | `class-validator` + `class-transformer` |
+| **Logger**          | Pino via `@clinic-platform/logger`      |
+| **Testing**         | Vitest + `@nestjs/testing`              |
+| **API Docs**        | Swagger (OpenAPI 3) — auto-generated    |
+| **Security**        | Helmet, Throttler, bcrypt               |
+| **Package Manager** | pnpm 10 (workspace)                     |
+| **Build**           | SWC (via `@swc/cli`)                    |
 
 ---
 
@@ -164,20 +164,20 @@ pnpm --filter @clinic-platform/api dev
 
 ## 📜 Scripts
 
-| Script | Description |
-|--------|-------------|
-| `pnpm dev` | Start in watch mode (hot reload) |
-| `pnpm build` | Build for production |
-| `pnpm start:prod` | Run production build |
-| `pnpm lint` | Run ESLint (`--max-warnings 0`) |
-| `pnpm check-types` | TypeScript type checking |
-| `pnpm test` | Run unit tests (Vitest) |
-| `pnpm test:watch` | Run tests in watch mode |
-| `pnpm test:coverage` | Run tests with coverage report |
+| Script                    | Description                            |
+| ------------------------- | -------------------------------------- |
+| `pnpm dev`                | Start in watch mode (hot reload)       |
+| `pnpm build`              | Build for production                   |
+| `pnpm start:prod`         | Run production build                   |
+| `pnpm lint`               | Run ESLint (`--max-warnings 0`)        |
+| `pnpm check-types`        | TypeScript type checking               |
+| `pnpm test`               | Run unit tests (Vitest)                |
+| `pnpm test:watch`         | Run tests in watch mode                |
+| `pnpm test:coverage`      | Run tests with coverage report         |
 | `pnpm migration:generate` | Generate migration from entity changes |
-| `pnpm migration:run` | Run pending migrations |
-| `pnpm migration:revert` | Revert last migration |
-| `pnpm seed` | Seed development data |
+| `pnpm migration:run`      | Run pending migrations                 |
+| `pnpm migration:revert`   | Revert last migration                  |
+| `pnpm seed`               | Seed development data                  |
 
 ---
 
@@ -191,29 +191,29 @@ http://localhost:8080/api/docs
 
 ### Endpoints Overview
 
-| Module | Endpoint | Auth |
-|--------|----------|------|
-| **Auth** | `POST /auth/register` | 🔓 Public |
-| | `POST /auth/login` | 🔓 Public |
-| | `POST /auth/refresh` | 🔓 Public |
-| | `POST /auth/logout` | 🔒 JWT |
-| **Users** | `GET /users/me` | 🔒 JWT |
-| | `PATCH /users/me/profile` | 🔒 JWT |
-| | `GET /users` | 🔒 Admin |
-| **Doctors** | `GET /doctors` | 🔒 JWT |
-| | `GET /doctors/:id` | 🔒 JWT |
-| | `POST /doctors` | 🔒 Admin |
-| | `PATCH /doctors/:id` | 🔒 Owner/Admin |
-| **Slots** | `POST /doctors/:id/slots` | 🔒 Owner/Admin |
-| | `POST /doctors/:id/slots/bulk` | 🔒 Owner/Admin |
-| | `GET /doctors/:id/slots` | 🔒 JWT |
-| **Bookings** | `POST /bookings` | 🔒 Patient/Admin |
-| | `GET /bookings` | 🔒 Scoped |
-| | `GET /bookings/:id` | 🔒 Scoped |
-| | `PATCH /bookings/:id/status` | 🔒 Role-based |
-| **Health** | `GET /health/live` | 🔓 Public |
-| | `GET /health/ready` | 🔓 Public |
-| **System** | `GET /system/info` | 🔓 Public |
+| Module       | Endpoint                       | Auth             |
+| ------------ | ------------------------------ | ---------------- |
+| **Auth**     | `POST /auth/register`          | 🔓 Public        |
+|              | `POST /auth/login`             | 🔓 Public        |
+|              | `POST /auth/refresh`           | 🔓 Public        |
+|              | `POST /auth/logout`            | 🔒 JWT           |
+| **Users**    | `GET /users/me`                | 🔒 JWT           |
+|              | `PATCH /users/me/profile`      | 🔒 JWT           |
+|              | `GET /users`                   | 🔒 Admin         |
+| **Doctors**  | `GET /doctors`                 | 🔒 JWT           |
+|              | `GET /doctors/:id`             | 🔒 JWT           |
+|              | `POST /doctors`                | 🔒 Admin         |
+|              | `PATCH /doctors/:id`           | 🔒 Owner/Admin   |
+| **Slots**    | `POST /doctors/:id/slots`      | 🔒 Owner/Admin   |
+|              | `POST /doctors/:id/slots/bulk` | 🔒 Owner/Admin   |
+|              | `GET /doctors/:id/slots`       | 🔒 JWT           |
+| **Bookings** | `POST /bookings`               | 🔒 Patient/Admin |
+|              | `GET /bookings`                | 🔒 Scoped        |
+|              | `GET /bookings/:id`            | 🔒 Scoped        |
+|              | `PATCH /bookings/:id/status`   | 🔒 Role-based    |
+| **Health**   | `GET /health/live`             | 🔓 Public        |
+|              | `GET /health/ready`            | 🔓 Public        |
+| **System**   | `GET /system/info`             | 🔓 Public        |
 
 ---
 
@@ -256,23 +256,23 @@ src/
 
 Copy `.env.example` to `.env` and configure:
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `NODE_ENV` | `development` | Environment |
-| `PORT` | `8080` | API port |
-| `CORS_ORIGIN` | `http://localhost:5173` | Allowed CORS origins (comma-separated) |
-| `DB_HOST` | `localhost` | PostgreSQL host |
-| `DB_PORT` | `5432` | PostgreSQL port |
-| `DB_NAME` | `clinic_booking` | Database name |
-| `DB_USER` | `postgres` | Database user |
-| `DB_PASSWORD` | `secret` | Database password |
-| `REDIS_HOST` | `localhost` | Redis host |
-| `REDIS_PORT` | `6379` | Redis port |
-| `JWT_ACCESS_SECRET` | — | JWT access token secret (min 32 chars) |
-| `JWT_REFRESH_SECRET` | — | JWT refresh token secret (min 32 chars) |
-| `JWT_ACCESS_EXPIRES_IN` | `15m` | Access token expiry |
-| `JWT_REFRESH_EXPIRES_IN` | `7d` | Refresh token expiry |
-| `BCRYPT_ROUNDS` | `12` | Bcrypt cost factor |
+| Variable                 | Default                 | Description                             |
+| ------------------------ | ----------------------- | --------------------------------------- |
+| `NODE_ENV`               | `development`           | Environment                             |
+| `PORT`                   | `8080`                  | API port                                |
+| `CORS_ORIGIN`            | `http://localhost:5173` | Allowed CORS origins (comma-separated)  |
+| `DB_HOST`                | `localhost`             | PostgreSQL host                         |
+| `DB_PORT`                | `5432`                  | PostgreSQL port                         |
+| `DB_NAME`                | `clinic_booking`        | Database name                           |
+| `DB_USER`                | `postgres`              | Database user                           |
+| `DB_PASSWORD`            | `secret`                | Database password                       |
+| `REDIS_HOST`             | `localhost`             | Redis host                              |
+| `REDIS_PORT`             | `6379`                  | Redis port                              |
+| `JWT_ACCESS_SECRET`      | —                       | JWT access token secret (min 32 chars)  |
+| `JWT_REFRESH_SECRET`     | —                       | JWT refresh token secret (min 32 chars) |
+| `JWT_ACCESS_EXPIRES_IN`  | `15m`                   | Access token expiry                     |
+| `JWT_REFRESH_EXPIRES_IN` | `7d`                    | Refresh token expiry                    |
+| `BCRYPT_ROUNDS`          | `12`                    | Bcrypt cost factor                      |
 
 ---
 
@@ -298,6 +298,7 @@ pnpm seed
 ```
 
 Creates default accounts:
+
 - **Admin:** `admin@clinic.local` / `Admin@123`
 - **Doctor:** `dr.nguyen@clinic.local` / `Doctor@123`
 - **Patient:** `patient@example.com` / `Patient@123`
@@ -329,18 +330,18 @@ pnpm test:coverage
 
 ## 🛡️ Security
 
-| Feature | Implementation |
-|---------|---------------|
-| **Authentication** | JWT (HS256) with access/refresh token pair |
-| **Token Storage** | Refresh token hashed (bcrypt) in Redis with TTL |
-| **Password Hashing** | bcrypt with cost factor 12 |
-| **RBAC** | Global `RolesGuard` with `@Roles()` decorator |
-| **Rate Limiting** | `@nestjs/throttler` — 100 req/min default |
-| **Security Headers** | Helmet (X-Frame-Options, HSTS, etc.) |
-| **Input Validation** | Global `ValidationPipe` — whitelist + forbidNonWhitelisted |
-| **Output Serialization** | `ClassSerializerInterceptor` with `@Exclude()` on sensitive fields |
-| **SQL Injection** | Parameterized queries via TypeORM |
-| **Double-booking** | `SELECT FOR UPDATE` pessimistic lock + `UNIQUE(slot_id)` constraint |
+| Feature                  | Implementation                                                      |
+| ------------------------ | ------------------------------------------------------------------- |
+| **Authentication**       | JWT (HS256) with access/refresh token pair                          |
+| **Token Storage**        | Refresh token hashed (bcrypt) in Redis with TTL                     |
+| **Password Hashing**     | bcrypt with cost factor 12                                          |
+| **RBAC**                 | Global `RolesGuard` with `@Roles()` decorator                       |
+| **Rate Limiting**        | `@nestjs/throttler` — 100 req/min default                           |
+| **Security Headers**     | Helmet (X-Frame-Options, HSTS, etc.)                                |
+| **Input Validation**     | Global `ValidationPipe` — whitelist + forbidNonWhitelisted          |
+| **Output Serialization** | `ClassSerializerInterceptor` with `@Exclude()` on sensitive fields  |
+| **SQL Injection**        | Parameterized queries via TypeORM                                   |
+| **Double-booking**       | `SELECT FOR UPDATE` pessimistic lock + `UNIQUE(slot_id)` constraint |
 
 ---
 

@@ -1,9 +1,5 @@
 /**
- * User roles in the Healthcare Clinic Platform.
- * Source of truth: packages/types — re-exported here for local use in API.
+ * Re-export from @clinic-platform/types — single source of truth.
+ * DO NOT define enums locally; always re-export from the shared types package.
  */
-export enum Role {
-  PATIENT = 'patient',
-  DOCTOR = 'doctor',
-  ADMIN = 'admin',
-}
+export { Role } from '@clinic-platform/types';
