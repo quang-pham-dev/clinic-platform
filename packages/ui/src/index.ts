@@ -1,4 +1,7 @@
+export * from './components/badge/badge';
+export * from './components/badge/status-badge';
 export * from './components/button/button';
+export * from './components/table/data-table';
 export * from './components/card/card';
 export * from './components/input/input';
 export * from './components/layout';
