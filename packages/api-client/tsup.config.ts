@@ -1,6 +1,6 @@
 import { defineConfig } from 'tsup';
 
-export default defineConfig({
+export default defineConfig((options) => ({
   entry: {
     index: 'src/index.ts',
     'core/index': 'src/core/index.ts',
@@ -14,8 +14,8 @@ export default defineConfig({
   },
   format: ['esm'],
   dts: true,
-  clean: true,
+  clean: !options.watch,
   sourcemap: true,
   splitting: false,
   external: ['@tanstack/react-query'],
-});
+}));

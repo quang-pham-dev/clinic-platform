@@ -1,0 +1,68 @@
+{
+  "name": "@clinic-platform/dashboard",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#/*": "./src/*"
+  },
+  "scripts": {
+    "dev": "vite dev --host --port 5173",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run --passWithNoTests",
+    "test:watch": "vitest --watch",
+    "test:coverage": "vitest run --coverage --passWithNoTests",
+    "lint": "eslint . --max-warnings 0",
+    "lint:fix": "eslint . --max-warnings 0 --fix",
+    "format": "prettier --check .",
+    "format:fix": "prettier --write .",
+    "check-types": "tsc --noEmit",
+    "clean": "rm -rf dist node_modules .output"
+  },
+  "dependencies": {
+    "@clinic-platform/api-client": "workspace:*",
+    "@clinic-platform/design-system": "workspace:*",
+    "@clinic-platform/types": "workspace:*",
+    "@clinic-platform/ui": "workspace:*",
+    "@tailwindcss/vite": "^4.1.18",
+    "@tanstack/react-devtools": "latest",
+    "@tanstack/react-query": "^5.0.0",
+    "@tanstack/react-router": "latest",
+    "@tanstack/react-router-devtools": "latest",
+    "@tanstack/react-router-ssr-query": "latest",
+    "@tanstack/react-start": "latest",
+    "lucide-react": "catalog:web-ui",
+    "react": "catalog:react19",
+    "react-dom": "catalog:react19",
+    "tailwindcss": "catalog:web-ui",
+    "zustand": "^5.0.0"
+  },
+  "devDependencies": {
+    "@clinic-platform/eslint-config": "workspace:*",
+    "@clinic-platform/prettier-config": "workspace:*",
+    "@clinic-platform/typescript-config": "workspace:*",
+    "@clinic-platform/vitest-config": "workspace:*",
+    "@tailwindcss/typography": "^0.5.16",
+    "@tanstack/devtools-vite": "latest",
+    "@tanstack/router-plugin": "^1.167.4",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/react": "catalog:testing",
+    "@types/node": "catalog:",
+    "@types/react": "catalog:react19",
+    "@types/react-dom": "catalog:react19",
+    "@vitejs/plugin-react": "^5.1.4",
+    "jsdom": "catalog:testing",
+    "prettier": "catalog:",
+    "typescript": "catalog:",
+    "vite": "^7.3.1",
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "catalog:testing"
+  },
+  "prettier": "@clinic-platform/prettier-config/base",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "lightningcss"
+    ]
+  }
+}

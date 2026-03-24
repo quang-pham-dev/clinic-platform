@@ -35,7 +35,7 @@ P1 establishes the core foundation: authentication, role-based access control, d
 ```mermaid
 graph TB
     subgraph Client["🖥️ Client Layer"]
-        Dashboard["Vite + React Dashboard<br/>TanStack Router/Query/Table"]
+        Dashboard["TanStack Start Dashboard<br/>TanStack Router/Query/Table"]
         MemberApp["Next.js Member App<br/>App Router + SSR"]
     end
 
@@ -209,7 +209,7 @@ stateDiagram-v2
 | Deliverable | Description |
 |-------------|-------------|
 | NestJS REST API | Core backend with all modules |
-| Vite + React Dashboard | Internal admin + doctor management UI (TanStack ecosystem) |
+| Vite + React Dashboard | Internal admin + doctor management UI (TanStack Start) |
 | Next.js Member Web App | Patient-facing appointment portal (SSR) |
 | PostgreSQL schema | Migrations via TypeORM |
 | API documentation | Swagger UI auto-generated |

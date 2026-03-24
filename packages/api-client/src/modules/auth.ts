@@ -22,21 +22,26 @@ export interface AuthUser {
 
 export interface TokenResponse {
   accessToken: string;
-  refreshToken: string;
+  /** Only present for mobile clients (X-Client-Type: mobile) */
+  refreshToken?: string;
   expiresIn: number;
   user: AuthUser;
 }
 
 export interface RefreshResponse {
   accessToken: string;
-  refreshToken: string;
+  /** Only present for mobile clients */
+  refreshToken?: string;
   expiresIn: number;
+  user: AuthUser;
 }
 
 export interface RefreshRequest {
-  refreshToken: string;
+  /** Optional: cookie-based for web, body-based for mobile */
+  refreshToken?: string;
 }
 
 export interface LogoutRequest {
-  refreshToken: string;
+  /** Optional: cookie-based for web, body-based for mobile */
+  refreshToken?: string;
 }

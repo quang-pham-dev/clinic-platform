@@ -19,8 +19,11 @@ export class TokenResponseDto {
   @ApiProperty()
   accessToken: string;
 
-  @ApiProperty()
-  refreshToken: string;
+  @ApiPropertyOptional({
+    description:
+      'Refresh token — only present for mobile clients (X-Client-Type: mobile). Web clients receive this via httpOnly cookie.',
+  })
+  refreshToken?: string;
 
   @ApiProperty({
     example: 900,
