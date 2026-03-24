@@ -51,13 +51,15 @@
     "test:coverage": "vitest run --coverage --passWithNoTests"
   },
   "dependencies": {
+    "@clinic-platform/types": "workspace:*",
     "@radix-ui/react-label": "catalog:radix-ui",
     "@radix-ui/react-slot": "catalog:radix-ui",
     "@clinic-platform/design-system": "workspace:*",
     "class-variance-authority": "catalog:web-ui",
     "clsx": "catalog:web-ui",
     "lucide-react": "catalog:web-ui",
-    "tailwind-merge": "catalog:web-ui"
+    "tailwind-merge": "catalog:web-ui",
+    "@tanstack/react-table": "catalog:web-ui"
   },
   "peerDependencies": {
     "react": "^19.0.0",
