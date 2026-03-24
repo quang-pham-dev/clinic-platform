@@ -1,6 +1,7 @@
 import type {
   LoginRequest,
   LogoutRequest,
+  RefreshRequest,
   RefreshResponse,
   RegisterRequest,
   TokenResponse,
@@ -37,12 +38,12 @@ export function createAuthHooks(service: AuthService) {
 
     useLogout: (
       options?: Omit<
-        UseMutationOptions<void, Error, LogoutRequest>,
+        UseMutationOptions<void, Error, LogoutRequest | void>,
         'mutationFn'
       >,
     ) => {
       return useMutation({
-        mutationFn: service.logout,
+        mutationFn: (data?: LogoutRequest) => service.logout(data),
         ...options,
       });
     },
@@ -52,13 +53,13 @@ export function createAuthHooks(service: AuthService) {
         UseMutationOptions<
           ApiResponse<RefreshResponse>,
           Error,
-          { refreshToken: string }
+          RefreshRequest | void
         >,
         'mutationFn'
       >,
     ) => {
       return useMutation({
-        mutationFn: service.refresh,
+        mutationFn: (data?: RefreshRequest) => service.refresh(data),
         ...options,
       });
     },

@@ -8,6 +8,7 @@
   },
   "exports": {
     "./base.json": "./base.json",
+    "./vite-app.json": "./vite-app.json",
     "./nextjs.json": "./nextjs.json",
     "./react-library.json": "./react-library.json",
     "./nextjs-library.json": "./nextjs-library.json",

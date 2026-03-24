@@ -4,10 +4,9 @@ import axios, {
   type InternalAxiosRequestConfig,
 } from 'axios';
 
-// ─── Core Types ──────────────────────────────────────────────────────
 export interface TokenPair {
   accessToken: string;
-  refreshToken: string;
+  refreshToken?: string;
   expiresIn: number;
 }
 
@@ -17,15 +16,23 @@ export interface ApiError {
   statusCode?: number;
 }
 
+export type ClientType = 'web' | 'mobile';
+
 export interface ClientConfig {
   /** Base URL for all API requests (e.g., 'http://localhost:3000/api/v1') */
   baseUrl: string;
+  /** Client type — determines how refresh tokens are transmitted. Default: 'web' */
+  clientType?: ClientType;
   /** Function to retrieve the current access token from storage */
   getAccessToken: () => string | null;
-  /** Function to retrieve the current refresh token from storage */
-  getRefreshToken: () => string | null;
+  /** Function to retrieve the current refresh token. Only needed for mobile (web uses httpOnly cookies) */
+  getRefreshToken?: () => string | null;
   /** Called when tokens are successfully refreshed */
-  onTokenRefreshed: (tokens: TokenPair) => void;
+  onTokenRefreshed: (
+    accessToken: string,
+    expiresIn: number,
+    refreshToken?: string,
+  ) => void;
   /** Called when authentication fails (e.g., redirect to login) */
   onAuthError: () => void;
   /** Optional custom error handler for all non-401 errors */
@@ -61,15 +68,24 @@ export interface HttpClient {
 /**
  * Creates a configured HTTP client (Axios) with:
  * - Automatic Bearer token injection
+ * - X-Client-Type header for dual-mode auth
+ * - withCredentials for cookie transmission (web)
  * - 401 → token refresh → retry queue (scoped per instance, no shared state)
  * - Response unwrapping (returns `res.data` instead of `AxiosResponse`)
  * - Error normalization to `ApiError`
  */
 export function createHttpClient(config: ClientConfig): HttpClient {
+  const clientType: ClientType = config.clientType ?? 'web';
+
   const instance: AxiosInstance = axios.create({
     baseURL: config.baseUrl,
     timeout: config.timeout ?? 30_000,
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Client-Type': clientType,
+    },
+    // Send cookies for cross-origin requests (required for httpOnly cookie on web)
+    withCredentials: true,
   });
 
   // ── Refresh-token state (scoped to this closure — no shared globals) ──
@@ -90,7 +106,6 @@ export function createHttpClient(config: ClientConfig): HttpClient {
     refreshSubscribers = [];
   };
 
-  // ── Request interceptor: attach Bearer token ──────────────────────
   instance.interceptors.request.use(
     (request: InternalAxiosRequestConfig) => {
       const token = config.getAccessToken();
@@ -127,23 +142,29 @@ export function createHttpClient(config: ClientConfig): HttpClient {
         originalRequest._retry = true;
         isRefreshing = true;
 
-        const refreshToken = config.getRefreshToken();
-        if (!refreshToken) {
-          resetRefreshState();
-          config.onAuthError();
-          return Promise.reject(error);
-        }
-
         try {
-          // Use a fresh axios call (bypasses interceptors) to avoid loops
+          // Build refresh request based on client type
+          const refreshBody =
+            clientType === 'mobile' && config.getRefreshToken
+              ? { refreshToken: config.getRefreshToken() }
+              : {}; // Web: empty body, cookie is auto-attached
+
           const { data } = await axios.post<{ data: TokenPair }>(
             `${config.baseUrl}/auth/refresh`,
-            { refreshToken },
-            { timeout: 10_000 },
+            refreshBody,
+            {
+              timeout: 10_000,
+              withCredentials: true,
+              headers: { 'X-Client-Type': clientType },
+            },
           );
 
           const tokens = data.data;
-          config.onTokenRefreshed(tokens);
+          config.onTokenRefreshed(
+            tokens.accessToken,
+            tokens.expiresIn,
+            tokens.refreshToken,
+          );
           notifySubscribers(tokens.accessToken);
           isRefreshing = false;
 

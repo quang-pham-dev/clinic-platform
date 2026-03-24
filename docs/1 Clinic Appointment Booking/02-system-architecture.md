@@ -15,9 +15,9 @@
 | ORM | TypeORM | Native NestJS integration, migration support, repository pattern |
 | Primary DB | PostgreSQL 16 | ACID transactions (critical for slot-locking), strong UUID support |
 | Cache / Token Store | Redis 7 | Sub-millisecond reads for token validation, native TTL for refresh tokens |
-| Frontend (dashboard) | Vite + React 18 (SPA) | Fast dev server, optimized build, no SSR overhead for internal tool |
+| Frontend (dashboard) | TanStack Start (React) | Full-stack React meta-framework built on Vite + TanStack Router + Nitro; SSR-capable with server functions |
 | Frontend (member app) | Next.js 16 (App Router) | SSR for SEO, server components for public-facing pages |
-| Dashboard routing | TanStack Router v1 | Type-safe routing, file-based routes, built-in search params validation |
+| Dashboard routing | TanStack Router (via Start) | Type-safe file-based routing with search params validation, integrated into TanStack Start |
 | API data fetching | TanStack Query v5 | Cache management, optimistic updates, devtools |
 | Dashboard tables | TanStack Table v8 | Headless, type-safe, sorting/filtering/pagination built-in |
 | Dashboard forms | TanStack Form v0 | Type-safe form state, async validation, framework-agnostic |
@@ -167,26 +167,26 @@ src/
 
 ## 4. Frontend Application Structure
 
-### 4.1 Dashboard (Admin + Doctor) — Vite + React SPA (Feature-Based)
+### 4.1 Dashboard (Admin + Doctor) — TanStack Start (Feature-Based)
 
-The dashboard uses a **feature-based architecture** where each domain feature is a self-contained module with its own routes, components, hooks, and API layer. This promotes high cohesion, low coupling, and scalability as new features are added.
+The dashboard uses **TanStack Start**, a full-stack React meta-framework built on Vite, TanStack Router, and Nitro. It provides SSR capability, server functions, and a unified development experience while maintaining a **feature-based architecture** where each domain feature is self-contained.
 
 **TanStack Ecosystem:** The dashboard is built entirely on the TanStack ecosystem:
-- **TanStack Router** — type-safe file-based routing with search params validation
+- **TanStack Start** — full-stack React framework with SSR, server functions, and Vite-powered dev server
+- **TanStack Router** — type-safe file-based routing with search params validation (integrated into Start)
 - **TanStack Query** — server-state management with cache, background refetch, optimistic updates
 - **TanStack Table** — headless, type-safe data tables with sorting, filtering, pagination
 - **TanStack Form** — type-safe form management with async validation
 
 ```
 apps/dashboard/
-├── index.html                        # Vite entry point
-├── vite.config.ts                    # Vite + React plugin config
+├── vite.config.ts                    # TanStack Start + React plugin
 ├── src/
-│   ├── main.tsx                      # React root, Router provider, QueryClient
-│   ├── App.tsx                       # Root layout, TanStack RouterDevtools
+│   ├── router.tsx                    # Router configuration (createRouter)
+│   ├── routeTree.gen.ts              # Auto-generated route tree
 │   │
 │   ├── routes/                       # TanStack Router file-based routes
-│   │   ├── __root.tsx                # Root route layout (sidebar, topbar)
+│   │   ├── __root.tsx                # Root route (html, head, body, global providers)
 │   │   ├── _auth.tsx                 # Auth layout route (unauthenticated)
 │   │   ├── _auth/
 │   │   │   └── login.tsx             # /login
@@ -203,7 +203,6 @@ apps/dashboard/
 │   │   │   │       └── slots.tsx     # /doctors/:doctorId/slots
 │   │   │   └── patients/
 │   │   │       └── index.tsx         # /patients → patients table
-│   │   └── routeTree.gen.ts          # Auto-generated route tree
 │   │
 │   ├── features/                     # Feature-based modules (core)
 │   │   ├── auth/
@@ -253,7 +252,7 @@ apps/dashboard/
 │   │       └── SortHeader.tsx         # Sortable column header
 │   │
 │   ├── lib/
-│   │   ├── api-client.ts             # Axios instance + interceptors
+│   │   ├── api-client.ts             # Bridge to @clinic-platform/api-client
 │   │   ├── query-client.ts           # TanStack Query client config
 │   │   └── utils.ts                  # Shared utilities
 │   │
@@ -486,21 +485,21 @@ All API responses follow this shape:
 
 ---
 
-### ADR-004: Vite + TanStack ecosystem for Dashboard (feature-based architecture)
+### ADR-004: TanStack Start for Dashboard (feature-based architecture)
 
-**Decision:** Build the Dashboard as a Vite-powered React SPA using the TanStack ecosystem (Router, Query, Table, Form) with a feature-based folder structure. The Member Web App remains on Next.js.
+**Decision:** Build the Dashboard using **TanStack Start** (full-stack React meta-framework) with the TanStack ecosystem (Router, Query, Table, Form) and a feature-based folder structure. The Member Web App remains on Next.js.
 
 **Rationale:**
-- The dashboard is an **internal tool** (admin + doctor) — no SEO requirements, no need for SSR/SSG.
-- **Vite** provides significantly faster dev server cold-start and HMR compared to Next.js for a pure SPA use case.
-- **TanStack Router** gives fully type-safe routing with search params validation — critical for data-heavy dashboard pages with filters, sorting, and pagination in the URL.
+- **TanStack Start** is a full-stack React framework built on Vite, TanStack Router, and Nitro. It provides a unified development experience with SSR capability, server functions, and file-based routing — all from the TanStack ecosystem.
+- The dashboard benefits from **server functions** for sensitive operations (e.g., server-side token validation, API proxying) without needing a separate BFF layer.
+- **TanStack Router** (integrated into Start) gives fully type-safe routing with search params validation — critical for data-heavy dashboard pages with filters, sorting, and pagination in the URL.
 - **TanStack Table** provides a headless, type-safe solution for the many data tables in the dashboard (bookings, doctors, patients), with built-in sorting, filtering, and pagination logic.
 - **TanStack Form** handles complex multi-step forms (slot creation, booking management) with type-safe validation.
 - **Feature-based architecture** groups all related code (API, hooks, components, types) by domain feature rather than by technical concern. This improves discoverability, reduces cognitive load, and makes it easy to add or remove features without affecting unrelated code.
 - The Member App stays on Next.js because it is **patient-facing** and benefits from SSR for initial load performance and SEO (doctor profiles, clinic information).
 
 **Consequences:**
-- Two different frontend frameworks in the monorepo — team needs familiarity with both Vite+React and Next.js.
+- Two different frontend frameworks in the monorepo — team needs familiarity with both TanStack Start and Next.js. However, TanStack Start shares more conceptual overlap (Vite-based, React-first) than a pure SPA would.
 - Shared types and UI components should be extracted to a shared package (`packages/ui`, `packages/types`) to avoid duplication.
-- Dashboard is a pure SPA — access token must be stored in memory (Zustand store), refresh token in `httpOnly` cookie. No server-side rendering means the initial HTML is a bare shell until React hydrates.
-- TanStack Router uses file-based route generation (`routeTree.gen.ts`) — requires running `tsr generate` or the Vite plugin during development.
+- TanStack Start supports both SPA and SSR modes — for the dashboard, we use SSR with client-side navigation for optimal performance.
+- TanStack Router uses file-based route generation (`routeTree.gen.ts`) — requires the TanStack Start Vite plugin during development.

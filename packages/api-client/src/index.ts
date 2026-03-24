@@ -1,4 +1,3 @@
-// ─── Convenience: All-in-one factories ───────────────────────────────
 import type { ClientConfig, HttpClient } from './core/client';
 import { createHttpClient } from './core/client';
 import { createAuthHooks } from './hooks/useAuth';
@@ -20,7 +19,6 @@ import { createSlotsService } from './services/slots.service';
 import type { UsersService } from './services/users.service';
 import { createUsersService } from './services/users.service';
 
-// ─── Core ────────────────────────────────────────────────────────────
 export {
   createHttpClient,
   type HttpClient,
@@ -31,10 +29,8 @@ export {
 
 export { queryKeys } from './core/query-keys';
 
-// ─── Module Types ────────────────────────────────────────────────────
 export * from './modules';
 
-// ─── Services ────────────────────────────────────────────────────────
 export {
   createAuthService,
   createBookingsService,
@@ -50,7 +46,6 @@ export {
   type UsersService,
 } from './services';
 
-// ─── Hooks ───────────────────────────────────────────────────────────
 export {
   createAuthHooks,
   createBookingHooks,

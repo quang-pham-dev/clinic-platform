@@ -1,7 +1,24 @@
 {
   "$schema": "https://turbo-2-8-20.turborepo.com/schema.json",
   "globalDependencies": [],
-  "globalEnv": ["NODE_ENV", "LOG_LEVEL", "DB_HOST", "DB_PORT", "DB_NAME", "DB_USER", "DB_PASSWORD", "DB_LOGGING", "JWT_ACCESS_SECRET", "JWT_REFRESH_SECRET", "JWT_ACCESS_EXPIRES_IN", "JWT_REFRESH_EXPIRES_IN", "REDIS_HOST", "REDIS_PORT", "REDIS_PASSWORD"],
+  "globalEnv": [
+    "NODE_ENV",
+    "LOG_LEVEL",
+    "DB_HOST",
+    "DB_PORT",
+    "DB_NAME",
+    "DB_USER",
+    "DB_PASSWORD",
+    "DB_LOGGING",
+    "JWT_ACCESS_SECRET",
+    "JWT_REFRESH_SECRET",
+    "JWT_ACCESS_EXPIRES_IN",
+    "JWT_REFRESH_EXPIRES_IN",
+    "REDIS_HOST",
+    "REDIS_PORT",
+    "REDIS_PASSWORD",
+    "DEV"
+  ],
   "globalPassThroughEnv": ["CI"],
   "ui": "tui",
   "tasks": {
@@ -34,7 +51,7 @@
     "dev": {
       "dependsOn": ["^build"],
       "cache": false,
-      "persistent": false
+      "persistent": true
     },
     "start": {
       "dependsOn": ["^build"],
