@@ -75,5 +75,4 @@ Thumbs.db
 .cursor
 .opencode
 e2e-web
-*.gen.ts
 skills-lock.json
