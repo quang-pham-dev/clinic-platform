@@ -1,13 +1,16 @@
+import { SKELETON_CARD_COUNT } from '../../../constants';
 import { createFileRoute } from '@tanstack/react-router';
 import { Plus, Search } from 'lucide-react';
-import { SKELETON_CARD_COUNT } from '../../../constants';
 
 export const Route = createFileRoute('/_dashboard/doctors/')({
   component: DoctorsPage,
 });
 
 function DoctorsPage() {
-  const skeletonCards = Array.from({ length: SKELETON_CARD_COUNT }, (_, i) => i);
+  const skeletonCards = Array.from(
+    { length: SKELETON_CARD_COUNT },
+    (_, i) => i,
+  );
 
   return (
     <div className="space-y-6">

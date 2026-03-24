@@ -11,8 +11,6 @@ export const ROUTES = {
   PATIENTS: '/patients',
 } as const;
 
-
-
 export const QUERY_DEFAULTS = {
   /** Default stale time for queries (5 minutes in ms) */
   STALE_TIME: 1000 * 60 * 5,

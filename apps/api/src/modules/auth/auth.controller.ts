@@ -25,6 +25,7 @@ import {
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import {
   ApiBearerAuth,
   ApiConflictResponse,
@@ -34,8 +35,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
-import { ConfigService } from '@nestjs/config';
-import type { Request, Response, CookieOptions } from 'express';
+import type { CookieOptions, Request, Response } from 'express';
 
 type ClientType = 'web' | 'mobile';
 
@@ -49,13 +49,22 @@ export class AuthController {
     private readonly authService: AuthService,
     private readonly configService: ConfigService,
   ) {
-    this.cookieName = this.configService.get<string>('cookie.name', 'refresh_token');
+    this.cookieName = this.configService.get<string>(
+      'cookie.name',
+      'refresh_token',
+    );
     this.cookieOptions = {
       httpOnly: this.configService.get<boolean>('cookie.httpOnly', true),
       secure: this.configService.get<boolean>('cookie.secure', false),
-      sameSite: this.configService.get<'lax' | 'strict' | 'none'>('cookie.sameSite', 'lax'),
+      sameSite: this.configService.get<'lax' | 'strict' | 'none'>(
+        'cookie.sameSite',
+        'lax',
+      ),
       path: this.configService.get<string>('cookie.path', '/api/v1/auth'),
-      maxAge: this.configService.get<number>('cookie.maxAge', 7 * 24 * 60 * 60 * 1000),
+      maxAge: this.configService.get<number>(
+        'cookie.maxAge',
+        7 * 24 * 60 * 60 * 1000,
+      ),
     };
   }
 
@@ -96,7 +105,8 @@ export class AuthController {
   @ApiHeader({
     name: 'X-Client-Type',
     required: false,
-    description: 'Client type: "web" (default, uses httpOnly cookie) or "mobile" (refresh token in body)',
+    description:
+      'Client type: "web" (default, uses httpOnly cookie) or "mobile" (refresh token in body)',
     enum: ['web', 'mobile'],
   })
   @ApiDataResponse(TokenResponseDto, 'Successfully logged in')
@@ -131,7 +141,8 @@ export class AuthController {
   @ApiHeader({
     name: 'X-Client-Type',
     required: false,
-    description: 'Client type: "web" (reads httpOnly cookie) or "mobile" (reads from body)',
+    description:
+      'Client type: "web" (reads httpOnly cookie) or "mobile" (reads from body)',
     enum: ['web', 'mobile'],
   })
   @ApiDataResponse(TokenResponseDto, 'Successfully refreshed token pair')
@@ -147,7 +158,7 @@ export class AuthController {
     // Resolve refresh token: cookie for web, body for mobile
     const refreshToken =
       clientType === 'web'
-        ? req.cookies?.[this.cookieName]
+        ? (req.cookies?.[this.cookieName] as string | undefined)
         : dto.refreshToken;
 
     if (!refreshToken) {
@@ -176,7 +187,8 @@ export class AuthController {
   @ApiHeader({
     name: 'X-Client-Type',
     required: false,
-    description: 'Client type: "web" (clears httpOnly cookie) or "mobile" (no additional action needed)',
+    description:
+      'Client type: "web" (clears httpOnly cookie) or "mobile" (no additional action needed)',
     enum: ['web', 'mobile'],
   })
   @ApiNoContentResponse({ description: 'Successfully logged out' })

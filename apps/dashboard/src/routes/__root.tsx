@@ -1,12 +1,11 @@
 /// <reference types="vite/client" />
-import { QueryClientProvider } from '@tanstack/react-query';
-import { queryClient } from '../lib/query-client';
-import { APP_NAME, APP_DESCRIPTION } from '../constants';
+import { APP_DESCRIPTION, APP_NAME } from '../constants';
 import { useAuthStore } from '../features/auth/store/auth.store';
 import { api } from '../lib/api';
-
+import { queryClient } from '../lib/query-client';
 import appCss from '../styles.css?url';
 import { TanStackDevtools } from '@tanstack/react-devtools';
+import { QueryClientProvider } from '@tanstack/react-query';
 import {
   HeadContent,
   Outlet,

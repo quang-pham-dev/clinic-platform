@@ -1,6 +1,6 @@
+import { BOOKING_TABLE_HEADERS, SKELETON_ROW_COUNT } from '../../../constants';
 import { createFileRoute } from '@tanstack/react-router';
 import { Filter, Search } from 'lucide-react';
-import { BOOKING_TABLE_HEADERS, SKELETON_ROW_COUNT } from '../../../constants';
 
 export const Route = createFileRoute('/_dashboard/bookings/')({
   component: BookingsPage,

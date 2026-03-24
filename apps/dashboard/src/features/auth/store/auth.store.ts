@@ -48,8 +48,7 @@ export const useAuthStore = create<AuthState>()((set) => ({
       accessToken,
     })),
 
-  setHydrating: (value) =>
-    set({ isHydrating: value }),
+  setHydrating: (value) => set({ isHydrating: value }),
 
   clearAuth: () =>
     set({

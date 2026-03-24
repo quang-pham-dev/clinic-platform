@@ -1,6 +1,6 @@
-import { createApiClient, createAllHooks } from '@clinic-platform/api-client';
-import { useAuthStore } from '../features/auth/store/auth.store';
 import { ROUTES } from '../constants';
+import { useAuthStore } from '../features/auth/store/auth.store';
+import { createAllHooks, createApiClient } from '@clinic-platform/api-client';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api/v1';
 

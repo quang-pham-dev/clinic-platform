@@ -1,3 +1,4 @@
+import { ROUTES, SKELETON_ROW_COUNT } from '../../constants';
 import { Link, createFileRoute } from '@tanstack/react-router';
 import {
   ArrowUpRight,
@@ -7,7 +8,6 @@ import {
   TrendingUp,
   Users,
 } from 'lucide-react';
-import { ROUTES, SKELETON_ROW_COUNT } from '../../constants';
 
 export const Route = createFileRoute('/_dashboard/')({
   component: OverviewPage,

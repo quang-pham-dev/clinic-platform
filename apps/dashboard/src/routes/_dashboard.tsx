@@ -1,6 +1,11 @@
-import { Link, Outlet, createFileRoute, redirect } from '@tanstack/react-router';
+import { NAV_LABELS, ROUTES } from '../constants';
 import { useAuthStore } from '../features/auth/store/auth.store';
-import { ROUTES, NAV_LABELS } from '../constants';
+import {
+  Link,
+  Outlet,
+  createFileRoute,
+  redirect,
+} from '@tanstack/react-router';
 import {
   CalendarCheck,
   LayoutDashboard,

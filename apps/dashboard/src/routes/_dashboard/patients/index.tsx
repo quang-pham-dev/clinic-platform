@@ -1,6 +1,6 @@
+import { PATIENT_TABLE_HEADERS, SKELETON_CARD_COUNT } from '../../../constants';
 import { createFileRoute } from '@tanstack/react-router';
 import { Filter, Search } from 'lucide-react';
-import { PATIENT_TABLE_HEADERS, SKELETON_CARD_COUNT } from '../../../constants';
 
 export const Route = createFileRoute('/_dashboard/patients/')({
   component: PatientsPage,
