@@ -58,6 +58,16 @@ async function bootstrap() {
       .setTitle('Clinic Booking API')
       .setDescription('P1 — Clinic Appointment Booking System')
       .setVersion('1.0.0')
+      .addTag('auth', 'Authentication and token management endpoints')
+      .addTag('users', 'User profile and management endpoints')
+      .addTag('doctors', 'Doctor profile and directory endpoints')
+      .addTag('slots', 'Doctor availability time slots management endpoints')
+      .addTag(
+        'bookings',
+        'Appointment bookings scheduling and viewing endpoints',
+      )
+      .addTag('health', 'System health checks for Kubernetes probes')
+      .addTag('system', 'System information and metadata endpoints')
       .addBearerAuth(
         {
           type: 'http',

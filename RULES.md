@@ -45,6 +45,7 @@ clinic-platform/
 - `synchronize: false` — NEVER enable TypeORM synchronize. Always use migrations (`pnpm --filter @clinic-platform/api migration:generate`).
 - Config must use `@nestjs/config` `registerAs()` pattern — never read `process.env` directly in services.
 - Shared utility code goes in `src/common/` (decorators, filters, guards, helpers, interceptors, types).
+- **Shared types (enums, interfaces) MUST come from `@clinic-platform/types`** — never redefine `Role`, `AppointmentStatus`, `ApiResponse`, `ApiErrorResponse`, etc. locally. Local files in `src/common/types/` should only re-export from the shared package. If a NestJS-specific class is needed (e.g., for Swagger `@ApiProperty` metadata), it must `implements` the corresponding interface from `@clinic-platform/types`.
 
 ## NestJS API — Security
 
