@@ -19,12 +19,22 @@ export interface BookingSlot {
 
 export interface Booking {
   id: string;
-  patientId: string;
-  doctorId: string;
-  slotId: string;
   status: AppointmentStatus;
   notes?: string;
-  slot?: BookingSlot;
+  slot: BookingSlot;
+  doctor: {
+    id: string;
+    specialty: string;
+    profile: {
+      fullName: string;
+    };
+  };
+  patient: {
+    id: string;
+    profile: {
+      fullName: string;
+    };
+  };
   createdAt: string;
   updatedAt: string;
 }

@@ -1,5 +1,6 @@
 import { Badge } from './badge';
 import { AppointmentStatus } from '@clinic-platform/types';
+import * as React from 'react';
 
 const statusConfig: Record<
   AppointmentStatus,

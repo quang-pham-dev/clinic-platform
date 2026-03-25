@@ -1,77 +1,83 @@
-import { PATIENT_TABLE_HEADERS, SKELETON_CARD_COUNT } from '../../../constants';
-import { createFileRoute } from '@tanstack/react-router';
-import { Filter, Search } from 'lucide-react';
+import { SKELETON_CARD_COUNT } from '../../../constants';
+import { PatientsTable } from '../../../features/patients/components/patients-table';
+import { apiHooks } from '../../../lib/api';
+import { Role } from '@clinic-platform/types';
+import { Input, Pagination } from '@clinic-platform/ui';
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { Search } from 'lucide-react';
+
+type PatientsSearch = {
+  page?: number;
+  limit?: number;
+};
 
 export const Route = createFileRoute('/_dashboard/patients/')({
+  validateSearch: (search: Record<string, unknown>): PatientsSearch => ({
+    page: search.page ? Number(search.page) : undefined,
+    limit: search.limit ? Number(search.limit) : undefined,
+  }),
   component: PatientsPage,
 });
 
 function PatientsPage() {
+  const { page = 1, limit = 10 } = Route.useSearch();
+  const navigate = useNavigate({ from: Route.fullPath });
+
+  const { data, isLoading } = apiHooks.users.useUsers({
+    role: Role.PATIENT,
+    page,
+    limit,
+  });
+
+  const handlePageChange = (newPage: number) => {
+    navigate({
+      search: (prev) => ({
+        ...prev,
+        page: newPage === 1 ? undefined : newPage,
+      }),
+    });
+  };
+
+  const meta = data?.meta;
   const skeletonRows = Array.from({ length: SKELETON_CARD_COUNT }, (_, i) => i);
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-white">Patients</h1>
-        <p className="text-gray-400 mt-1">View and manage patient records</p>
+      <div className="flex items-center justify-between flex-wrap gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-white">Patients Directory</h1>
+          <p className="text-gray-400 mt-1">View and manage patient records</p>
+        </div>
       </div>
 
-      {/* Filters */}
       <div className="flex items-center gap-3">
         <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-          <input
+          <Input
             type="text"
-            placeholder="Search patients..."
-            className="w-full pl-10 pr-4 py-2 bg-gray-900/80 border border-gray-800 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500 transition-colors text-sm"
+            placeholder="Search patients by name or email..."
+            className="pl-10 bg-gray-900/80 border-gray-800 text-white placeholder:text-gray-500"
           />
         </div>
-        <button className="flex items-center gap-2 px-4 py-2 bg-gray-900/80 border border-gray-800 rounded-lg text-gray-300 hover:text-white hover:border-gray-700 text-sm transition-colors">
-          <Filter className="w-4 h-4" />
-          Filters
-        </button>
       </div>
 
-      {/* Table placeholder */}
-      <div className="rounded-xl border border-gray-800 bg-gray-900/80 overflow-hidden">
-        <table className="w-full">
-          <thead>
-            <tr className="border-b border-gray-800">
-              {PATIENT_TABLE_HEADERS.map((h) => (
-                <th
-                  key={h}
-                  className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider"
-                >
-                  {h}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {skeletonRows.map((i) => (
-              <tr key={i} className="border-b border-gray-800/50 animate-pulse">
-                <td className="px-4 py-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-gray-700" />
-                    <div className="h-4 bg-gray-700 rounded w-28" />
-                  </div>
-                </td>
-                <td className="px-4 py-4">
-                  <div className="h-4 bg-gray-700 rounded w-40" />
-                </td>
-                <td className="px-4 py-4">
-                  <div className="h-4 bg-gray-700 rounded w-28" />
-                </td>
-                <td className="px-4 py-4">
-                  <div className="h-5 bg-gray-700 rounded-full w-16" />
-                </td>
-                <td className="px-4 py-4">
-                  <div className="h-4 bg-gray-700 rounded w-24" />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div className="rounded-xl border border-gray-800 bg-gray-900/80 overflow-hidden shadow-xl">
+        <PatientsTable
+          isLoading={isLoading}
+          patients={data?.data ?? []}
+          skeletonRows={skeletonRows}
+        />
+
+        {/* Pagination */}
+        {!isLoading && meta && (
+          <Pagination
+            page={page}
+            limit={limit}
+            total={meta.total}
+            itemName="patients"
+            onPageChange={handlePageChange}
+          />
+        )}
       </div>
     </div>
   );

@@ -3,6 +3,7 @@ import { APP_DESCRIPTION, APP_NAME } from '../constants';
 import { useAuthStore } from '../features/auth/store/auth.store';
 import { api } from '../lib/api';
 import { queryClient } from '../lib/query-client';
+import { useThemeStore } from '../stores/theme.store';
 import appCss from '../styles.css?url';
 import { TanStackDevtools } from '@tanstack/react-devtools';
 import { QueryClientProvider } from '@tanstack/react-query';
@@ -14,12 +15,13 @@ import {
 } from '@tanstack/react-router';
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools';
 import type { ReactNode } from 'react';
+import { useEffect } from 'react';
 
 export const Route = createRootRoute({
   beforeLoad: async () => {
     const store = useAuthStore.getState();
-    // Only attempt hydration once on initial app boot
-    if (store.isHydrating) {
+    // Only attempt hydration once on initial app boot, strictly on the client
+    if (store.isHydrating && typeof window !== 'undefined') {
       try {
         const res = await api.auth.refresh();
         store.setAuth(res.data.accessToken, res.data.user);
@@ -64,6 +66,12 @@ export const Route = createRootRoute({
 });
 
 function RootComponent() {
+  const theme = useThemeStore((state) => state.theme);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
+
   return (
     <QueryClientProvider client={queryClient}>
       <Outlet />
@@ -77,7 +85,7 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
       <head>
         <HeadContent />
       </head>
-      <body className="font-sans antialiased bg-gray-950 text-gray-100 min-h-screen">
+      <body className="font-sans antialiased bg-gray-950 text-white min-h-screen">
         {children}
         {import.meta.env.DEV && (
           <TanStackDevtools
