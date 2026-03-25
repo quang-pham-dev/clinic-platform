@@ -2,7 +2,7 @@
 
 /*
  * Clinic Dashboard Design Tokens
- * Based on @clinic-platform/design-system with dashboard-specific overrides
+ * Supports both Dark and Light themes
  */
 
 @theme {
@@ -11,14 +11,15 @@
   --color-gray-50: #f9fafb;
   --color-gray-100: #f3f4f6;
   --color-gray-200: #e5e7eb;
-  --color-gray-300: #d1d5db;
-  --color-gray-400: #9ca3af;
-  --color-gray-500: #6b7280;
-  --color-gray-600: #4b5563;
-  --color-gray-700: #374151;
-  --color-gray-800: #1f2937;
-  --color-gray-900: #111827;
-  --color-gray-950: #030712;
+  /* Dynamic mapping to root CSS variables for theme switching */
+  --color-gray-300: var(--text-secondary);
+  --color-gray-400: var(--text-tertiary);
+  --color-gray-500: var(--text-muted);
+  --color-gray-600: var(--border-highlight);
+  --color-gray-700: var(--border-secondary);
+  --color-gray-800: var(--border-primary);
+  --color-gray-900: var(--bg-secondary);
+  --color-gray-950: var(--bg-primary);
 
   --color-teal-400: #2dd4bf;
   --color-teal-500: #14b8a6;
@@ -40,11 +41,54 @@
   --color-red-400: #f87171;
   --color-red-500: #ef4444;
 
-  --color-white: #ffffff;
+  --color-white: var(--text-primary);
   --color-black: #000000;
 }
 
-/* Scrollbar */
+:root {
+  --bg-primary: #030712;
+  --bg-secondary: #111827;
+  --bg-tertiary: #1f2937;
+  --bg-card: rgba(17, 24, 39, 0.8);
+  --bg-card-hover: rgba(31, 41, 55, 0.8);
+  --text-primary: #ffffff;
+  --text-secondary: #d1d5db;
+  --text-tertiary: #9ca3af;
+  --text-muted: #6b7280;
+  --border-primary: #1f2937;
+  --border-secondary: #374151;
+  --border-highlight: #4b5563;
+  --shadow-card:
+    0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.2);
+  --shadow-elevated:
+    0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -4px rgba(0, 0, 0, 0.3);
+  --glow-teal: rgba(20, 184, 166, 0.15);
+  --glow-violet: rgba(139, 92, 246, 0.15);
+  --glow-amber: rgba(245, 158, 11, 0.15);
+  --glow-rose: rgba(244, 63, 94, 0.15);
+}
+
+[data-theme='light'] {
+  --bg-primary: #f9fafb;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #f3f4f6;
+  --bg-card: rgba(255, 255, 255, 0.9);
+  --bg-card-hover: rgba(243, 244, 246, 0.9);
+  --text-primary: #111827;
+  --text-secondary: #374151;
+  --text-tertiary: #6b7280;
+  --text-muted: #9ca3af;
+  --border-primary: #e5e7eb;
+  --border-secondary: #d1d5db;
+  --border-highlight: #9ca3af;
+  --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  --shadow-elevated: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --glow-teal: rgba(20, 184, 166, 0.1);
+  --glow-violet: rgba(139, 92, 246, 0.1);
+  --glow-amber: rgba(245, 158, 11, 0.1);
+  --glow-rose: rgba(244, 63, 94, 0.1);
+}
+
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -63,13 +107,11 @@
   background: var(--color-gray-600);
 }
 
-/* Focus ring utility */
 *:focus-visible {
   outline: 2px solid var(--color-teal-500);
   outline-offset: 2px;
 }
 
-/* Smooth transitions for interactive elements */
 a,
 button,
 input,
@@ -78,4 +120,39 @@ textarea {
   transition-property: color, background-color, border-color, box-shadow;
   transition-duration: 150ms;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--color-gray-800) 0%,
+    var(--color-gray-700) 50%,
+    var(--color-gray-800) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.3s ease-out forwards;
 }

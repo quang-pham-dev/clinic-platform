@@ -18,7 +18,7 @@ function LoginPage() {
   const loginMutation = apiHooks.auth.useLogin({
     onSuccess: (response) => {
       setAuth(response.data.accessToken, response.data.user);
-      navigate({ to: ROUTES.DASHBOARD });
+      navigate({ to: ROUTES.DASHBOARD, replace: true });
     },
   });
 

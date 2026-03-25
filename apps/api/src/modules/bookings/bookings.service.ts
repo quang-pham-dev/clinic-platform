@@ -134,7 +134,7 @@ export class BookingsService {
     // ADMIN sees all
 
     if (filters.status)
-      qb.andWhere('appt.status = :st', { status: filters.status });
+      qb.andWhere('appt.status = :status', { status: filters.status });
     if (filters.from)
       qb.andWhere('slot.slotDate >= :from', { from: filters.from });
     if (filters.to) qb.andWhere('slot.slotDate <= :to', { to: filters.to });
