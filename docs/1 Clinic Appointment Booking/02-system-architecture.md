@@ -1,4 +1,5 @@
 # System Architecture
+
 ### P1: Clinic Appointment Booking System
 
 > **Document type:** Architecture Decision Record (ADR) + System Design
@@ -8,24 +9,26 @@
 
 ## 1. Tech Stack
 
-| Layer | Technology | Rationale |
-|-------|-----------|-----------|
-| Backend API | NestJS (Node.js) | Modular architecture, built-in DI, decorators align with Java-like enterprise patterns |
-| Language | TypeScript (strict mode) | Type safety across full stack, shared DTO types possible |
-| ORM | TypeORM | Native NestJS integration, migration support, repository pattern |
-| Primary DB | PostgreSQL 16 | ACID transactions (critical for slot-locking), strong UUID support |
-| Cache / Token Store | Redis 7 | Sub-millisecond reads for token validation, native TTL for refresh tokens |
-| Frontend (dashboard) | TanStack Start (React) | Full-stack React meta-framework built on Vite + TanStack Router + Nitro; SSR-capable with server functions |
-| Frontend (member app) | Next.js 16 (App Router) | SSR for SEO, server components for public-facing pages |
-| Dashboard routing | TanStack Router (via Start) | Type-safe file-based routing with search params validation, integrated into TanStack Start |
-| API data fetching | TanStack Query v5 | Cache management, optimistic updates, devtools |
-| Dashboard tables | TanStack Table v8 | Headless, type-safe, sorting/filtering/pagination built-in |
-| Dashboard forms | TanStack Form v0 | Type-safe form state, async validation, framework-agnostic |
-| HTTP client | Axios | Interceptors for auto-refresh token injection |
-| Validation | class-validator + class-transformer | NestJS-native, DTO-level validation |
-| Auth | Passport.js + @nestjs/jwt | Strategy-based auth, easy to extend with OAuth later |
-| API documentation | Swagger (OpenAPI 3) | Auto-generated from decorators, `/api/docs` in dev |
-| Schema migrations | TypeORM migrations | Version-controlled, reproducible DB state |
+| Layer                 | Technology                          | Rationale                                                                                                  |
+| --------------------- | ----------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| Backend API           | NestJS (Node.js)                    | Modular architecture, built-in DI, decorators align with Java-like enterprise patterns                     |
+| Language              | TypeScript (strict mode)            | Type safety across full stack, shared DTO types possible                                                   |
+| ORM                   | TypeORM                             | Native NestJS integration, migration support, repository pattern                                           |
+| Primary DB            | PostgreSQL 16                       | ACID transactions (critical for slot-locking), strong UUID support                                         |
+| Cache / Token Store   | Redis 7                             | Sub-millisecond reads for token validation, native TTL for refresh tokens                                  |
+| Frontend (dashboard)  | TanStack Start (React)              | Full-stack React meta-framework built on Vite + TanStack Router + Nitro; SSR-capable with server functions |
+| Frontend (member app) | Next.js 16 (App Router)             | SSR for SEO, server components for public-facing pages                                                     |
+| Dashboard routing     | TanStack Router (via Start)         | Type-safe file-based routing with search params validation, integrated into TanStack Start                 |
+| API data fetching     | TanStack Query v5                   | Cache management, optimistic updates, devtools                                                             |
+| Dashboard tables      | TanStack Table v8                   | Headless, type-safe, sorting/filtering/pagination built-in                                                 |
+| Dashboard forms       | TanStack Form v0                    | Type-safe form state, async validation, framework-agnostic                                                 |
+| Dashboard styling     | Tailwind CSS v4                     | CSS-first semantic OKLCH tokens, @theme integration, dark mode custom-variants                             |
+| UI Components         | Radix UI + CVA                      | Accessible headless primitives wrapped with strongly-typed class variance authority                        |
+| HTTP client           | Axios                               | Interceptors for auto-refresh token injection                                                              |
+| Validation            | class-validator + class-transformer | NestJS-native, DTO-level validation                                                                        |
+| Auth                  | Passport.js + @nestjs/jwt           | Strategy-based auth, easy to extend with OAuth later                                                       |
+| API documentation     | Swagger (OpenAPI 3)                 | Auto-generated from decorators, `/api/docs` in dev                                                         |
+| Schema migrations     | TypeORM migrations                  | Version-controlled, reproducible DB state                                                                  |
 
 ---
 
@@ -172,6 +175,7 @@ src/
 The dashboard uses **TanStack Start**, a full-stack React meta-framework built on Vite, TanStack Router, and Nitro. It provides SSR capability, server functions, and a unified development experience while maintaining a **feature-based architecture** where each domain feature is self-contained.
 
 **TanStack Ecosystem:** The dashboard is built entirely on the TanStack ecosystem:
+
 - **TanStack Start** — full-stack React framework with SSR, server functions, and Vite-powered dev server
 - **TanStack Router** — type-safe file-based routing with search params validation (integrated into Start)
 - **TanStack Query** — server-state management with cache, background refetch, optimistic updates
@@ -262,6 +266,7 @@ apps/dashboard/
 ```
 
 **Feature module rules:**
+
 - Each feature exports only through its `index.ts` barrel file
 - Features must **not** import from other features directly — use shared `components/` or `lib/`
 - API functions, hooks, and types stay co-located within their feature
@@ -405,14 +410,14 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: secret
     ports:
-      - "5432:5432"
+      - '5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
   redis:
     image: redis:7-alpine
     ports:
-      - "6379:6379"
+      - '6379:6379'
 
   api:
     build: ./apps/api
@@ -421,7 +426,7 @@ services:
       DB_HOST: postgres
       REDIS_HOST: redis
     ports:
-      - "3000:3000"
+      - '3000:3000'
 ```
 
 ---
@@ -469,7 +474,7 @@ All API responses follow this shape:
 
 **Decision:** Patients, doctors, and admins all have a row in the `users` table, distinguished by a `role` column.
 
-**Rationale:** Separate tables per role (e.g., `patients` table, `doctors` table as auth sources) would duplicate auth logic and complicate JWT payload design. The `doctors` table in this system is an *extension* of `users`, not a separate identity.
+**Rationale:** Separate tables per role (e.g., `patients` table, `doctors` table as auth sources) would duplicate auth logic and complicate JWT payload design. The `doctors` table in this system is an _extension_ of `users`, not a separate identity.
 
 **Consequences:** A user can only have one role in P1. Multi-role support (e.g., a doctor who is also an admin) requires a `user_roles` junction table — scoped to P5.
 
@@ -490,6 +495,7 @@ All API responses follow this shape:
 **Decision:** Build the Dashboard using **TanStack Start** (full-stack React meta-framework) with the TanStack ecosystem (Router, Query, Table, Form) and a feature-based folder structure. The Member Web App remains on Next.js.
 
 **Rationale:**
+
 - **TanStack Start** is a full-stack React framework built on Vite, TanStack Router, and Nitro. It provides a unified development experience with SSR capability, server functions, and file-based routing — all from the TanStack ecosystem.
 - The dashboard benefits from **server functions** for sensitive operations (e.g., server-side token validation, API proxying) without needing a separate BFF layer.
 - **TanStack Router** (integrated into Start) gives fully type-safe routing with search params validation — critical for data-heavy dashboard pages with filters, sorting, and pagination in the URL.
@@ -499,6 +505,7 @@ All API responses follow this shape:
 - The Member App stays on Next.js because it is **patient-facing** and benefits from SSR for initial load performance and SEO (doctor profiles, clinic information).
 
 **Consequences:**
+
 - Two different frontend frameworks in the monorepo — team needs familiarity with both TanStack Start and Next.js. However, TanStack Start shares more conceptual overlap (Vite-based, React-first) than a pure SPA would.
 - Shared types and UI components should be extracted to a shared package (`packages/ui`, `packages/types`) to avoid duplication.
 - TanStack Start supports both SPA and SSR modes — for the dashboard, we use SSR with client-side navigation for optimal performance.
