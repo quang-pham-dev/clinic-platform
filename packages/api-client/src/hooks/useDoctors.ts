@@ -1,5 +1,6 @@
 import { queryKeys } from '../core/query-keys';
 import type {
+  CreateDoctorRequest,
   Doctor,
   DoctorQueryParams,
   UpdateDoctorRequest,
@@ -44,6 +45,26 @@ export function createDoctorsHooks(service: DoctorsService) {
         enabled: !!id,
         staleTime: 60_000,
         ...options,
+      });
+    },
+
+    useCreateDoctor: (
+      options?: Omit<
+        UseMutationOptions<ApiResponse<Doctor>, Error, CreateDoctorRequest>,
+        'mutationFn'
+      >,
+    ) => {
+      const queryClient = useQueryClient();
+      const { onSuccess, ...restOptions } = options ?? {};
+      return useMutation({
+        mutationFn: (data: CreateDoctorRequest) => service.create(data),
+        onSuccess: (data, vars, _mutateResult, ctx) => {
+          queryClient.invalidateQueries({
+            queryKey: queryKeys.doctors.lists(),
+          });
+          onSuccess?.(data, vars, _mutateResult, ctx);
+        },
+        ...restOptions,
       });
     },
 
