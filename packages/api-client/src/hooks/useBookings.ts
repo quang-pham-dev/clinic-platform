@@ -116,5 +116,30 @@ export function createBookingHooks(service: BookingsService) {
         ...restOptions,
       });
     },
+
+    useUpdateBookingNotes: (
+      options?: Omit<
+        UseMutationOptions<
+          ApiResponse<Booking>,
+          Error,
+          { id: string; notes: string }
+        >,
+        'mutationFn'
+      >,
+    ) => {
+      const queryClient = useQueryClient();
+      const { onSuccess, ...restOptions } = options ?? {};
+      return useMutation({
+        mutationFn: (vars: { id: string; notes: string }) =>
+          service.updateNotes(vars.id, vars.notes),
+        onSuccess: (data, vars, _mutateResult, ctx) => {
+          queryClient.invalidateQueries({
+            queryKey: queryKeys.bookings.detail(vars.id),
+          });
+          onSuccess?.(data, vars, _mutateResult, ctx);
+        },
+        ...restOptions,
+      });
+    },
   };
 }

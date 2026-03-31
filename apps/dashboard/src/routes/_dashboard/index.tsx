@@ -59,10 +59,7 @@ function OverviewPage() {
           skeletonRows={skeletonRows}
         />
 
-        <TodaySchedule
-          isLoading={isBookingsLoading}
-          skeletonRows={skeletonRows}
-        />
+        <TodaySchedule />
       </div>
     </div>
   );

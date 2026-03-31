@@ -1,3 +1,4 @@
+import { AuditTimeline } from '@/features/bookings/components/audit-timeline';
 import { apiHooks } from '@/lib/api';
 import { AppointmentStatus } from '@clinic-platform/types';
 import { Button, StatusBadge } from '@clinic-platform/ui';
@@ -29,6 +30,10 @@ function BookingDetailPage() {
   const { data, isLoading } = apiHooks.bookings.useBooking(bookingId);
   const { mutate: updateStatus, isPending: isUpdating } =
     apiHooks.bookings.useUpdateBookingStatus();
+  const { mutate: updateNotes, isPending: isSavingNotes } =
+    apiHooks.bookings.useUpdateBookingNotes({
+      onSuccess: () => setEditingNotes(false),
+    });
   const { mutate: cancelBooking, isPending: isCancelling } =
     apiHooks.bookings.useCancelBooking({
       onSuccess: () => navigate({ to: '/bookings' }),
@@ -218,10 +223,12 @@ function BookingDetailPage() {
                       Cancel
                     </button>
                     <button
-                      onClick={() => setEditingNotes(false)}
-                      className="text-xs px-3 py-1.5 rounded-lg bg-teal-500/20 border border-teal-500/30 text-teal-400 hover:bg-teal-500/30 transition-colors flex items-center gap-1"
+                      onClick={() => updateNotes({ id: bookingId, notes })}
+                      disabled={isSavingNotes}
+                      className="text-xs px-3 py-1.5 rounded-lg bg-teal-500/20 border border-teal-500/30 text-teal-400 hover:bg-teal-500/30 transition-colors flex items-center gap-1 disabled:opacity-50"
                     >
-                      <Check className="w-3 h-3" /> Save Notes
+                      <Check className="w-3 h-3" />{' '}
+                      {isSavingNotes ? 'Saving…' : 'Save Notes'}
                     </button>
                   </div>
                 </div>
@@ -351,6 +358,9 @@ function BookingDetailPage() {
               </div>
             )}
           </div>
+
+          {/* Audit Timeline */}
+          <AuditTimeline logs={booking.auditLogs} />
 
           {/* Metadata */}
           <div className="rounded-xl border border-gray-800 bg-gray-900/80 p-5 space-y-3">

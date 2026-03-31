@@ -17,6 +17,16 @@ export interface BookingSlot {
   endTime: string;
 }
 
+export interface BookingAuditLog {
+  id: string;
+  actorId: string;
+  actorRole: string;
+  fromStatus: string | null;
+  toStatus: string;
+  reason?: string;
+  createdAt: string;
+}
+
 export interface Booking {
   id: string;
   status: AppointmentStatus;
@@ -35,6 +45,7 @@ export interface Booking {
       fullName: string;
     };
   };
+  auditLogs?: BookingAuditLog[];
   createdAt: string;
   updatedAt: string;
 }
