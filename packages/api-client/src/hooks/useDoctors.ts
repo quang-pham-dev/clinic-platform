@@ -1,9 +1,9 @@
 import { queryKeys } from '../core/query-keys';
 import type {
+  CreateDoctorRequest,
   Doctor,
   DoctorQueryParams,
   UpdateDoctorRequest,
-  CreateDoctorRequest,
 } from '../modules/doctors';
 import type { DoctorsService } from '../services/doctors.service';
 import type { ApiResponse, PaginatedResponse } from '@clinic-platform/types';

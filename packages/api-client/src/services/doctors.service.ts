@@ -1,9 +1,9 @@
 import type { HttpClient } from '../core/client';
 import type {
+  CreateDoctorRequest,
   Doctor,
   DoctorQueryParams,
   UpdateDoctorRequest,
-  CreateDoctorRequest,
 } from '../modules/doctors';
 import type { ApiResponse, PaginatedResponse } from '@clinic-platform/types';
 

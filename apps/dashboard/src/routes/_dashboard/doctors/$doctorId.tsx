@@ -172,7 +172,10 @@ function DoctorDetailLayout() {
               <p className="text-xs text-gray-500">Consultation Fee</p>
               <p className="text-white font-semibold">
                 {doctor.consultationFee
-                  ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(doctor.consultationFee)
+                  ? new Intl.NumberFormat('en-US', {
+                      style: 'currency',
+                      currency: 'USD',
+                    }).format(doctor.consultationFee)
                   : '—'}
               </p>
             </div>

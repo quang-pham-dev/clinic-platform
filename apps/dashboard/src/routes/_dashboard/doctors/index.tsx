@@ -124,7 +124,7 @@ function DoctorsPage() {
             Manage clinic doctors, specialties, and schedules
           </p>
         </div>
-        <Button 
+        <Button
           className="bg-gradient-to-r from-teal-500 to-cyan-600 hover:from-teal-400 hover:to-cyan-500 text-white shadow-lg shadow-teal-500/20"
           onClick={() => setIsCreateDialogOpen(true)}
         >
@@ -201,9 +201,9 @@ function DoctorsPage() {
         />
       )}
 
-      <CreateDoctorDialog 
-        isOpen={isCreateDialogOpen} 
-        onClose={() => setIsCreateDialogOpen(false)} 
+      <CreateDoctorDialog
+        isOpen={isCreateDialogOpen}
+        onClose={() => setIsCreateDialogOpen(false)}
       />
     </div>
   );

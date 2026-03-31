@@ -1,7 +1,15 @@
 import { apiHooks } from '@/lib/api';
 import { Button } from '@clinic-platform/ui';
-import { motion, AnimatePresence } from 'framer-motion';
-import { XCircle, UserPlus, FileText, DollarSign, Mail, Lock, Phone } from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion';
+import {
+  DollarSign,
+  FileText,
+  Lock,
+  Mail,
+  Phone,
+  UserPlus,
+  XCircle,
+} from 'lucide-react';
 import * as React from 'react';
 
 interface CreateDoctorDialogProps {
@@ -19,7 +27,10 @@ const SPECIALTIES = [
   'Psychiatry',
 ];
 
-export function CreateDoctorDialog({ isOpen, onClose }: CreateDoctorDialogProps) {
+export function CreateDoctorDialog({
+  isOpen,
+  onClose,
+}: CreateDoctorDialogProps) {
   const [formData, setFormData] = React.useState({
     email: '',
     password: '',
@@ -61,9 +72,18 @@ export function CreateDoctorDialog({ isOpen, onClose }: CreateDoctorDialogProps)
     }
   }, [isOpen, reset]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >,
+  ) => {
     const { name, value, type } = e.target;
-    const val = type === 'number' ? Number(value) : type === 'checkbox' ? (e.target as HTMLInputElement).checked : value;
+    const val =
+      type === 'number'
+        ? Number(value)
+        : type === 'checkbox'
+          ? (e.target as HTMLInputElement).checked
+          : value;
     setFormData((prev) => ({ ...prev, [name]: val }));
     if (createError) reset();
   };
@@ -95,7 +115,9 @@ export function CreateDoctorDialog({ isOpen, onClose }: CreateDoctorDialogProps)
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-teal-500/20 text-teal-400">
                   <UserPlus className="h-5 w-5" />
                 </div>
-                <h2 className="text-lg font-semibold text-white">Add New Doctor</h2>
+                <h2 className="text-lg font-semibold text-white">
+                  Add New Doctor
+                </h2>
               </div>
               <button
                 onClick={onClose}
@@ -108,7 +130,11 @@ export function CreateDoctorDialog({ isOpen, onClose }: CreateDoctorDialogProps)
             <form onSubmit={handleSubmit} className="p-6">
               {createError && (
                 <div className="mb-6 rounded-lg border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-400">
-                  {((createError as any).response?.data?.message) ||
+                  {(
+                    createError as {
+                      response?: { data?: { message?: string } };
+                    }
+                  ).response?.data?.message ||
                     createError.message ||
                     'Failed to create doctor account.'}
                 </div>
@@ -117,10 +143,14 @@ export function CreateDoctorDialog({ isOpen, onClose }: CreateDoctorDialogProps)
               <div className="space-y-6">
                 {/* Account Section */}
                 <div>
-                  <h3 className="mb-4 text-sm font-medium text-gray-400">Account Details</h3>
+                  <h3 className="mb-4 text-sm font-medium text-gray-400">
+                    Account Details
+                  </h3>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1.5">
-                      <label className="text-xs text-gray-400">Email Address *</label>
+                      <label className="text-xs text-gray-400">
+                        Email Address *
+                      </label>
                       <div className="relative">
                         <Mail className="absolute left-3 top-2.5 h-4 w-4 text-gray-500" />
                         <input
@@ -135,7 +165,9 @@ export function CreateDoctorDialog({ isOpen, onClose }: CreateDoctorDialogProps)
                       </div>
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-xs text-gray-400">Temporary Password *</label>
+                      <label className="text-xs text-gray-400">
+                        Temporary Password *
+                      </label>
                       <div className="relative">
                         <Lock className="absolute left-3 top-2.5 h-4 w-4 text-gray-500" />
                         <input
@@ -156,10 +188,14 @@ export function CreateDoctorDialog({ isOpen, onClose }: CreateDoctorDialogProps)
 
                 {/* Profile Section */}
                 <div>
-                  <h3 className="mb-4 text-sm font-medium text-gray-400">Profile & Credentials</h3>
+                  <h3 className="mb-4 text-sm font-medium text-gray-400">
+                    Profile & Credentials
+                  </h3>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1.5">
-                      <label className="text-xs text-gray-400">Full Name *</label>
+                      <label className="text-xs text-gray-400">
+                        Full Name *
+                      </label>
                       <input
                         type="text"
                         name="fullName"
@@ -186,7 +222,9 @@ export function CreateDoctorDialog({ isOpen, onClose }: CreateDoctorDialogProps)
                     </div>
 
                     <div className="space-y-1.5">
-                      <label className="text-xs text-gray-400">Specialty *</label>
+                      <label className="text-xs text-gray-400">
+                        Specialty *
+                      </label>
                       <select
                         name="specialty"
                         required
@@ -202,7 +240,9 @@ export function CreateDoctorDialog({ isOpen, onClose }: CreateDoctorDialogProps)
                       </select>
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-xs text-gray-400">License Number *</label>
+                      <label className="text-xs text-gray-400">
+                        License Number *
+                      </label>
                       <div className="relative">
                         <FileText className="absolute left-3 top-2.5 h-4 w-4 text-gray-500" />
                         <input
@@ -230,7 +270,9 @@ export function CreateDoctorDialog({ isOpen, onClose }: CreateDoctorDialogProps)
                     </div>
 
                     <div className="space-y-1.5">
-                      <label className="text-xs text-gray-400">Consultation Fee (USD) *</label>
+                      <label className="text-xs text-gray-400">
+                        Consultation Fee (USD) *
+                      </label>
                       <div className="relative">
                         <DollarSign className="absolute left-3 top-2.5 h-4 w-4 text-gray-500" />
                         <input
@@ -255,7 +297,9 @@ export function CreateDoctorDialog({ isOpen, onClose }: CreateDoctorDialogProps)
                           onChange={handleChange}
                           className="h-4 w-4 rounded border-gray-700 bg-gray-800 text-teal-500 focus:ring-teal-500 focus:ring-offset-gray-900"
                         />
-                        <span className="text-sm text-gray-300">Accepting new patients</span>
+                        <span className="text-sm text-gray-300">
+                          Accepting new patients
+                        </span>
                       </label>
                     </div>
                   </div>
