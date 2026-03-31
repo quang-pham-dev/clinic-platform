@@ -135,7 +135,13 @@ function DoctorSlotsPage() {
               {createError && (
                 <div className="text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg p-3">
                   {(() => {
-                    const errData = (createError as { response?: { data?: { code?: string; message?: string } } }).response?.data;
+                    const errData = (
+                      createError as {
+                        response?: {
+                          data?: { code?: string; message?: string };
+                        };
+                      }
+                    ).response?.data;
                     if (
                       errData?.code === ERROR_CODES.SLOT_OVERLAP ||
                       errData?.message === 'Conflict Exception'
@@ -273,10 +279,11 @@ function DoctorSlotsPage() {
                 {dateSlots.map((slot) => (
                   <div
                     key={slot.id}
-                    className={`relative group rounded-lg border px-3 py-2.5 text-center transition-all ${slot.isAvailable
-                      ? 'border-teal-500/20 bg-teal-500/5 hover:bg-teal-500/10'
-                      : 'border-gray-700 bg-gray-800/50 opacity-60'
-                      }`}
+                    className={`relative group rounded-lg border px-3 py-2.5 text-center transition-all ${
+                      slot.isAvailable
+                        ? 'border-teal-500/20 bg-teal-500/5 hover:bg-teal-500/10'
+                        : 'border-gray-700 bg-gray-800/50 opacity-60'
+                    }`}
                   >
                     <div className="flex items-center justify-center gap-1 text-xs mb-1">
                       <Clock className="w-3 h-3 text-gray-400" />
@@ -290,10 +297,11 @@ function DoctorSlotsPage() {
                       –{slot.endTime.substring(0, 5)}
                     </p>
                     <span
-                      className={`mt-1 inline-block text-xs px-1.5 py-0.5 rounded-full ${slot.isAvailable
-                        ? 'bg-teal-500/20 text-teal-400'
-                        : 'bg-gray-700 text-gray-500'
-                        }`}
+                      className={`mt-1 inline-block text-xs px-1.5 py-0.5 rounded-full ${
+                        slot.isAvailable
+                          ? 'bg-teal-500/20 text-teal-400'
+                          : 'bg-gray-700 text-gray-500'
+                      }`}
                     >
                       {slot.isAvailable ? 'Free' : 'Booked'}
                     </span>
