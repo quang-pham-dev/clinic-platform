@@ -9,6 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from '@clinic-platform/ui';
+import { Link } from '@tanstack/react-router';
 import {
   createColumnHelper,
   flexRender,
@@ -17,7 +18,7 @@ import {
 } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { motion } from 'framer-motion';
-import { Check, Clock, X } from 'lucide-react';
+import { Check, Clock, ExternalLink, X } from 'lucide-react';
 import * as React from 'react';
 
 interface BookingsTableProps {
@@ -168,6 +169,15 @@ export function BookingsTable({
               ) && (
                 <span className="text-xs text-gray-600 italic">No actions</span>
               )}
+              {/* View detail */}
+              <Link
+                to="/bookings/$bookingId"
+                params={{ bookingId: booking.id }}
+                className="inline-flex items-center gap-1 text-xs text-gray-500 hover:text-teal-400 transition-colors ml-1"
+                title="View detail"
+              >
+                <ExternalLink className="w-3.5 h-3.5" />
+              </Link>
             </div>
           );
         },

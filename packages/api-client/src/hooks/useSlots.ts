@@ -54,7 +54,7 @@ export function createSlotsHooks(service: SlotsService) {
           service.create(vars.doctorId, vars.data),
         onSuccess: (data, vars, _mutateResult, ctx) => {
           queryClient.invalidateQueries({
-            queryKey: queryKeys.slots.list(vars.doctorId),
+            queryKey: queryKeys.slots.listsForDoctor(vars.doctorId),
           });
           onSuccess?.(data, vars, _mutateResult, ctx);
         },
@@ -83,7 +83,7 @@ export function createSlotsHooks(service: SlotsService) {
           service.createBulk(vars.doctorId, vars.data),
         onSuccess: (data, vars, _mutateResult, ctx) => {
           queryClient.invalidateQueries({
-            queryKey: queryKeys.slots.list(vars.doctorId),
+            queryKey: queryKeys.slots.listsForDoctor(vars.doctorId),
           });
           onSuccess?.(data, vars, _mutateResult, ctx);
         },
@@ -104,7 +104,7 @@ export function createSlotsHooks(service: SlotsService) {
           service.delete(vars.doctorId, vars.slotId),
         onSuccess: (data, vars, _mutateResult, ctx) => {
           queryClient.invalidateQueries({
-            queryKey: queryKeys.slots.list(vars.doctorId),
+            queryKey: queryKeys.slots.listsForDoctor(vars.doctorId),
           });
           onSuccess?.(data, vars, _mutateResult, ctx);
         },

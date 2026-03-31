@@ -1,10 +1,13 @@
 import { CacheModule } from './common/cache/cache.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
+import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
+import appConfig from './config/app.config';
 import cookieConfig from './config/cookie.config';
 import databaseConfig from './config/database.config';
 import jwtConfig from './config/jwt.config';
 import redisConfig from './config/redis.config';
+import { envValidationSchema } from './config/validation.schema';
 import { AuthModule } from './modules/auth/auth.module';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { RolesGuard } from './modules/auth/guards/roles.guard';
@@ -28,8 +31,18 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     EventEmitterModule.forRoot(),
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [databaseConfig, redisConfig, jwtConfig, cookieConfig],
-      envFilePath: '.env',
+      load: [appConfig, databaseConfig, redisConfig, jwtConfig, cookieConfig],
+      validationSchema: envValidationSchema,
+      validationOptions: {
+        abortEarly: true, // Fail on first missing/invalid var — clearer error
+        allowUnknown: true, // Allow Docker / system env vars
+      },
+      envFilePath: [
+        `.env.${process.env.NODE_ENV}.local`,
+        `.env.${process.env.NODE_ENV}`,
+        '.env.local',
+        '.env',
+      ],
     }),
 
     // Logging
@@ -58,6 +71,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     BookingsModule,
   ],
   providers: [
+    // Global request/response logging with correlation IDs
+    { provide: APP_INTERCEPTOR, useClass: LoggingInterceptor },
     // Global auth guard (JWT) — respects @Public()
     { provide: APP_GUARD, useClass: JwtAuthGuard },
     // Global RBAC guard — respects @Roles()
