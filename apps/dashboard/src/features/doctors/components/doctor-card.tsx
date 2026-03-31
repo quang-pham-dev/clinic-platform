@@ -50,9 +50,9 @@ export function DoctorCard({ doctor }: DoctorCardProps) {
           <div className="text-sm">
             <span className="text-gray-500">Fee: </span>
             <span className="text-white font-medium">
-              {new Intl.NumberFormat('vi-VN', {
+              {new Intl.NumberFormat('en-US', {
                 style: 'currency',
-                currency: 'VND',
+                currency: 'USD',
               }).format(doctor.consultationFee || 0)}
             </span>
           </div>
