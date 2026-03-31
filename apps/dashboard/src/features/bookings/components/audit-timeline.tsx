@@ -1,6 +1,6 @@
 import type { BookingAuditLog } from '@clinic-platform/api-client';
-import { StatusBadge } from '@clinic-platform/ui';
 import { AppointmentStatus } from '@clinic-platform/types';
+import { StatusBadge } from '@clinic-platform/ui';
 import { format } from 'date-fns';
 import { motion } from 'framer-motion';
 import { ArrowRight, Clock, User } from 'lucide-react';
@@ -71,7 +71,9 @@ export function AuditTimeline({ logs }: AuditTimelineProps) {
                   </>
                 ) : (
                   <>
-                    <span className="text-[10px] text-gray-500">Created as</span>
+                    <span className="text-[10px] text-gray-500">
+                      Created as
+                    </span>
                     <StatusBadge
                       status={log.toStatus as AppointmentStatus}
                       className="text-[10px] px-1.5 py-0"
