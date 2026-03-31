@@ -5,6 +5,18 @@ export interface UpdateDoctorRequest {
   isAcceptingPatients?: boolean;
 }
 
+export interface CreateDoctorRequest {
+  email: string;
+  password?: string;
+  fullName: string;
+  phone?: string;
+  specialty: string;
+  licenseNumber: string;
+  bio?: string;
+  consultationFee?: number;
+  isAcceptingPatients?: boolean;
+}
+
 export interface DoctorProfile {
   fullName: string;
 }

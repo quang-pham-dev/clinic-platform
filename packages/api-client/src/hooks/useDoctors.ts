@@ -3,6 +3,7 @@ import type {
   Doctor,
   DoctorQueryParams,
   UpdateDoctorRequest,
+  CreateDoctorRequest,
 } from '../modules/doctors';
 import type { DoctorsService } from '../services/doctors.service';
 import type { ApiResponse, PaginatedResponse } from '@clinic-platform/types';
@@ -44,6 +45,26 @@ export function createDoctorsHooks(service: DoctorsService) {
         enabled: !!id,
         staleTime: 60_000,
         ...options,
+      });
+    },
+
+    useCreateDoctor: (
+      options?: Omit<
+        UseMutationOptions<ApiResponse<Doctor>, Error, CreateDoctorRequest>,
+        'mutationFn'
+      >,
+    ) => {
+      const queryClient = useQueryClient();
+      const { onSuccess, ...restOptions } = options ?? {};
+      return useMutation({
+        mutationFn: (data: CreateDoctorRequest) => service.create(data),
+        onSuccess: (data, vars, _mutateResult, ctx) => {
+          queryClient.invalidateQueries({
+            queryKey: queryKeys.doctors.lists(),
+          });
+          onSuccess?.(data, vars, _mutateResult, ctx);
+        },
+        ...restOptions,
       });
     },
 

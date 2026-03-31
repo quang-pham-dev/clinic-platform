@@ -1,4 +1,5 @@
 import { SKELETON_CARD_COUNT } from '../../../constants';
+import { CreateDoctorDialog } from '../../../features/doctors/components/create-doctor-dialog';
 import { DoctorsGrid } from '../../../features/doctors/components/doctors-grid';
 import { apiHooks } from '../../../lib/api';
 import { Button, Input, Pagination } from '@clinic-platform/ui';
@@ -47,6 +48,7 @@ function DoctorsPage() {
   } = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
   const [searchInput, setSearchInput] = React.useState(search ?? '');
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = React.useState(false);
 
   const { data, isLoading } = apiHooks.doctors.useDoctors({
     page,
@@ -122,7 +124,10 @@ function DoctorsPage() {
             Manage clinic doctors, specialties, and schedules
           </p>
         </div>
-        <Button className="bg-gradient-to-r from-teal-500 to-cyan-600 hover:from-teal-400 hover:to-cyan-500 text-white shadow-lg shadow-teal-500/20">
+        <Button 
+          className="bg-gradient-to-r from-teal-500 to-cyan-600 hover:from-teal-400 hover:to-cyan-500 text-white shadow-lg shadow-teal-500/20"
+          onClick={() => setIsCreateDialogOpen(true)}
+        >
           <Plus className="w-4 h-4 mr-2" />
           Add Doctor
         </Button>
@@ -195,6 +200,11 @@ function DoctorsPage() {
           className="border-none bg-transparent px-0 py-2 sm:py-2"
         />
       )}
+
+      <CreateDoctorDialog 
+        isOpen={isCreateDialogOpen} 
+        onClose={() => setIsCreateDialogOpen(false)} 
+      />
     </div>
   );
 }

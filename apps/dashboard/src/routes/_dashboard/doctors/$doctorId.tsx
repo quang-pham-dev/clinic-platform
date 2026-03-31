@@ -172,7 +172,7 @@ function DoctorDetailLayout() {
               <p className="text-xs text-gray-500">Consultation Fee</p>
               <p className="text-white font-semibold">
                 {doctor.consultationFee
-                  ? doctor.consultationFee.toLocaleString('vi-VN') + ' ₫'
+                  ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(doctor.consultationFee)
                   : '—'}
               </p>
             </div>
@@ -225,7 +225,7 @@ function DoctorDetailLayout() {
                 </div>
                 <div>
                   <label className="block text-xs text-gray-400 mb-1">
-                    Consultation Fee (VND)
+                    Consultation Fee (USD)
                   </label>
                   <input
                     type="number"
