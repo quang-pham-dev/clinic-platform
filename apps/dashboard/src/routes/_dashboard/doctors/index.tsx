@@ -3,28 +3,62 @@ import { DoctorsGrid } from '../../../features/doctors/components/doctors-grid';
 import { apiHooks } from '../../../lib/api';
 import { Button, Input, Pagination } from '@clinic-platform/ui';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { Plus, Search } from 'lucide-react';
+import { Filter, Plus, Search, X } from 'lucide-react';
+import * as React from 'react';
 
 type DoctorsSearch = {
   page?: number;
   limit?: number;
+  search?: string;
+  specialty?: string;
+  isAccepting?: string;
 };
 
 export const Route = createFileRoute('/_dashboard/doctors/')({
   validateSearch: (search: Record<string, unknown>): DoctorsSearch => ({
     page: search.page ? Number(search.page) : undefined,
     limit: search.limit ? Number(search.limit) : undefined,
+    search: search.search as string | undefined,
+    specialty: search.specialty as string | undefined,
+    isAccepting: search.isAccepting as string | undefined,
   }),
   component: DoctorsPage,
 });
 
+const SPECIALTIES = [
+  'Cardiology',
+  'Dermatology',
+  'General Practice',
+  'Gynecology',
+  'Internal Medicine',
+  'Neurology',
+  'Pediatrics',
+  'Psychiatry',
+  'Surgery',
+];
+
 function DoctorsPage() {
-  const { page = 1, limit = 12 } = Route.useSearch();
+  const {
+    page = 1,
+    limit = 12,
+    search,
+    specialty,
+    isAccepting,
+  } = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
+  const [searchInput, setSearchInput] = React.useState(search ?? '');
 
   const { data, isLoading } = apiHooks.doctors.useDoctors({
     page,
     limit,
+    search: search || undefined,
+    specialty: specialty || undefined,
+    isAcceptingPatients:
+      isAccepting === 'true'
+        ? true
+        : isAccepting === 'false'
+          ? false
+          : undefined,
   });
 
   const skeletonCards = Array.from(
@@ -41,6 +75,42 @@ function DoctorsPage() {
     });
   };
 
+  const handleSearch = () => {
+    navigate({
+      search: (prev) => ({
+        ...prev,
+        search: searchInput || undefined,
+        page: undefined,
+      }),
+    });
+  };
+
+  const handleSpecialtyFilter = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    navigate({
+      search: (prev) => ({
+        ...prev,
+        specialty: e.target.value || undefined,
+        page: undefined,
+      }),
+    });
+  };
+
+  const handleAcceptingFilter = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    navigate({
+      search: (prev) => ({
+        ...prev,
+        isAccepting: e.target.value || undefined,
+        page: undefined,
+      }),
+    });
+  };
+
+  const clearFilters = () => {
+    setSearchInput('');
+    navigate({ search: {} });
+  };
+
+  const hasFilters = !!(search || specialty || isAccepting);
   const meta = data?.meta;
 
   return (
@@ -58,15 +128,54 @@ function DoctorsPage() {
         </Button>
       </div>
 
-      <div className="flex items-center gap-3">
-        <div className="relative flex-1 max-w-sm">
+      {/* Filter bar */}
+      <div className="flex flex-wrap items-center gap-3">
+        <div className="relative flex-1 min-w-[200px] max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
           <Input
             type="text"
             placeholder="Search doctors by name or specialty..."
             className="pl-10 bg-gray-900/80 border-gray-800 text-white placeholder:text-gray-500"
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
           />
         </div>
+
+        <div className="flex items-center gap-2">
+          <Filter className="w-4 h-4 text-gray-400" />
+          <select
+            value={specialty ?? ''}
+            onChange={handleSpecialtyFilter}
+            className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-teal-500"
+          >
+            <option value="">All Specialties</option>
+            {SPECIALTIES.map((s) => (
+              <option key={s} value={s}>
+                {s}
+              </option>
+            ))}
+          </select>
+
+          <select
+            value={isAccepting ?? ''}
+            onChange={handleAcceptingFilter}
+            className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-teal-500"
+          >
+            <option value="">All Doctors</option>
+            <option value="true">Accepting Patients</option>
+            <option value="false">Not Accepting</option>
+          </select>
+        </div>
+
+        {hasFilters && (
+          <button
+            onClick={clearFilters}
+            className="flex items-center gap-1 text-xs text-gray-400 hover:text-white transition-colors"
+          >
+            <X className="w-3.5 h-3.5" /> Clear
+          </button>
+        )}
       </div>
 
       <DoctorsGrid
