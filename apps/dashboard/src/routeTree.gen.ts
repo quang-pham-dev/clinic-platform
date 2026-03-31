@@ -16,6 +16,9 @@ import { Route as AuthLoginRouteImport } from './routes/_auth/login'
 import { Route as DashboardPatientsIndexRouteImport } from './routes/_dashboard/patients/index'
 import { Route as DashboardDoctorsIndexRouteImport } from './routes/_dashboard/doctors/index'
 import { Route as DashboardBookingsIndexRouteImport } from './routes/_dashboard/bookings/index'
+import { Route as DashboardDoctorsDoctorIdRouteImport } from './routes/_dashboard/doctors/$doctorId'
+import { Route as DashboardBookingsBookingIdRouteImport } from './routes/_dashboard/bookings/$bookingId'
+import { Route as DashboardDoctorsDoctorIdSlotsRouteImport } from './routes/_dashboard/doctors/$doctorId/slots'
 
 const DashboardRoute = DashboardRouteImport.update({
   id: '/_dashboard',
@@ -50,20 +53,44 @@ const DashboardBookingsIndexRoute = DashboardBookingsIndexRouteImport.update({
   path: '/bookings/',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardDoctorsDoctorIdRoute =
+  DashboardDoctorsDoctorIdRouteImport.update({
+    id: '/doctors/$doctorId',
+    path: '/doctors/$doctorId',
+    getParentRoute: () => DashboardRoute,
+  } as any)
+const DashboardBookingsBookingIdRoute =
+  DashboardBookingsBookingIdRouteImport.update({
+    id: '/bookings/$bookingId',
+    path: '/bookings/$bookingId',
+    getParentRoute: () => DashboardRoute,
+  } as any)
+const DashboardDoctorsDoctorIdSlotsRoute =
+  DashboardDoctorsDoctorIdSlotsRouteImport.update({
+    id: '/slots',
+    path: '/slots',
+    getParentRoute: () => DashboardDoctorsDoctorIdRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof DashboardIndexRoute
   '/login': typeof AuthLoginRoute
+  '/bookings/$bookingId': typeof DashboardBookingsBookingIdRoute
+  '/doctors/$doctorId': typeof DashboardDoctorsDoctorIdRouteWithChildren
   '/bookings/': typeof DashboardBookingsIndexRoute
   '/doctors/': typeof DashboardDoctorsIndexRoute
   '/patients/': typeof DashboardPatientsIndexRoute
+  '/doctors/$doctorId/slots': typeof DashboardDoctorsDoctorIdSlotsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof DashboardIndexRoute
   '/login': typeof AuthLoginRoute
+  '/bookings/$bookingId': typeof DashboardBookingsBookingIdRoute
+  '/doctors/$doctorId': typeof DashboardDoctorsDoctorIdRouteWithChildren
   '/bookings': typeof DashboardBookingsIndexRoute
   '/doctors': typeof DashboardDoctorsIndexRoute
   '/patients': typeof DashboardPatientsIndexRoute
+  '/doctors/$doctorId/slots': typeof DashboardDoctorsDoctorIdSlotsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -71,24 +98,46 @@ export interface FileRoutesById {
   '/_dashboard': typeof DashboardRouteWithChildren
   '/_auth/login': typeof AuthLoginRoute
   '/_dashboard/': typeof DashboardIndexRoute
+  '/_dashboard/bookings/$bookingId': typeof DashboardBookingsBookingIdRoute
+  '/_dashboard/doctors/$doctorId': typeof DashboardDoctorsDoctorIdRouteWithChildren
   '/_dashboard/bookings/': typeof DashboardBookingsIndexRoute
   '/_dashboard/doctors/': typeof DashboardDoctorsIndexRoute
   '/_dashboard/patients/': typeof DashboardPatientsIndexRoute
+  '/_dashboard/doctors/$doctorId/slots': typeof DashboardDoctorsDoctorIdSlotsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/bookings/' | '/doctors/' | '/patients/'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/bookings/$bookingId'
+    | '/doctors/$doctorId'
+    | '/bookings/'
+    | '/doctors/'
+    | '/patients/'
+    | '/doctors/$doctorId/slots'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/bookings' | '/doctors' | '/patients'
+  to:
+    | '/'
+    | '/login'
+    | '/bookings/$bookingId'
+    | '/doctors/$doctorId'
+    | '/bookings'
+    | '/doctors'
+    | '/patients'
+    | '/doctors/$doctorId/slots'
   id:
     | '__root__'
     | '/_auth'
     | '/_dashboard'
     | '/_auth/login'
     | '/_dashboard/'
+    | '/_dashboard/bookings/$bookingId'
+    | '/_dashboard/doctors/$doctorId'
     | '/_dashboard/bookings/'
     | '/_dashboard/doctors/'
     | '/_dashboard/patients/'
+    | '/_dashboard/doctors/$doctorId/slots'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -147,6 +196,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardBookingsIndexRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/_dashboard/doctors/$doctorId': {
+      id: '/_dashboard/doctors/$doctorId'
+      path: '/doctors/$doctorId'
+      fullPath: '/doctors/$doctorId'
+      preLoaderRoute: typeof DashboardDoctorsDoctorIdRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/_dashboard/bookings/$bookingId': {
+      id: '/_dashboard/bookings/$bookingId'
+      path: '/bookings/$bookingId'
+      fullPath: '/bookings/$bookingId'
+      preLoaderRoute: typeof DashboardBookingsBookingIdRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/_dashboard/doctors/$doctorId/slots': {
+      id: '/_dashboard/doctors/$doctorId/slots'
+      path: '/slots'
+      fullPath: '/doctors/$doctorId/slots'
+      preLoaderRoute: typeof DashboardDoctorsDoctorIdSlotsRouteImport
+      parentRoute: typeof DashboardDoctorsDoctorIdRoute
+    }
   }
 }
 
@@ -160,8 +230,24 @@ const AuthRouteChildren: AuthRouteChildren = {
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
+interface DashboardDoctorsDoctorIdRouteChildren {
+  DashboardDoctorsDoctorIdSlotsRoute: typeof DashboardDoctorsDoctorIdSlotsRoute
+}
+
+const DashboardDoctorsDoctorIdRouteChildren: DashboardDoctorsDoctorIdRouteChildren =
+  {
+    DashboardDoctorsDoctorIdSlotsRoute: DashboardDoctorsDoctorIdSlotsRoute,
+  }
+
+const DashboardDoctorsDoctorIdRouteWithChildren =
+  DashboardDoctorsDoctorIdRoute._addFileChildren(
+    DashboardDoctorsDoctorIdRouteChildren,
+  )
+
 interface DashboardRouteChildren {
   DashboardIndexRoute: typeof DashboardIndexRoute
+  DashboardBookingsBookingIdRoute: typeof DashboardBookingsBookingIdRoute
+  DashboardDoctorsDoctorIdRoute: typeof DashboardDoctorsDoctorIdRouteWithChildren
   DashboardBookingsIndexRoute: typeof DashboardBookingsIndexRoute
   DashboardDoctorsIndexRoute: typeof DashboardDoctorsIndexRoute
   DashboardPatientsIndexRoute: typeof DashboardPatientsIndexRoute
@@ -169,6 +255,8 @@ interface DashboardRouteChildren {
 
 const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardIndexRoute: DashboardIndexRoute,
+  DashboardBookingsBookingIdRoute: DashboardBookingsBookingIdRoute,
+  DashboardDoctorsDoctorIdRoute: DashboardDoctorsDoctorIdRouteWithChildren,
   DashboardBookingsIndexRoute: DashboardBookingsIndexRoute,
   DashboardDoctorsIndexRoute: DashboardDoctorsIndexRoute,
   DashboardPatientsIndexRoute: DashboardPatientsIndexRoute,

@@ -3,6 +3,7 @@ import { TimeSlot } from './entities/time-slot.entity';
 import { JwtPayload } from '@/common/types/jwt-payload.interface';
 import { Role } from '@/common/types/role.enum';
 import { DoctorsService } from '@/modules/doctors/doctors.service';
+import { ERROR_CODES, ERROR_MESSAGES } from '@clinic-platform/types';
 import {
   ConflictException,
   ForbiddenException,
@@ -53,7 +54,10 @@ export class SlotsService {
       },
     });
     if (existing) {
-      throw new ConflictException({ code: 'SLOT_OVERLAP' });
+      throw new ConflictException({
+        code: ERROR_CODES.SLOT_OVERLAP,
+        message: ERROR_MESSAGES.SLOT_OVERLAP,
+      });
     }
 
     const slot = this.slotsRepository.create({
@@ -155,10 +159,15 @@ export class SlotsService {
     const slot = await this.slotsRepository.findOne({
       where: { id: slotId, doctorId },
     });
-    if (!slot) throw new NotFoundException({ code: 'SLOT_NOT_FOUND' });
+    if (!slot)
+      throw new NotFoundException({
+        code: ERROR_CODES.SLOT_NOT_FOUND,
+        message: ERROR_MESSAGES.SLOT_NOT_FOUND,
+      });
     if (!slot.isAvailable) {
       throw new UnprocessableEntityException({
-        code: 'SLOT_HAS_ACTIVE_BOOKING',
+        code: ERROR_CODES.SLOT_HAS_ACTIVE_BOOKING,
+        message: ERROR_MESSAGES.SLOT_HAS_ACTIVE_BOOKING,
       });
     }
 

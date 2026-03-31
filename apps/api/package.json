@@ -46,6 +46,7 @@
     "dotenv": "^17.3.1",
     "helmet": "catalog:nestjs",
     "ioredis": "catalog:nestjs",
+    "joi": "^18.1.2",
     "passport": "catalog:nestjs",
     "passport-jwt": "catalog:nestjs",
     "passport-local": "catalog:nestjs",

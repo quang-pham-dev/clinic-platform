@@ -4,6 +4,9 @@
   "globalEnv": [
     "NODE_ENV",
     "LOG_LEVEL",
+    "PORT",
+    "API_PREFIX",
+    "CORS_ORIGIN",
     "DB_HOST",
     "DB_PORT",
     "DB_NAME",
