@@ -38,8 +38,10 @@ export const queryKeys = {
   slots: {
     all: ['slots'] as const,
     lists: () => [...queryKeys.slots.all, 'list'] as const,
+    listsForDoctor: (doctorId: string) =>
+      [...queryKeys.slots.lists(), doctorId] as const,
     list: (doctorId: string, params?: Record<string, unknown>) =>
-      [...queryKeys.slots.lists(), doctorId, params] as const,
+      [...queryKeys.slots.listsForDoctor(doctorId), params] as const,
     details: () => [...queryKeys.slots.all, 'detail'] as const,
     detail: (doctorId: string, slotId: string) =>
       [...queryKeys.slots.details(), doctorId, slotId] as const,
