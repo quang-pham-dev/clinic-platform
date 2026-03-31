@@ -14,6 +14,7 @@ export type {
   CreateBookingRequest,
   UpdateBookingStatusRequest,
   BookingSlot,
+  BookingAuditLog,
   Booking,
   BookingQueryParams,
 } from './bookings';
@@ -21,6 +22,7 @@ export type {
 // Doctor types
 export type {
   UpdateDoctorRequest,
+  CreateDoctorRequest,
   DoctorProfile,
   Doctor,
   DoctorQueryParams,
