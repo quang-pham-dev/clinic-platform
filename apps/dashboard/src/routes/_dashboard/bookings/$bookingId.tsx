@@ -289,12 +289,12 @@ function BookingDetailPage() {
               </div>
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-teal-500/10 border border-teal-500/20 flex items-center justify-center text-teal-400 font-semibold">
-                  {(booking.doctor?.profile?.fullName ?? 'D').charAt(0)}
+                  {(booking.doctor?.user?.profile?.fullName ?? 'D').charAt(0)}
                 </div>
                 <div>
                   <p className="text-white font-medium">
-                    {booking.doctor?.profile?.fullName
-                      ? `Dr. ${booking.doctor.profile.fullName}`
+                    {booking.doctor?.user?.profile?.fullName
+                      ? `Dr. ${booking.doctor.user.profile.fullName}`
                       : 'Unknown Doctor'}
                   </p>
                   <p className="text-xs text-gray-500">

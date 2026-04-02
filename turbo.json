@@ -7,6 +7,7 @@
     "PORT",
     "API_PREFIX",
     "CORS_ORIGIN",
+    "NEXT_PUBLIC_API_URL",
     "DB_HOST",
     "DB_PORT",
     "DB_NAME",

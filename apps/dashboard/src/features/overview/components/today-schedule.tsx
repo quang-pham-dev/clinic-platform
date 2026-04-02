@@ -108,8 +108,8 @@ export function TodaySchedule() {
                   <div className="flex items-center gap-1.5 text-xs text-gray-500">
                     <Stethoscope className="w-3 h-3" />
                     <span className="truncate">
-                      {booking.doctor?.profile?.fullName
-                        ? `Dr. ${booking.doctor.profile.fullName}`
+                      {booking.doctor?.user?.profile?.fullName
+                        ? `Dr. ${booking.doctor.user.profile.fullName}`
                         : 'Unknown'}
                     </span>
                   </div>

@@ -3,9 +3,9 @@
 ### Master Documentation
 
 > **Project code:** `CLINIC-BOOKING-P1`
-> **Version:** 1.0.0
-> **Status:** In development
-> **Last updated:** 2026-03-23
+> **Version:** 1.1.0
+> **Status:** ✅ Complete
+> **Last updated:** 2026-03-31
 
 ---
 
@@ -19,14 +19,14 @@ P1 establishes the core foundation: authentication, role-based access control, d
 
 ## Documentation Index
 
-| # | File | Description | Audience |
-|---|------|-------------|----------|
-| 1 | [PRD — Product Requirements](./01-PRD.md) | Goals, user stories, acceptance criteria, out-of-scope | PM, Team Lead |
-| 2 | [System Architecture](./02-system-architecture.md) | Tech stack, layers, module structure, deployment overview | Tech Lead, Full-stack |
-| 3 | [Database Schema](./03-database-schema.md) | ERD, table definitions, indexes, constraints, seed data | Backend, DBA |
-| 4 | [API Specification](./04-api-specification.md) | All endpoints, request/response shapes, error codes | Backend, Frontend |
-| 5 | [Auth & Security](./05-auth-and-security.md) | JWT strategy, RBAC, refresh rotation, token storage | Backend, Security |
-| 6 | [Booking State Machine](./06-booking-state-machine.md) | States, transitions, guards, business rules, audit | Backend, PM |
+| #   | File                                                   | Description                                               | Audience              |
+| --- | ------------------------------------------------------ | --------------------------------------------------------- | --------------------- |
+| 1   | [PRD — Product Requirements](./01-PRD.md)              | Goals, user stories, acceptance criteria, out-of-scope    | PM, Team Lead         |
+| 2   | [System Architecture](./02-system-architecture.md)     | Tech stack, layers, module structure, deployment overview | Tech Lead, Full-stack |
+| 3   | [Database Schema](./03-database-schema.md)             | ERD, table definitions, indexes, constraints, seed data   | Backend, DBA          |
+| 4   | [API Specification](./04-api-specification.md)         | All endpoints, request/response shapes, error codes       | Backend, Frontend     |
+| 5   | [Auth & Security](./05-auth-and-security.md)           | JWT strategy, RBAC, refresh rotation, token storage       | Backend, Security     |
+| 6   | [Booking State Machine](./06-booking-state-machine.md) | States, transitions, guards, business rules, audit        | Backend, PM           |
 
 ---
 
@@ -206,25 +206,25 @@ stateDiagram-v2
 
 ## Project Deliverables
 
-| Deliverable | Description |
-|-------------|-------------|
-| NestJS REST API | Core backend with all modules |
+| Deliverable            | Description                                            |
+| ---------------------- | ------------------------------------------------------ |
+| NestJS REST API        | Core backend with all modules                          |
 | Vite + React Dashboard | Internal admin + doctor management UI (TanStack Start) |
-| Next.js Member Web App | Patient-facing appointment portal (SSR) |
-| PostgreSQL schema | Migrations via TypeORM |
-| API documentation | Swagger UI auto-generated |
-| Seed data | Dev + staging environment seeds |
+| Next.js Member Web App | Patient-facing appointment portal (SSR)                |
+| PostgreSQL schema      | Migrations via TypeORM                                 |
+| API documentation      | Swagger UI auto-generated                              |
+| Seed data              | Dev + staging environment seeds                        |
 
 ---
 
 ## Timeline
 
-| Week | Focus |
-|------|-------|
+| Week   | Focus                                                             |
+| ------ | ----------------------------------------------------------------- |
 | Week 1 | Project scaffolding, DB schema, Auth module (login, JWT, refresh) |
-| Week 2 | Doctor module, Patient module, time slot generation |
-| Week 3 | Booking module, state machine, booking APIs |
-| Week 4 | Dashboard UI, Member web app, integration testing, Swagger docs |
+| Week 2 | Doctor module, Patient module, time slot generation               |
+| Week 3 | Booking module, state machine, booking APIs                       |
+| Week 4 | Dashboard UI, Member web app, integration testing, Swagger docs   |
 
 ---
 
@@ -244,13 +244,13 @@ stateDiagram-v2
 
 ## Glossary
 
-| Term | Definition |
-|------|-----------:|
-| Appointment | A confirmed booking between a patient and a doctor |
-| Time slot | A fixed-duration availability window defined by a doctor |
-| Booking | The act of a patient requesting a time slot (may be pending or confirmed) |
-| Admin | Clinic staff with full management access |
-| Patient | A registered user who books appointments |
-| Doctor | A registered user who owns time slots and handles appointments |
-| Rotation | The process of replacing a refresh token with a new one on each use |
-| State machine | The logic engine that controls valid appointment status transitions |
+| Term          |                                                                Definition |
+| ------------- | ------------------------------------------------------------------------: |
+| Appointment   |                        A confirmed booking between a patient and a doctor |
+| Time slot     |                  A fixed-duration availability window defined by a doctor |
+| Booking       | The act of a patient requesting a time slot (may be pending or confirmed) |
+| Admin         |                                  Clinic staff with full management access |
+| Patient       |                                  A registered user who books appointments |
+| Doctor        |            A registered user who owns time slots and handles appointments |
+| Rotation      |       The process of replacing a refresh token with a new one on each use |
+| State machine |       The logic engine that controls valid appointment status transitions |

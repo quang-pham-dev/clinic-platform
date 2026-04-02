@@ -44,3 +44,20 @@ export type {
   CreateSlotBulkRequest,
   SlotQueryParams,
 } from './slots';
+
+// Department types (P2)
+export type {
+  Department,
+  DepartmentListItem,
+  CreateDepartmentRequest,
+  UpdateDepartmentRequest,
+} from './departments';
+
+// Staff types (P2)
+export type {
+  StaffMember,
+  StaffProfileSummary,
+  StaffQueryParams,
+  CreateStaffRequest,
+  UpdateStaffRequest,
+} from './staff';

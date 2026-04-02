@@ -12,9 +12,11 @@ import { AuthModule } from './modules/auth/auth.module';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { RolesGuard } from './modules/auth/guards/roles.guard';
 import { BookingsModule } from './modules/bookings/bookings.module';
+import { DepartmentsModule } from './modules/departments/departments.module';
 import { DoctorsModule } from './modules/doctors/doctors.module';
 import { HealthModule } from './modules/health/health.module';
 import { SlotsModule } from './modules/slots/slots.module';
+import { StaffModule } from './modules/staff/staff.module';
 import { SystemModule } from './modules/system/system.module';
 import { UsersModule } from './modules/users/users.module';
 import { createNestLoggerModule } from '@clinic-platform/logger/nestjs';
@@ -69,6 +71,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     DoctorsModule,
     SlotsModule,
     BookingsModule,
+    DepartmentsModule,
+    StaffModule,
   ],
   providers: [
     // Global request/response logging with correlation IDs

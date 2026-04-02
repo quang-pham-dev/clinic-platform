@@ -10,6 +10,8 @@ export default defineConfig((options) => ({
     'modules/doctors': 'src/modules/doctors.ts',
     'modules/patients': 'src/modules/patients.ts',
     'modules/slots': 'src/modules/slots.ts',
+    'modules/departments': 'src/modules/departments.ts',
+    'modules/staff': 'src/modules/staff.ts',
     'hooks/index': 'src/hooks/index.ts',
   },
   format: ['esm'],
