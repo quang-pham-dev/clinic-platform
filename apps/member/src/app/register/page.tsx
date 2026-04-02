@@ -173,7 +173,7 @@ export default function RegisterPage() {
                   name="phone"
                   value={formData.phone}
                   onChange={handleChange}
-                  placeholder="0901234567"
+                  placeholder="555-123-4567"
                   className={inputClasses}
                 />
               </div>

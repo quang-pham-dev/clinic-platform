@@ -30,7 +30,7 @@ export class RegisterDto {
   @MaxLength(255)
   fullName: string;
 
-  @ApiPropertyOptional({ example: '0901234567' })
+  @ApiPropertyOptional({ example: '555-0100' })
   @IsOptional()
   @IsString()
   @MaxLength(20)

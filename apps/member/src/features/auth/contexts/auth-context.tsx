@@ -2,6 +2,7 @@
 
 import { apiClient } from '@/lib/api';
 import type { AuthUser } from '@clinic-platform/api-client';
+import { useQueryClient } from '@tanstack/react-query';
 import * as React from 'react';
 
 interface AuthContextType {
@@ -24,6 +25,7 @@ const AuthContext = React.createContext<AuthContextType | null>(null);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = React.useState<AuthUser | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
+  const queryClient = useQueryClient();
 
   React.useEffect(() => {
     const token = localStorage.getItem('access_token');
@@ -38,16 +40,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(false);
   }, []);
 
-  const login = React.useCallback(async (email: string, password: string) => {
-    const res = await apiClient.auth.login({ email, password });
-    const { accessToken, refreshToken, user: authUser } = res.data;
-    localStorage.setItem('access_token', accessToken);
-    if (refreshToken) {
-      localStorage.setItem('refresh_token', refreshToken);
-    }
-    localStorage.setItem('auth_user', JSON.stringify(authUser));
-    setUser(authUser);
-  }, []);
+  const login = React.useCallback(
+    async (email: string, password: string) => {
+      // Clear any stale cache from a previous session before logging in
+      queryClient.clear();
+
+      const res = await apiClient.auth.login({ email, password });
+      const { accessToken, refreshToken, user: authUser } = res.data;
+      localStorage.setItem('access_token', accessToken);
+      if (refreshToken) {
+        localStorage.setItem('refresh_token', refreshToken);
+      }
+      localStorage.setItem('auth_user', JSON.stringify(authUser));
+      setUser(authUser);
+    },
+    [queryClient],
+  );
 
   const register = React.useCallback(
     async (data: {
@@ -72,8 +80,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
     localStorage.removeItem('auth_user');
+    // Clear all cached queries so the next user sees fresh data
+    queryClient.clear();
     setUser(null);
-  }, []);
+  }, [queryClient]);
 
   const value = React.useMemo(
     () => ({

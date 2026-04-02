@@ -58,7 +58,7 @@ async function seed() {
 
       if (role === 'doctor' && doctorData) {
         await doctorsRepo.query(
-          `INSERT INTO doctors (user_id, specialty, license_number, bio, consultation_fee, is_accepting_patients) 
+          `INSERT INTO doctors (user_id, specialty, license_number, bio, consultation_fee, is_accepting_patients)
            VALUES ($1, $2, $3, $4, $5, $6)`,
           [
             user.id,
@@ -84,7 +84,7 @@ async function seed() {
     const doctors = [
       {
         email: 'dr.nguyen@clinic.local',
-        name: 'Dr. Pham Ngoc Quang',
+        name: 'Dr. Quang Pham',
         specialty: 'General Practice',
         license: 'GP-001',
         bio: '15 years of experience in general practice. Dedicated to holistic family care.',
@@ -92,7 +92,7 @@ async function seed() {
       },
       {
         email: 'dr.tran@clinic.local',
-        name: 'Dr. Tran Thi B',
+        name: 'Dr. Sarah Brown',
         specialty: 'Cardiology',
         license: 'CARD-002',
         bio: 'Specialist in cardiovascular disease and echocardiography.',
@@ -100,7 +100,7 @@ async function seed() {
       },
       {
         email: 'dr.le@clinic.local',
-        name: 'Dr. Le Van C',
+        name: 'Dr. Michael Chen',
         specialty: 'Dermatology',
         license: 'DERM-003',
         bio: 'Board-certified dermatologist treating all conditions of hair, skin, and nails.',
@@ -108,7 +108,7 @@ async function seed() {
       },
       {
         email: 'dr.pham@clinic.local',
-        name: 'Dr. Pham Thi D',
+        name: 'Dr. Emily Davis',
         specialty: 'Neurology',
         license: 'NEUR-004',
         bio: 'Expert in neurological disorders, specializing in migraine and epilepsy management.',
@@ -116,7 +116,7 @@ async function seed() {
       },
       {
         email: 'dr.vu@clinic.local',
-        name: 'Dr. Vu Dang E',
+        name: 'Dr. Robert Taylor',
         specialty: 'Pediatrics',
         license: 'PED-005',
         bio: 'Compassionate pediatric care for infants to teens.',
@@ -144,20 +144,20 @@ async function seed() {
     const patients = [
       {
         email: 'patient@example.com',
-        name: 'Nguyen Van Patient',
-        phone: '0901234567',
+        name: 'John Smith',
+        phone: '555-0101',
         dob: '1990-01-15',
       },
       {
         email: 'patient2@example.com',
-        name: 'Tran Thi Patient',
-        phone: '0912345678',
+        name: 'Jane Doe',
+        phone: '555-0102',
         dob: '1985-05-20',
       },
       {
         email: 'patient3@example.com',
-        name: 'Le Van Patient',
-        phone: '0923456789',
+        name: 'Bob Johnson',
+        phone: '555-0103',
         dob: '1995-10-10',
       },
     ];
@@ -210,7 +210,7 @@ async function seed() {
           const endTime = `${endHour.toString().padStart(2, '0')}:${(endMin % 60).toString().padStart(2, '0')}`;
 
           await slotsRepo.query(
-            `INSERT INTO time_slots (doctor_id, slot_date, start_time, end_time, is_available) 
+            `INSERT INTO time_slots (doctor_id, slot_date, start_time, end_time, is_available)
              VALUES ($1, $2, $3, $4, $5) ON CONFLICT DO NOTHING`,
             [docId, dateStr, `${time}:00`, `${endTime}:00`, true],
           );
@@ -360,8 +360,8 @@ async function seed() {
             email: 'headnurse@clinic.local',
             password: 'HeadNurse@123',
             role: 'head_nurse',
-            fullName: 'Nguyen Thi Mai',
-            phone: '0901234567',
+            fullName: 'Mary Johnson',
+            phone: '555-0101',
             department: 'Emergency',
             employeeNumber: 'HN-001',
           },
@@ -369,8 +369,8 @@ async function seed() {
             email: 'nurse1@clinic.local',
             password: 'Nurse@123',
             role: 'nurse',
-            fullName: 'Tran Thi An',
-            phone: '0912345678',
+            fullName: 'Lisa Anderson',
+            phone: '555-0102',
             department: 'Emergency',
             employeeNumber: 'NRS-001',
           },
@@ -378,8 +378,8 @@ async function seed() {
             email: 'nurse2@clinic.local',
             password: 'Nurse@123',
             role: 'nurse',
-            fullName: 'Le Van Binh',
-            phone: '0923456789',
+            fullName: 'David Martinez',
+            phone: '555-0103',
             department: 'General Ward',
             employeeNumber: 'NRS-002',
           },
@@ -387,8 +387,8 @@ async function seed() {
             email: 'receptionist1@clinic.local',
             password: 'Recept@123',
             role: 'receptionist',
-            fullName: 'Pham Thi Hoa',
-            phone: '0934567890',
+            fullName: 'Karen White',
+            phone: '555-0104',
             department: 'Outpatient Clinic',
             employeeNumber: 'RCP-001',
           },
@@ -396,8 +396,8 @@ async function seed() {
             email: 'nurse3@clinic.local',
             password: 'Nurse@123',
             role: 'nurse',
-            fullName: 'Vo Minh Hoang',
-            phone: '0945678901',
+            fullName: 'Kevin Lee',
+            phone: '555-0105',
             department: 'General Ward',
             employeeNumber: 'NRS-003',
           },

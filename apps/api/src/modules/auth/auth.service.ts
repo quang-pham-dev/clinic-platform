@@ -1,6 +1,8 @@
 import { RegisterDto } from './dto/register.dto';
 import { RedisService } from './redis/redis.service';
 import { JwtPayload } from '@/common/types/jwt-payload.interface';
+import { Role } from '@/common/types/role.enum';
+import { StaffProfile } from '@/modules/staff/entities/staff-profile.entity';
 import { User } from '@/modules/users/entities/user.entity';
 import { UsersService } from '@/modules/users/users.service';
 import {
@@ -85,10 +87,24 @@ export class AuthService {
   }
 
   async login(user: User) {
+    // P2: Embed departmentId in JWT for staff roles (CASL department-scoping)
+    let departmentId: string | undefined;
+    const staffRoles: Role[] = [Role.HEAD_NURSE, Role.NURSE, Role.RECEPTIONIST];
+    if (staffRoles.includes(user.role as Role)) {
+      const staffProfile = await this.dataSource
+        .getRepository(StaffProfile)
+        .findOne({
+          where: { userId: user.id },
+          select: ['departmentId'],
+        });
+      departmentId = staffProfile?.departmentId ?? undefined;
+    }
+
     const payload: JwtPayload = {
       sub: user.id,
       email: user.email,
       role: user.role,
+      ...(departmentId && { departmentId }),
     };
 
     const accessToken = this.jwtService.sign(payload, {
