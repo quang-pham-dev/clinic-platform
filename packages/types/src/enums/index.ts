@@ -9,6 +9,9 @@ export enum Role {
   PATIENT = 'patient',
   DOCTOR = 'doctor',
   ADMIN = 'admin',
+  HEAD_NURSE = 'head_nurse',
+  NURSE = 'nurse',
+  RECEPTIONIST = 'receptionist',
 }
 
 /**

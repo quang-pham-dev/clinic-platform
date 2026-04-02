@@ -1,6 +1,7 @@
 import { queryKeys } from '../core/query-keys';
 import type {
   DeactivateUserResponse,
+  UpdateProfileRequest,
   User,
   UserQueryParams,
 } from '../modules/patients';
@@ -43,6 +44,38 @@ export function createUsersHooks(service: UsersService) {
         queryFn: () => service.getById(id),
         enabled: !!id,
         ...options,
+      });
+    },
+
+    useMe: (
+      options?: Omit<
+        UseQueryOptions<ApiResponse<User>, Error>,
+        'queryKey' | 'queryFn'
+      >,
+    ) => {
+      return useQuery({
+        queryKey: ['users', 'me'],
+        queryFn: () => service.getMe(),
+        staleTime: 60_000,
+        ...options,
+      });
+    },
+
+    useUpdateProfile: (
+      options?: Omit<
+        UseMutationOptions<ApiResponse<User>, Error, UpdateProfileRequest>,
+        'mutationFn'
+      >,
+    ) => {
+      const queryClient = useQueryClient();
+      const { onSuccess, ...restOptions } = options ?? {};
+      return useMutation({
+        mutationFn: (data: UpdateProfileRequest) => service.updateMe(data),
+        onSuccess: (data, vars, _mutateResult, ctx) => {
+          queryClient.invalidateQueries({ queryKey: ['users', 'me'] });
+          onSuccess?.(data, vars, _mutateResult, ctx);
+        },
+        ...restOptions,
       });
     },
 

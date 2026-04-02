@@ -15,3 +15,10 @@ export {
 export { createSlotsService, type SlotsService } from './slots.service';
 
 export { createUsersService, type UsersService } from './users.service';
+
+export {
+  createDepartmentsService,
+  type DepartmentsService,
+} from './departments.service';
+
+export { createStaffService, type StaffService } from './staff.service';

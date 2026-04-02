@@ -136,6 +136,23 @@ export class SlotsService {
     return { created: savedSlots.length, skipped, slots: savedSlots };
   }
 
+  /**
+   * Find a single slot by ID with doctor details.
+   */
+  async findById(slotId: string) {
+    const slot = await this.slotsRepository.findOne({
+      where: { id: slotId },
+      relations: ['doctor', 'doctor.user', 'doctor.user.profile'],
+    });
+    if (!slot) {
+      throw new NotFoundException({
+        code: ERROR_CODES.SLOT_NOT_FOUND,
+        message: ERROR_MESSAGES.SLOT_NOT_FOUND,
+      });
+    }
+    return slot;
+  }
+
   async findAll(doctorId: string, opts: FindAllOpts) {
     const qb = this.slotsRepository
       .createQueryBuilder('slot')

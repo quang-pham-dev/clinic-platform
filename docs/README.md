@@ -1,8 +1,8 @@
 # Healthcare Clinic Platform — Documentation Hub
 
-> **Version:** 1.0.0
-> **Last updated:** 2026-03-19
-> **Status:** Pre-development — documentation phase
+> **Version:** 1.1.0
+> **Last updated:** 2026-03-31
+> **Status:** P1 ✅ Complete — P2 planned
 
 ---
 
@@ -16,42 +16,42 @@ A progressive 5-phase healthcare platform that evolves from a single-clinic appo
 
 ### Cross-Cutting Docs (apply to all phases)
 
-| Document | Description |
-|----------|-------------|
-| [Monorepo Strategy](./00-monorepo-strategy.md) | pnpm + Turborepo workspace layout, shared packages, tooling |
-| [Testing Strategy](./00-testing-strategy.md) | Backend + frontend testing frameworks, CI pipeline, coverage targets |
-| [Error Handling & Resilience](./00-error-handling-and-resilience.md) | Circuit breakers, graceful degradation, health checks, DLQ |
-| [Observability & Logging](./00-observability-and-logging.md) | pino setup, correlation IDs, structured logging, PII redaction |
-| [API Versioning](./00-api-versioning.md) | URL-based versioning rules, breaking change policy, deprecation |
-| [Cross-Phase Dependencies](./CROSS_PHASE_DEPENDENCIES.md) | What each phase modifies in earlier phases |
+| Document                                                             | Description                                                          |
+| -------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| [Monorepo Strategy](./00-monorepo-strategy.md)                       | pnpm + Turborepo workspace layout, shared packages, tooling          |
+| [Testing Strategy](./00-testing-strategy.md)                         | Backend + frontend testing frameworks, CI pipeline, coverage targets |
+| [Error Handling & Resilience](./00-error-handling-and-resilience.md) | Circuit breakers, graceful degradation, health checks, DLQ           |
+| [Observability & Logging](./00-observability-and-logging.md)         | pino setup, correlation IDs, structured logging, PII redaction       |
+| [API Versioning](./00-api-versioning.md)                             | URL-based versioning rules, breaking change policy, deprecation      |
+| [Cross-Phase Dependencies](./CROSS_PHASE_DEPENDENCIES.md)            | What each phase modifies in earlier phases                           |
 
 ### Phase Documentation
 
-| Phase | Name | Scope | Docs |
-|-------|------|-------|------|
-| **P1** | [Clinic Appointment Booking](./1%20Clinic%20Appointment%20Booking/README.md) | Auth, RBAC, booking, time slots, state machine | 6 docs |
-| **P2** | [Staff & Shift Management](./2%20Staff%20%26%20Shift%20Management%20Dashboard/README.md) | Departments, shifts, CASL, WebSocket broadcasts | 6 docs |
-| **P3** | [Telemedicine & Notifications](./3%20Telemedicine%20and%20Realtime%20Notification%20Platform/README.md) | WebRTC video, BullMQ, email/SMS, notification pipeline | 7 docs |
-| **P4** | [Patient Portal & CMS](./4%20Patient%20Portal%20and%20Strapi%20CMS/README.md) | Strapi CMS, medical records, consent forms, file uploads | 7 docs |
-| **P5** | [Multi-Clinic SaaS](./5%20Multi-Clinic%20SaaS%20Platform/README.md) | Multi-tenancy, Stripe billing, API gateway, observability | 7 docs |
+| Phase  | Name                                                                                                    | Scope                                                     | Docs   |
+| ------ | ------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- | ------ |
+| **P1** | [Clinic Appointment Booking](./1%20Clinic%20Appointment%20Booking/README.md)                            | Auth, RBAC, booking, time slots, state machine            | 6 docs |
+| **P2** | [Staff & Shift Management](./2%20Staff%20%26%20Shift%20Management%20Dashboard/README.md)                | Departments, shifts, CASL, WebSocket broadcasts           | 6 docs |
+| **P3** | [Telemedicine & Notifications](./3%20Telemedicine%20and%20Realtime%20Notification%20Platform/README.md) | WebRTC video, BullMQ, email/SMS, notification pipeline    | 7 docs |
+| **P4** | [Patient Portal & CMS](./4%20Patient%20Portal%20and%20Strapi%20CMS/README.md)                           | Strapi CMS, medical records, consent forms, file uploads  | 7 docs |
+| **P5** | [Multi-Clinic SaaS](./5%20Multi-Clinic%20SaaS%20Platform/README.md)                                     | Multi-tenancy, Stripe billing, API gateway, observability | 7 docs |
 
 ---
 
 ## Tech Stack Summary
 
-| Layer | Technology |
-|-------|-----------|
-| **Backend** | NestJS (Modular monolith) |
-| **Admin Dashboard** | Vite + React 18 (TanStack Router/Query/Table/Form) |
-| **Member Portal** | Next.js 16 (App Router, SSR/SSG/ISR) |
-| **Staff App** | Next.js (App Router) — P2+ |
-| **CMS** | Strapi v5 — P4+ |
-| **Database** | PostgreSQL 16 + TypeORM |
-| **Cache / Queues** | Redis 7 (tokens, WS rooms, BullMQ, feature flags) |
-| **Monorepo** | pnpm + Turborepo |
-| **Testing** | Jest (backend) + Vitest (FE unit) + Playwright (E2E) |
-| **Logging** | pino (structured JSON) |
-| **CI/CD** | GitHub Actions — P5 |
+| Layer               | Technology                                                   |
+| ------------------- | ------------------------------------------------------------ |
+| **Backend**         | NestJS (Modular monolith)                                    |
+| **Admin Dashboard** | TanStack Start + React 19 (TanStack Router/Query/Table/Form) |
+| **Member Portal**   | Next.js 16 (App Router, SSR/SSG/ISR)                         |
+| **Staff App**       | Next.js (App Router) — P2+                                   |
+| **CMS**             | Strapi v5 — P4+                                              |
+| **Database**        | PostgreSQL 16 + TypeORM                                      |
+| **Cache / Queues**  | Redis 7 (tokens, WS rooms, BullMQ, feature flags)            |
+| **Monorepo**        | pnpm + Turborepo                                             |
+| **Testing**         | Jest (backend) + Vitest (FE unit) + Playwright (E2E)         |
+| **Logging**         | pino (structured JSON)                                       |
+| **CI/CD**           | GitHub Actions — P5                                          |
 
 ---
 
