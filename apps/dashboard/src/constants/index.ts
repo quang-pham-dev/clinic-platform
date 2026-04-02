@@ -9,6 +9,8 @@ export const ROUTES = {
   BOOKINGS: '/bookings',
   DOCTORS: '/doctors',
   PATIENTS: '/patients',
+  DEPARTMENTS: '/departments',
+  STAFF: '/staff',
 } as const;
 
 export const QUERY_DEFAULTS = {
@@ -30,6 +32,8 @@ export const NAV_LABELS = {
   BOOKINGS: 'Bookings',
   DOCTORS: 'Doctors',
   PATIENTS: 'Patients',
+  DEPARTMENTS: 'Departments',
+  STAFF: 'Staff',
   SIGN_OUT: 'Sign out',
 } as const;
 

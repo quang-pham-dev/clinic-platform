@@ -23,7 +23,7 @@ export class CreateDoctorDto {
   @IsString()
   fullName: string;
 
-  @ApiPropertyOptional({ example: '0901234567' })
+  @ApiPropertyOptional({ example: '555-0100' })
   @IsOptional()
   @IsString()
   phone?: string;

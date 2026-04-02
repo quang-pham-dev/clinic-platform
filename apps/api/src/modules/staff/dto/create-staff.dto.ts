@@ -18,7 +18,7 @@ export enum StaffRole {
 }
 
 export class CreateStaffDto {
-  @ApiProperty({ example: 'nurse.an@clinic.local' })
+  @ApiProperty({ example: 'nurse.johnson@clinic.local' })
   @IsEmail()
   @IsNotEmpty()
   email: string;
@@ -39,12 +39,12 @@ export class CreateStaffDto {
   @IsOptional()
   departmentId?: string;
 
-  @ApiProperty({ example: 'Tran Thi An' })
+  @ApiProperty({ example: 'Jane Smith' })
   @IsString()
   @IsNotEmpty()
   fullName: string;
 
-  @ApiProperty({ example: '0912345678', required: false })
+  @ApiProperty({ example: '555-0100', required: false })
   @IsString()
   @IsOptional()
   phone?: string;
