@@ -8,7 +8,7 @@ export class UpdateProfileDto {
   @MaxLength(255)
   fullName?: string;
 
-  @ApiPropertyOptional({ example: '0901234568' })
+  @ApiPropertyOptional({ example: '555-0200' })
   @IsOptional()
   @IsString()
   @MaxLength(20)

@@ -196,7 +196,7 @@ export default function ProfilePage() {
               value={formData.phone}
               onChange={handleChange}
               disabled={!isEditing}
-              placeholder="0901234567"
+              placeholder="555-123-4567"
               className={inputClasses}
             />
           </div>

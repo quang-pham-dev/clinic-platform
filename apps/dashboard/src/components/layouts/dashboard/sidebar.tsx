@@ -3,10 +3,12 @@ import { useAuthStore } from '../../../features/auth/store/auth.store';
 import { api } from '../../../lib/api';
 import { Link } from '@tanstack/react-router';
 import {
+  Building2,
   CalendarCheck,
   LayoutDashboard,
   LogOut,
   Stethoscope,
+  UserCog,
   Users,
   X,
 } from 'lucide-react';
@@ -17,6 +19,8 @@ const navItems = [
   { to: ROUTES.BOOKINGS, label: NAV_LABELS.BOOKINGS, icon: CalendarCheck },
   { to: ROUTES.DOCTORS, label: NAV_LABELS.DOCTORS, icon: Stethoscope },
   { to: ROUTES.PATIENTS, label: NAV_LABELS.PATIENTS, icon: Users },
+  { to: ROUTES.DEPARTMENTS, label: NAV_LABELS.DEPARTMENTS, icon: Building2 },
+  { to: ROUTES.STAFF, label: NAV_LABELS.STAFF, icon: UserCog },
 ] as const;
 
 interface SidebarProps {

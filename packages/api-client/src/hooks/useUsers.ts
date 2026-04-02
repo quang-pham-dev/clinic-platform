@@ -56,7 +56,8 @@ export function createUsersHooks(service: UsersService) {
       return useQuery({
         queryKey: ['users', 'me'],
         queryFn: () => service.getMe(),
-        staleTime: 60_000,
+        // No staleTime override — use the global default (30s).
+        // Profile data must always be fresh per authenticated user.
         ...options,
       });
     },

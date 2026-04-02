@@ -12,12 +12,12 @@ export class UpdateStaffDto {
   @IsOptional()
   employeeNumber?: string;
 
-  @ApiProperty({ example: 'Tran Thi An Updated', required: false })
+  @ApiProperty({ example: 'Jane Smith Updated', required: false })
   @IsString()
   @IsOptional()
   fullName?: string;
 
-  @ApiProperty({ example: '0912345678', required: false })
+  @ApiProperty({ example: '555-0100', required: false })
   @IsString()
   @IsOptional()
   phone?: string;

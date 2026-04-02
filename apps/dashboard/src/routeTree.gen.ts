@@ -13,8 +13,10 @@ import { Route as DashboardRouteImport } from './routes/_dashboard'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as DashboardIndexRouteImport } from './routes/_dashboard/index'
 import { Route as AuthLoginRouteImport } from './routes/_auth/login'
+import { Route as DashboardStaffIndexRouteImport } from './routes/_dashboard/staff/index'
 import { Route as DashboardPatientsIndexRouteImport } from './routes/_dashboard/patients/index'
 import { Route as DashboardDoctorsIndexRouteImport } from './routes/_dashboard/doctors/index'
+import { Route as DashboardDepartmentsIndexRouteImport } from './routes/_dashboard/departments/index'
 import { Route as DashboardBookingsIndexRouteImport } from './routes/_dashboard/bookings/index'
 import { Route as DashboardDoctorsDoctorIdRouteImport } from './routes/_dashboard/doctors/$doctorId'
 import { Route as DashboardBookingsBookingIdRouteImport } from './routes/_dashboard/bookings/$bookingId'
@@ -38,6 +40,11 @@ const AuthLoginRoute = AuthLoginRouteImport.update({
   path: '/login',
   getParentRoute: () => AuthRoute,
 } as any)
+const DashboardStaffIndexRoute = DashboardStaffIndexRouteImport.update({
+  id: '/staff/',
+  path: '/staff/',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardPatientsIndexRoute = DashboardPatientsIndexRouteImport.update({
   id: '/patients/',
   path: '/patients/',
@@ -48,6 +55,12 @@ const DashboardDoctorsIndexRoute = DashboardDoctorsIndexRouteImport.update({
   path: '/doctors/',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardDepartmentsIndexRoute =
+  DashboardDepartmentsIndexRouteImport.update({
+    id: '/departments/',
+    path: '/departments/',
+    getParentRoute: () => DashboardRoute,
+  } as any)
 const DashboardBookingsIndexRoute = DashboardBookingsIndexRouteImport.update({
   id: '/bookings/',
   path: '/bookings/',
@@ -78,8 +91,10 @@ export interface FileRoutesByFullPath {
   '/bookings/$bookingId': typeof DashboardBookingsBookingIdRoute
   '/doctors/$doctorId': typeof DashboardDoctorsDoctorIdRouteWithChildren
   '/bookings/': typeof DashboardBookingsIndexRoute
+  '/departments/': typeof DashboardDepartmentsIndexRoute
   '/doctors/': typeof DashboardDoctorsIndexRoute
   '/patients/': typeof DashboardPatientsIndexRoute
+  '/staff/': typeof DashboardStaffIndexRoute
   '/doctors/$doctorId/slots': typeof DashboardDoctorsDoctorIdSlotsRoute
 }
 export interface FileRoutesByTo {
@@ -88,8 +103,10 @@ export interface FileRoutesByTo {
   '/bookings/$bookingId': typeof DashboardBookingsBookingIdRoute
   '/doctors/$doctorId': typeof DashboardDoctorsDoctorIdRouteWithChildren
   '/bookings': typeof DashboardBookingsIndexRoute
+  '/departments': typeof DashboardDepartmentsIndexRoute
   '/doctors': typeof DashboardDoctorsIndexRoute
   '/patients': typeof DashboardPatientsIndexRoute
+  '/staff': typeof DashboardStaffIndexRoute
   '/doctors/$doctorId/slots': typeof DashboardDoctorsDoctorIdSlotsRoute
 }
 export interface FileRoutesById {
@@ -101,8 +118,10 @@ export interface FileRoutesById {
   '/_dashboard/bookings/$bookingId': typeof DashboardBookingsBookingIdRoute
   '/_dashboard/doctors/$doctorId': typeof DashboardDoctorsDoctorIdRouteWithChildren
   '/_dashboard/bookings/': typeof DashboardBookingsIndexRoute
+  '/_dashboard/departments/': typeof DashboardDepartmentsIndexRoute
   '/_dashboard/doctors/': typeof DashboardDoctorsIndexRoute
   '/_dashboard/patients/': typeof DashboardPatientsIndexRoute
+  '/_dashboard/staff/': typeof DashboardStaffIndexRoute
   '/_dashboard/doctors/$doctorId/slots': typeof DashboardDoctorsDoctorIdSlotsRoute
 }
 export interface FileRouteTypes {
@@ -113,8 +132,10 @@ export interface FileRouteTypes {
     | '/bookings/$bookingId'
     | '/doctors/$doctorId'
     | '/bookings/'
+    | '/departments/'
     | '/doctors/'
     | '/patients/'
+    | '/staff/'
     | '/doctors/$doctorId/slots'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -123,8 +144,10 @@ export interface FileRouteTypes {
     | '/bookings/$bookingId'
     | '/doctors/$doctorId'
     | '/bookings'
+    | '/departments'
     | '/doctors'
     | '/patients'
+    | '/staff'
     | '/doctors/$doctorId/slots'
   id:
     | '__root__'
@@ -135,8 +158,10 @@ export interface FileRouteTypes {
     | '/_dashboard/bookings/$bookingId'
     | '/_dashboard/doctors/$doctorId'
     | '/_dashboard/bookings/'
+    | '/_dashboard/departments/'
     | '/_dashboard/doctors/'
     | '/_dashboard/patients/'
+    | '/_dashboard/staff/'
     | '/_dashboard/doctors/$doctorId/slots'
   fileRoutesById: FileRoutesById
 }
@@ -175,6 +200,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLoginRouteImport
       parentRoute: typeof AuthRoute
     }
+    '/_dashboard/staff/': {
+      id: '/_dashboard/staff/'
+      path: '/staff'
+      fullPath: '/staff/'
+      preLoaderRoute: typeof DashboardStaffIndexRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/_dashboard/patients/': {
       id: '/_dashboard/patients/'
       path: '/patients'
@@ -187,6 +219,13 @@ declare module '@tanstack/react-router' {
       path: '/doctors'
       fullPath: '/doctors/'
       preLoaderRoute: typeof DashboardDoctorsIndexRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/_dashboard/departments/': {
+      id: '/_dashboard/departments/'
+      path: '/departments'
+      fullPath: '/departments/'
+      preLoaderRoute: typeof DashboardDepartmentsIndexRouteImport
       parentRoute: typeof DashboardRoute
     }
     '/_dashboard/bookings/': {
@@ -249,8 +288,10 @@ interface DashboardRouteChildren {
   DashboardBookingsBookingIdRoute: typeof DashboardBookingsBookingIdRoute
   DashboardDoctorsDoctorIdRoute: typeof DashboardDoctorsDoctorIdRouteWithChildren
   DashboardBookingsIndexRoute: typeof DashboardBookingsIndexRoute
+  DashboardDepartmentsIndexRoute: typeof DashboardDepartmentsIndexRoute
   DashboardDoctorsIndexRoute: typeof DashboardDoctorsIndexRoute
   DashboardPatientsIndexRoute: typeof DashboardPatientsIndexRoute
+  DashboardStaffIndexRoute: typeof DashboardStaffIndexRoute
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
@@ -258,8 +299,10 @@ const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardBookingsBookingIdRoute: DashboardBookingsBookingIdRoute,
   DashboardDoctorsDoctorIdRoute: DashboardDoctorsDoctorIdRouteWithChildren,
   DashboardBookingsIndexRoute: DashboardBookingsIndexRoute,
+  DashboardDepartmentsIndexRoute: DashboardDepartmentsIndexRoute,
   DashboardDoctorsIndexRoute: DashboardDoctorsIndexRoute,
   DashboardPatientsIndexRoute: DashboardPatientsIndexRoute,
+  DashboardStaffIndexRoute: DashboardStaffIndexRoute,
 }
 
 const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
