@@ -1,0 +1,40 @@
+{
+  "name": "@clinic-platform/member",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --port 3001",
+    "build": "next build",
+    "start": "next start --port 3001",
+    "lint": "eslint . --max-warnings 0",
+    "lint:fix": "eslint . --max-warnings 0 --fix",
+    "format": "prettier --check .",
+    "format:fix": "prettier --write .",
+    "check-types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@clinic-platform/api-client": "workspace:*",
+    "@clinic-platform/design-system": "workspace:*",
+    "@clinic-platform/types": "workspace:*",
+    "@clinic-platform/ui": "workspace:*",
+    "@tanstack/react-query": "^5.0.0",
+    "date-fns": "^4.1.0",
+    "lucide-react": "catalog:web-ui",
+    "next": "catalog:nextjs",
+    "react": "catalog:react19",
+    "react-dom": "catalog:react19"
+  },
+  "devDependencies": {
+    "@clinic-platform/eslint-config": "workspace:*",
+    "@clinic-platform/prettier-config": "workspace:*",
+    "@clinic-platform/typescript-config": "workspace:*",
+    "@tailwindcss/postcss": "catalog:web-ui",
+    "@types/node": "catalog:",
+    "@types/react": "catalog:react19",
+    "@types/react-dom": "catalog:react19",
+    "postcss": "catalog:web-ui",
+    "tailwindcss": "catalog:web-ui",
+    "typescript": "catalog:"
+  },
+  "prettier": "@clinic-platform/prettier-config/base"
+}

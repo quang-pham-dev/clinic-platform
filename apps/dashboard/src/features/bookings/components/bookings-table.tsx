@@ -54,7 +54,7 @@ export function BookingsTable({
           </div>
         ),
       }),
-      columnHelper.accessor((row) => row.doctor?.profile?.fullName, {
+      columnHelper.accessor((row) => row.doctor?.user?.profile?.fullName, {
         id: 'doctor',
         header: 'Doctor',
         cell: (info) => (

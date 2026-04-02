@@ -253,19 +253,9 @@ async function seed() {
         if (!slot) return;
 
         const [booking] = await bookingsRepo.query(
-          `INSERT INTO appointments (patient_id, doctor_id, slot_id, appointment_date, start_time, end_time, status, reason, clinical_notes)
-           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id`,
-          [
-            pId,
-            slot.doctor_id,
-            slot.id,
-            slot.slot_date,
-            slot.start_time,
-            slot.end_time,
-            status,
-            'Routine checkup',
-            notes,
-          ],
+          `INSERT INTO appointments (patient_id, doctor_id, slot_id, status, notes)
+           VALUES ($1, $2, $3, $4, $5) RETURNING id`,
+          [pId, slot.doctor_id, slot.id, status, notes || null],
         );
 
         await slotsRepo.query(
@@ -323,12 +313,155 @@ async function seed() {
       );
     }
 
+    // ────────────────────────────────────────────────
+    // P2: Departments
+    // ────────────────────────────────────────────────
+    const [existingDepts] = await dataSource.query(
+      `SELECT COUNT(*) as count FROM information_schema.tables WHERE table_name = 'departments'`,
+    );
+    if (parseInt(existingDepts?.count || '0', 10) > 0) {
+      const [deptsCount] = await dataSource.query(
+        `SELECT COUNT(*) as count FROM departments`,
+      );
+      if (parseInt(deptsCount?.count || '0', 10) === 0) {
+        const departments = [
+          {
+            name: 'Emergency',
+            description:
+              'Handles urgent and life-threatening medical conditions.',
+          },
+          {
+            name: 'General Ward',
+            description: 'Inpatient care for general medical conditions.',
+          },
+          {
+            name: 'Outpatient Clinic',
+            description: 'Walk-in and scheduled consultations.',
+          },
+        ];
+
+        const deptIds: Record<string, string> = {};
+        for (const dept of departments) {
+          const [row] = await dataSource.query(
+            `INSERT INTO departments (name, description) VALUES ($1, $2) RETURNING id`,
+            [dept.name, dept.description],
+          );
+          deptIds[dept.name] = row.id;
+        }
+        console.log(
+          `✅ Created ${departments.length} departments: ${departments.map((d) => d.name).join(', ')}`,
+        );
+
+        // ────────────────────────────────────────────────
+        // P2: Staff users + profiles
+        // ────────────────────────────────────────────────
+        const staffMembers = [
+          {
+            email: 'headnurse@clinic.local',
+            password: 'HeadNurse@123',
+            role: 'head_nurse',
+            fullName: 'Nguyen Thi Mai',
+            phone: '0901234567',
+            department: 'Emergency',
+            employeeNumber: 'HN-001',
+          },
+          {
+            email: 'nurse1@clinic.local',
+            password: 'Nurse@123',
+            role: 'nurse',
+            fullName: 'Tran Thi An',
+            phone: '0912345678',
+            department: 'Emergency',
+            employeeNumber: 'NRS-001',
+          },
+          {
+            email: 'nurse2@clinic.local',
+            password: 'Nurse@123',
+            role: 'nurse',
+            fullName: 'Le Van Binh',
+            phone: '0923456789',
+            department: 'General Ward',
+            employeeNumber: 'NRS-002',
+          },
+          {
+            email: 'receptionist1@clinic.local',
+            password: 'Recept@123',
+            role: 'receptionist',
+            fullName: 'Pham Thi Hoa',
+            phone: '0934567890',
+            department: 'Outpatient Clinic',
+            employeeNumber: 'RCP-001',
+          },
+          {
+            email: 'nurse3@clinic.local',
+            password: 'Nurse@123',
+            role: 'nurse',
+            fullName: 'Vo Minh Hoang',
+            phone: '0945678901',
+            department: 'General Ward',
+            employeeNumber: 'NRS-003',
+          },
+        ];
+
+        const SALT_ROUNDS = 12;
+        for (const staff of staffMembers) {
+          const hash = await bcrypt.hash(staff.password, SALT_ROUNDS);
+
+          // Create user
+          const [user] = await dataSource.query(
+            `INSERT INTO users (email, password_hash, role)
+             VALUES ($1, $2, $3::user_role) RETURNING id`,
+            [staff.email, hash, staff.role],
+          );
+
+          // Create user profile
+          await dataSource.query(
+            `INSERT INTO user_profiles (user_id, full_name, phone) VALUES ($1, $2, $3)`,
+            [user.id, staff.fullName, staff.phone],
+          );
+
+          // Create staff profile
+          await dataSource.query(
+            `INSERT INTO staff_profiles (user_id, department_id, staff_role, employee_number, hire_date)
+             VALUES ($1, $2, $3, $4, $5)`,
+            [
+              user.id,
+              deptIds[staff.department],
+              staff.role,
+              staff.employeeNumber,
+              '2025-01-15',
+            ],
+          );
+        }
+
+        // Set head nurse for Emergency department
+        const [headNurseUser] = await dataSource.query(
+          `SELECT id FROM users WHERE email = 'headnurse@clinic.local'`,
+        );
+        if (headNurseUser) {
+          await dataSource.query(
+            `UPDATE departments SET head_nurse_id = $1 WHERE name = 'Emergency'`,
+            [headNurseUser.id],
+          );
+        }
+
+        console.log(`✅ Created ${staffMembers.length} staff members.`);
+      } else {
+        console.log('⏭️  Departments already exist, skipping P2 seed.');
+      }
+    } else {
+      console.log('⏭️  departments table not found — run P2 migrations first.');
+    }
+
     console.log('\n🌟 Seed complete!');
     console.log('\nTest credentials (Role: Email / Password):');
-    console.log('  Admin:   admin@clinic.local   / Admin@123');
-    console.log('  Doctor:  dr.nguyen@clinic.local / Doctor@123');
-    console.log('  Doctor:  dr.tran@clinic.local / Doctor@123');
-    console.log('  Patient: patient@example.com  / Patient@123');
+    console.log('  Admin:        admin@clinic.local       / Admin@123');
+    console.log('  Doctor:       dr.nguyen@clinic.local   / Doctor@123');
+    console.log('  Doctor:       dr.tran@clinic.local     / Doctor@123');
+    console.log('  Patient:      patient@example.com      / Patient@123');
+    console.log('  Head Nurse:   headnurse@clinic.local   / HeadNurse@123');
+    console.log('  Nurse:        nurse1@clinic.local      / Nurse@123');
+    console.log('  Receptionist: receptionist1@clinic.local / Recept@123');
   } finally {
     await dataSource.destroy();
   }

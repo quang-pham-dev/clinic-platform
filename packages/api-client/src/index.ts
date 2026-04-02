@@ -2,20 +2,26 @@ import type { ClientConfig, HttpClient } from './core/client';
 import { createHttpClient } from './core/client';
 import { createAuthHooks } from './hooks/useAuth';
 import { createBookingHooks } from './hooks/useBookings';
+import { createDepartmentsHooks } from './hooks/useDepartments';
 import { createDoctorsHooks } from './hooks/useDoctors';
 import { createPatientsHooks } from './hooks/usePatients';
 import { createSlotsHooks } from './hooks/useSlots';
+import { createStaffHooks } from './hooks/useStaff';
 import { createUsersHooks } from './hooks/useUsers';
 import type { AuthService } from './services/auth.service';
 import { createAuthService } from './services/auth.service';
 import type { BookingsService } from './services/bookings.service';
 import { createBookingsService } from './services/bookings.service';
+import type { DepartmentsService } from './services/departments.service';
+import { createDepartmentsService } from './services/departments.service';
 import type { DoctorsService } from './services/doctors.service';
 import { createDoctorsService } from './services/doctors.service';
 import type { PatientsService } from './services/patients.service';
 import { createPatientsService } from './services/patients.service';
 import type { SlotsService } from './services/slots.service';
 import { createSlotsService } from './services/slots.service';
+import type { StaffService } from './services/staff.service';
+import { createStaffService } from './services/staff.service';
 import type { UsersService } from './services/users.service';
 import { createUsersService } from './services/users.service';
 
@@ -38,12 +44,16 @@ export {
   createPatientsService,
   createSlotsService,
   createUsersService,
+  createDepartmentsService,
+  createStaffService,
   type AuthService,
   type BookingsService,
   type DoctorsService,
   type PatientsService,
   type SlotsService,
   type UsersService,
+  type DepartmentsService,
+  type StaffService,
 } from './services';
 
 export {
@@ -53,6 +63,8 @@ export {
   createPatientsHooks,
   createSlotsHooks,
   createUsersHooks,
+  createDepartmentsHooks,
+  createStaffHooks,
 } from './hooks';
 
 /**
@@ -67,6 +79,8 @@ export interface ApiClient {
   patients: PatientsService;
   slots: SlotsService;
   users: UsersService;
+  departments: DepartmentsService;
+  staff: StaffService;
 }
 
 /**
@@ -99,6 +113,8 @@ export function createApiClient(config: ClientConfig): ApiClient {
     patients: createPatientsService(http),
     slots: createSlotsService(http),
     users: createUsersService(http),
+    departments: createDepartmentsService(http),
+    staff: createStaffService(http),
   };
 }
 
@@ -122,5 +138,7 @@ export function createAllHooks(client: ApiClient) {
     patients: createPatientsHooks(client.patients),
     slots: createSlotsHooks(client.slots),
     users: createUsersHooks(client.users),
+    departments: createDepartmentsHooks(client.departments),
+    staff: createStaffHooks(client.staff),
   };
 }

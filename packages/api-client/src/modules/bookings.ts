@@ -35,8 +35,10 @@ export interface Booking {
   doctor: {
     id: string;
     specialty: string;
-    profile: {
-      fullName: string;
+    user: {
+      profile: {
+        fullName: string;
+      };
     };
   };
   patient: {

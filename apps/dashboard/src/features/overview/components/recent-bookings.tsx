@@ -82,7 +82,7 @@ export function RecentBookings({
                   {booking.patient?.profile?.fullName || 'Unknown Patient'}
                 </p>
                 <p className="text-xs text-gray-400 truncate">
-                  with {booking.doctor?.profile?.fullName} •{' '}
+                  with {booking.doctor?.user?.profile?.fullName} •{' '}
                   {format(new Date(booking.slot.slotDate), 'MMM d, yyyy')} at{' '}
                   {booking.slot.startTime.substring(0, 5)}
                 </p>
