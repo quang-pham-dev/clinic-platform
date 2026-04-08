@@ -1,3 +1,4 @@
+import { SHIFT_PRESET_COLORS } from '@clinic-platform/types';
 import * as bcrypt from 'bcrypt';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
@@ -451,6 +452,122 @@ async function seed() {
       }
     } else {
       console.log('⏭️  departments table not found — run P2 migrations first.');
+    }
+
+    // ────────────────────────────────────────────────
+    // P2: Shift Templates + Sample Assignments
+    // ────────────────────────────────────────────────
+    const [shiftTablesExist] = await dataSource.query(
+      `SELECT COUNT(*) as count FROM information_schema.tables WHERE table_name = 'shift_templates'`,
+    );
+    if (parseInt(shiftTablesExist?.count || '0', 10) > 0) {
+      const [templatesCount] = await dataSource.query(
+        `SELECT COUNT(*) as count FROM shift_templates`,
+      );
+      if (parseInt(templatesCount?.count || '0', 10) === 0) {
+        const templates = [
+          {
+            name: 'Morning',
+            startTime: '07:00:00',
+            endTime: '15:00:00',
+            colorHex: SHIFT_PRESET_COLORS[0],
+          },
+          {
+            name: 'Afternoon',
+            startTime: '15:00:00',
+            endTime: '23:00:00',
+            colorHex: SHIFT_PRESET_COLORS[1],
+          },
+          {
+            name: 'Night',
+            startTime: '23:00:00',
+            endTime: '07:00:00',
+            colorHex: SHIFT_PRESET_COLORS[2],
+          },
+          {
+            name: 'On-call',
+            startTime: '00:00:00',
+            endTime: '23:59:00',
+            colorHex: SHIFT_PRESET_COLORS[3],
+          },
+        ];
+
+        const templateIds: Record<string, string> = {};
+        for (const t of templates) {
+          const [row] = await dataSource.query(
+            `INSERT INTO shift_templates (name, start_time, end_time, color_hex) VALUES ($1, $2, $3, $4) RETURNING id`,
+            [t.name, t.startTime, t.endTime, t.colorHex],
+          );
+          templateIds[t.name] = row.id;
+        }
+        console.log(
+          `✅ Created ${templates.length} shift templates: ${templates.map((t) => t.name).join(', ')}`,
+        );
+
+        // Create sample shift assignments for the next 7 days
+        const [assignmentsExist] = await dataSource.query(
+          `SELECT COUNT(*) as count FROM shift_assignments`,
+        );
+        if (parseInt(assignmentsExist?.count || '0', 10) === 0) {
+          // Get staff user IDs + their department IDs
+          const staffRows = await dataSource.query(
+            `SELECT sp.user_id as "userId", sp.department_id as "departmentId"
+             FROM staff_profiles sp
+             JOIN users u ON u.id = sp.user_id
+             WHERE u.is_active = true
+             LIMIT 5`,
+          );
+
+          // Get admin ID for created_by
+          const [adminRow] = await dataSource.query(
+            `SELECT id FROM users WHERE email = 'admin@clinic.local'`,
+          );
+          const adminId = adminRow?.id;
+
+          if (staffRows.length > 0 && adminId) {
+            const shiftToday = new Date();
+            let assignmentCount = 0;
+
+            const templateNames = ['Morning', 'Afternoon', 'Night'];
+
+            for (let dayOffset = 0; dayOffset < 7; dayOffset++) {
+              const d = new Date(shiftToday);
+              d.setDate(shiftToday.getDate() + dayOffset);
+              if (d.getDay() === 0) continue; // skip Sunday
+              const dateStr = d.toISOString().split('T')[0];
+
+              for (let i = 0; i < staffRows.length; i++) {
+                const staff = staffRows[i];
+                const templateName = templateNames[i % templateNames.length]!;
+                const tplId = templateIds[templateName];
+
+                if (!staff || !tplId || !staff.departmentId) continue;
+
+                try {
+                  await dataSource.query(
+                    `INSERT INTO shift_assignments (staff_id, template_id, department_id, shift_date, status, created_by)
+                     VALUES ($1, $2, $3, $4, 'scheduled', $5)
+                     ON CONFLICT DO NOTHING`,
+                    [staff.userId, tplId, staff.departmentId, dateStr, adminId],
+                  );
+                  assignmentCount++;
+                } catch {
+                  // ignore duplicates
+                }
+              }
+            }
+            console.log(
+              `✅ Created ~${assignmentCount} sample shift assignments.`,
+            );
+          }
+        }
+      } else {
+        console.log('⏭️  Shift templates already exist, skipping.');
+      }
+    } else {
+      console.log(
+        '⏭️  shift_templates table not found — run H migrations first.',
+      );
     }
 
     console.log('\n🌟 Seed complete!');

@@ -6,3 +6,5 @@ export { createSlotsHooks } from './useSlots';
 export { createUsersHooks } from './useUsers';
 export { createDepartmentsHooks } from './useDepartments';
 export { createStaffHooks } from './useStaff';
+export { createShiftTemplatesHooks } from './useShiftTemplates';
+export { createShiftsHooks } from './useShifts';

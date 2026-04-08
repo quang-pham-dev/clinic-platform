@@ -22,3 +22,10 @@ export {
 } from './departments.service';
 
 export { createStaffService, type StaffService } from './staff.service';
+
+export {
+  createShiftTemplatesService,
+  type ShiftTemplatesService,
+} from './shift-templates.service';
+
+export { createShiftsService, type ShiftsService } from './shifts.service';
