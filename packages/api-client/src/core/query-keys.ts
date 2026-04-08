@@ -73,4 +73,23 @@ export const queryKeys = {
     details: () => [...queryKeys.staff.all, 'detail'] as const,
     detail: (id: string) => [...queryKeys.staff.details(), id] as const,
   },
+
+  shiftTemplates: {
+    all: ['shiftTemplates'] as const,
+    lists: () => [...queryKeys.shiftTemplates.all, 'list'] as const,
+    list: (params?: Record<string, unknown>) =>
+      [...queryKeys.shiftTemplates.lists(), params] as const,
+    details: () => [...queryKeys.shiftTemplates.all, 'detail'] as const,
+    detail: (id: string) =>
+      [...queryKeys.shiftTemplates.details(), id] as const,
+  },
+
+  shifts: {
+    all: ['shifts'] as const,
+    lists: () => [...queryKeys.shifts.all, 'list'] as const,
+    list: (params?: Record<string, unknown>) =>
+      [...queryKeys.shifts.lists(), params] as const,
+    details: () => [...queryKeys.shifts.all, 'detail'] as const,
+    detail: (id: string) => [...queryKeys.shifts.details(), id] as const,
+  },
 } as const;

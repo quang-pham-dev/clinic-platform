@@ -11,6 +11,8 @@ export const ROUTES = {
   PATIENTS: '/patients',
   DEPARTMENTS: '/departments',
   STAFF: '/staff',
+  SHIFT_TEMPLATES: '/shift-templates',
+  SHIFTS: '/shifts',
 } as const;
 
 export const QUERY_DEFAULTS = {
@@ -34,6 +36,8 @@ export const NAV_LABELS = {
   PATIENTS: 'Patients',
   DEPARTMENTS: 'Departments',
   STAFF: 'Staff',
+  SHIFT_TEMPLATES: 'Shift Templates',
+  SHIFTS: 'Shifts',
   SIGN_OUT: 'Sign out',
 } as const;
 

@@ -3,7 +3,7 @@ import { DepartmentsTable } from '../../../features/departments/components/depar
 import { apiHooks } from '../../../lib/api';
 import type { DepartmentListItem } from '@clinic-platform/api-client';
 import { Button } from '@clinic-platform/ui';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { Plus } from 'lucide-react';
 import * as React from 'react';
 
@@ -12,6 +12,7 @@ export const Route = createFileRoute('/_dashboard/departments/')({
 });
 
 function DepartmentsPage() {
+  const navigate = useNavigate();
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [dialogMode, setDialogMode] = React.useState<'create' | 'edit'>(
     'create',
@@ -66,6 +67,12 @@ function DepartmentsPage() {
       <DepartmentsTable
         departments={departments}
         isLoading={isLoading}
+        onView={(id) =>
+          navigate({
+            to: '/departments/$departmentId',
+            params: { departmentId: id },
+          })
+        }
         onEdit={handleEdit}
         onDeactivate={handleDeactivate}
       />

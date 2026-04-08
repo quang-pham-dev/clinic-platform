@@ -14,12 +14,15 @@ import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as DashboardIndexRouteImport } from './routes/_dashboard/index'
 import { Route as AuthLoginRouteImport } from './routes/_auth/login'
 import { Route as DashboardStaffIndexRouteImport } from './routes/_dashboard/staff/index'
+import { Route as DashboardShiftsIndexRouteImport } from './routes/_dashboard/shifts/index'
+import { Route as DashboardShiftTemplatesIndexRouteImport } from './routes/_dashboard/shift-templates/index'
 import { Route as DashboardPatientsIndexRouteImport } from './routes/_dashboard/patients/index'
 import { Route as DashboardDoctorsIndexRouteImport } from './routes/_dashboard/doctors/index'
 import { Route as DashboardDepartmentsIndexRouteImport } from './routes/_dashboard/departments/index'
 import { Route as DashboardBookingsIndexRouteImport } from './routes/_dashboard/bookings/index'
 import { Route as DashboardDoctorsDoctorIdRouteImport } from './routes/_dashboard/doctors/$doctorId'
 import { Route as DashboardBookingsBookingIdRouteImport } from './routes/_dashboard/bookings/$bookingId'
+import { Route as DashboardDepartmentsDepartmentIdIndexRouteImport } from './routes/_dashboard/departments/$departmentId/index'
 import { Route as DashboardDoctorsDoctorIdSlotsRouteImport } from './routes/_dashboard/doctors/$doctorId/slots'
 
 const DashboardRoute = DashboardRouteImport.update({
@@ -45,6 +48,17 @@ const DashboardStaffIndexRoute = DashboardStaffIndexRouteImport.update({
   path: '/staff/',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardShiftsIndexRoute = DashboardShiftsIndexRouteImport.update({
+  id: '/shifts/',
+  path: '/shifts/',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardShiftTemplatesIndexRoute =
+  DashboardShiftTemplatesIndexRouteImport.update({
+    id: '/shift-templates/',
+    path: '/shift-templates/',
+    getParentRoute: () => DashboardRoute,
+  } as any)
 const DashboardPatientsIndexRoute = DashboardPatientsIndexRouteImport.update({
   id: '/patients/',
   path: '/patients/',
@@ -78,6 +92,12 @@ const DashboardBookingsBookingIdRoute =
     path: '/bookings/$bookingId',
     getParentRoute: () => DashboardRoute,
   } as any)
+const DashboardDepartmentsDepartmentIdIndexRoute =
+  DashboardDepartmentsDepartmentIdIndexRouteImport.update({
+    id: '/departments/$departmentId/',
+    path: '/departments/$departmentId/',
+    getParentRoute: () => DashboardRoute,
+  } as any)
 const DashboardDoctorsDoctorIdSlotsRoute =
   DashboardDoctorsDoctorIdSlotsRouteImport.update({
     id: '/slots',
@@ -94,8 +114,11 @@ export interface FileRoutesByFullPath {
   '/departments/': typeof DashboardDepartmentsIndexRoute
   '/doctors/': typeof DashboardDoctorsIndexRoute
   '/patients/': typeof DashboardPatientsIndexRoute
+  '/shift-templates/': typeof DashboardShiftTemplatesIndexRoute
+  '/shifts/': typeof DashboardShiftsIndexRoute
   '/staff/': typeof DashboardStaffIndexRoute
   '/doctors/$doctorId/slots': typeof DashboardDoctorsDoctorIdSlotsRoute
+  '/departments/$departmentId/': typeof DashboardDepartmentsDepartmentIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof DashboardIndexRoute
@@ -106,8 +129,11 @@ export interface FileRoutesByTo {
   '/departments': typeof DashboardDepartmentsIndexRoute
   '/doctors': typeof DashboardDoctorsIndexRoute
   '/patients': typeof DashboardPatientsIndexRoute
+  '/shift-templates': typeof DashboardShiftTemplatesIndexRoute
+  '/shifts': typeof DashboardShiftsIndexRoute
   '/staff': typeof DashboardStaffIndexRoute
   '/doctors/$doctorId/slots': typeof DashboardDoctorsDoctorIdSlotsRoute
+  '/departments/$departmentId': typeof DashboardDepartmentsDepartmentIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -121,8 +147,11 @@ export interface FileRoutesById {
   '/_dashboard/departments/': typeof DashboardDepartmentsIndexRoute
   '/_dashboard/doctors/': typeof DashboardDoctorsIndexRoute
   '/_dashboard/patients/': typeof DashboardPatientsIndexRoute
+  '/_dashboard/shift-templates/': typeof DashboardShiftTemplatesIndexRoute
+  '/_dashboard/shifts/': typeof DashboardShiftsIndexRoute
   '/_dashboard/staff/': typeof DashboardStaffIndexRoute
   '/_dashboard/doctors/$doctorId/slots': typeof DashboardDoctorsDoctorIdSlotsRoute
+  '/_dashboard/departments/$departmentId/': typeof DashboardDepartmentsDepartmentIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -135,8 +164,11 @@ export interface FileRouteTypes {
     | '/departments/'
     | '/doctors/'
     | '/patients/'
+    | '/shift-templates/'
+    | '/shifts/'
     | '/staff/'
     | '/doctors/$doctorId/slots'
+    | '/departments/$departmentId/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -147,8 +179,11 @@ export interface FileRouteTypes {
     | '/departments'
     | '/doctors'
     | '/patients'
+    | '/shift-templates'
+    | '/shifts'
     | '/staff'
     | '/doctors/$doctorId/slots'
+    | '/departments/$departmentId'
   id:
     | '__root__'
     | '/_auth'
@@ -161,8 +196,11 @@ export interface FileRouteTypes {
     | '/_dashboard/departments/'
     | '/_dashboard/doctors/'
     | '/_dashboard/patients/'
+    | '/_dashboard/shift-templates/'
+    | '/_dashboard/shifts/'
     | '/_dashboard/staff/'
     | '/_dashboard/doctors/$doctorId/slots'
+    | '/_dashboard/departments/$departmentId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -207,6 +245,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardStaffIndexRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/_dashboard/shifts/': {
+      id: '/_dashboard/shifts/'
+      path: '/shifts'
+      fullPath: '/shifts/'
+      preLoaderRoute: typeof DashboardShiftsIndexRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/_dashboard/shift-templates/': {
+      id: '/_dashboard/shift-templates/'
+      path: '/shift-templates'
+      fullPath: '/shift-templates/'
+      preLoaderRoute: typeof DashboardShiftTemplatesIndexRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/_dashboard/patients/': {
       id: '/_dashboard/patients/'
       path: '/patients'
@@ -247,6 +299,13 @@ declare module '@tanstack/react-router' {
       path: '/bookings/$bookingId'
       fullPath: '/bookings/$bookingId'
       preLoaderRoute: typeof DashboardBookingsBookingIdRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/_dashboard/departments/$departmentId/': {
+      id: '/_dashboard/departments/$departmentId/'
+      path: '/departments/$departmentId'
+      fullPath: '/departments/$departmentId/'
+      preLoaderRoute: typeof DashboardDepartmentsDepartmentIdIndexRouteImport
       parentRoute: typeof DashboardRoute
     }
     '/_dashboard/doctors/$doctorId/slots': {
@@ -291,7 +350,10 @@ interface DashboardRouteChildren {
   DashboardDepartmentsIndexRoute: typeof DashboardDepartmentsIndexRoute
   DashboardDoctorsIndexRoute: typeof DashboardDoctorsIndexRoute
   DashboardPatientsIndexRoute: typeof DashboardPatientsIndexRoute
+  DashboardShiftTemplatesIndexRoute: typeof DashboardShiftTemplatesIndexRoute
+  DashboardShiftsIndexRoute: typeof DashboardShiftsIndexRoute
   DashboardStaffIndexRoute: typeof DashboardStaffIndexRoute
+  DashboardDepartmentsDepartmentIdIndexRoute: typeof DashboardDepartmentsDepartmentIdIndexRoute
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
@@ -302,7 +364,11 @@ const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardDepartmentsIndexRoute: DashboardDepartmentsIndexRoute,
   DashboardDoctorsIndexRoute: DashboardDoctorsIndexRoute,
   DashboardPatientsIndexRoute: DashboardPatientsIndexRoute,
+  DashboardShiftTemplatesIndexRoute: DashboardShiftTemplatesIndexRoute,
+  DashboardShiftsIndexRoute: DashboardShiftsIndexRoute,
   DashboardStaffIndexRoute: DashboardStaffIndexRoute,
+  DashboardDepartmentsDepartmentIdIndexRoute:
+    DashboardDepartmentsDepartmentIdIndexRoute,
 }
 
 const DashboardRouteWithChildren = DashboardRoute._addFileChildren(

@@ -1,4 +1,5 @@
 import { CreateStaffDialog } from '../../../features/staff/components/create-staff-dialog';
+import { EditStaffDialog } from '../../../features/staff/components/edit-staff-dialog';
 import { StaffTable } from '../../../features/staff/components/staff-table';
 import { apiHooks } from '../../../lib/api';
 import type { StaffMember } from '@clinic-platform/api-client';
@@ -47,6 +48,8 @@ function StaffPage() {
   const navigate = useNavigate({ from: Route.fullPath });
   const [searchInput, setSearchInput] = React.useState(search ?? '');
   const [isCreateOpen, setIsCreateOpen] = React.useState(false);
+  const [isEditOpen, setIsEditOpen] = React.useState(false);
+  const [editTarget, setEditTarget] = React.useState<StaffMember | undefined>();
 
   const { data, isLoading } = apiHooks.staff.useStaffList({
     page,
@@ -122,8 +125,8 @@ function StaffPage() {
   const hasFilters = !!(search || role || departmentId || isActive);
 
   const handleEdit = (member: StaffMember) => {
-    // TODO: Open edit dialog with member data
-    console.log('Edit staff:', member.id);
+    setEditTarget(member);
+    setIsEditOpen(true);
   };
 
   const handleDeactivate = (id: string) => {
@@ -258,6 +261,12 @@ function StaffPage() {
       <CreateStaffDialog
         isOpen={isCreateOpen}
         onClose={() => setIsCreateOpen(false)}
+      />
+
+      <EditStaffDialog
+        isOpen={isEditOpen}
+        onClose={() => setIsEditOpen(false)}
+        member={editTarget}
       />
     </div>
   );

@@ -61,3 +61,16 @@ export type {
   CreateStaffRequest,
   UpdateStaffRequest,
 } from './staff';
+
+// Shift types (P2)
+export type {
+  ShiftTemplate,
+  ShiftAssignment,
+  ShiftAuditLogEntry,
+  CreateShiftTemplateRequest,
+  UpdateShiftTemplateRequest,
+  CreateShiftAssignmentRequest,
+  BulkAssignRequest,
+  UpdateShiftStatusRequest,
+  ShiftsQueryParams,
+} from './shifts';

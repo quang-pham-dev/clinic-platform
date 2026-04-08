@@ -27,3 +27,14 @@ export enum AppointmentStatus {
   CANCELLED = 'cancelled',
   NO_SHOW = 'no_show',
 }
+
+/**
+ * Shift assignment status.
+ * Managed by the ShiftStateMachine (see docs/2/06-shift-state-machine.md).
+ */
+export enum AssignmentStatus {
+  SCHEDULED = 'scheduled',
+  IN_PROGRESS = 'in_progress',
+  COMPLETED = 'completed',
+  CANCELLED = 'cancelled',
+}

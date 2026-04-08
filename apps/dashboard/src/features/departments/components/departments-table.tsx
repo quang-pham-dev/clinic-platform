@@ -13,6 +13,7 @@ import * as React from 'react';
 interface DepartmentsTableProps {
   departments: DepartmentListItem[];
   isLoading: boolean;
+  onView: (id: string) => void;
   onEdit: (dept: DepartmentListItem) => void;
   onDeactivate: (id: string) => void;
 }
@@ -20,6 +21,7 @@ interface DepartmentsTableProps {
 export function DepartmentsTable({
   departments,
   isLoading,
+  onView,
   onEdit,
   onDeactivate,
 }: DepartmentsTableProps) {
@@ -60,7 +62,8 @@ export function DepartmentsTable({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: index * 0.05 }}
-          className="group relative overflow-hidden rounded-xl border border-gray-800 bg-gray-900/80 p-5 transition-all hover:border-violet-500/30 hover:shadow-lg hover:shadow-violet-500/5"
+          className="group relative overflow-hidden rounded-xl border border-gray-800 bg-gray-900/80 p-5 transition-all hover:border-violet-500/30 hover:shadow-lg hover:shadow-violet-500/5 cursor-pointer"
+          onClick={() => onView(dept.id)}
         >
           {/* Status indicator */}
           <div className="absolute right-3 top-3 flex items-center gap-2">
@@ -74,7 +77,7 @@ export function DepartmentsTable({
               {dept.isActive ? 'Active' : 'Inactive'}
             </span>
 
-            <div className="relative">
+            <div className="relative" onClick={(e) => e.stopPropagation()}>
               <button
                 onClick={() =>
                   setOpenMenuId(openMenuId === dept.id ? null : dept.id)

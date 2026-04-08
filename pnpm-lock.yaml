@@ -482,12 +482,15 @@ importers:
       '@clinic-platform/ui':
         specifier: workspace:*
         version: link:../../packages/ui
+      '@clinic-platform/utils':
+        specifier: workspace:*
+        version: link:../../packages/utils
       '@tailwindcss/vite':
         specifier: ^4.1.18
         version: 4.2.2(vite@7.3.1(@types/node@22.19.7)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.2))
       '@tanstack/react-devtools':
         specifier: latest
-        version: 0.10.0(@types/react-dom@19.2.3(@types/react@19.2.9))(@types/react@19.2.9)(csstype@3.2.3)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(solid-js@1.9.11)
+        version: 0.10.2(@types/react-dom@19.2.3(@types/react@19.2.9))(@types/react@19.2.9)(csstype@3.2.3)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(solid-js@1.9.11)
       '@tanstack/react-query':
         specifier: ^5.0.0
         version: 5.95.2(react@19.2.3)
@@ -985,6 +988,10 @@ importers:
         version: 3.2.4(@types/node@22.19.7)(@vitest/ui@3.2.4)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@1.8.0))(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.2)
 
   packages/utils:
+    dependencies:
+      '@clinic-platform/types':
+        specifier: workspace:*
+        version: link:../types
     devDependencies:
       '@clinic-platform/eslint-config':
         specifier: workspace:*
@@ -2922,8 +2929,8 @@ packages:
     peerDependencies:
       vite: ^6.0.0 || ^7.0.0 || ^8.0.0
 
-  '@tanstack/devtools@0.11.0':
-    resolution: {integrity: sha512-ARRAnEm0HYjKlB2adC9YyDG3fbq5LVjpxPe6Jz583SanXRM1aKrZIGHIA//oRldX3mWIpM4kB6mCyd+CXCLqhA==}
+  '@tanstack/devtools@0.11.2':
+    resolution: {integrity: sha512-K8+tsBx+ptTLqqd4dOF10B6laj1g+XYImqYZL9n0jBINGaT+sOf17PKV9pbBt8kdbZeIGsHaJ5OZWCyZoHqN4A==}
     engines: {node: '>=18'}
     hasBin: true
     peerDependencies:
@@ -2936,8 +2943,8 @@ packages:
   '@tanstack/query-core@5.95.2':
     resolution: {integrity: sha512-o4T8vZHZET4Bib3jZ/tCW9/7080urD4c+0/AUaYVpIqOsr7y0reBc1oX3ttNaSW5mYyvZHctiQ/UOP2PfdmFEQ==}
 
-  '@tanstack/react-devtools@0.10.0':
-    resolution: {integrity: sha512-cUMzOQb1IHmkb8MsD0TrxHT8EL92Rx3G0Huq+IFkWeoaZPGlIiaIcGTpS5VvQDeI4BVUT+ZGt6CQTpx8oSTECg==}
+  '@tanstack/react-devtools@0.10.2':
+    resolution: {integrity: sha512-1BmZyxOrI5SqmRJ5MgkYZNNdnlLsJxQRI2YgorrAvcF2MxK6x5RcuStvD8+YlXoMw3JtNukPxoITirKAnKYDQA==}
     engines: {node: '>=18'}
     peerDependencies:
       '@types/react': '>=16.8'
@@ -8908,7 +8915,7 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@tanstack/devtools@0.11.0(csstype@3.2.3)(solid-js@1.9.11)':
+  '@tanstack/devtools@0.11.2(csstype@3.2.3)(solid-js@1.9.11)':
     dependencies:
       '@solid-primitives/event-listener': 2.4.5(solid-js@1.9.11)
       '@solid-primitives/keyboard': 1.3.5(solid-js@1.9.11)
@@ -8928,9 +8935,9 @@ snapshots:
 
   '@tanstack/query-core@5.95.2': {}
 
-  '@tanstack/react-devtools@0.10.0(@types/react-dom@19.2.3(@types/react@19.2.9))(@types/react@19.2.9)(csstype@3.2.3)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(solid-js@1.9.11)':
+  '@tanstack/react-devtools@0.10.2(@types/react-dom@19.2.3(@types/react@19.2.9))(@types/react@19.2.9)(csstype@3.2.3)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(solid-js@1.9.11)':
     dependencies:
-      '@tanstack/devtools': 0.11.0(csstype@3.2.3)(solid-js@1.9.11)
+      '@tanstack/devtools': 0.11.2(csstype@3.2.3)(solid-js@1.9.11)
       '@types/react': 19.2.9
       '@types/react-dom': 19.2.3(@types/react@19.2.9)
       react: 19.2.3
@@ -9585,7 +9592,7 @@ snapshots:
       std-env: 3.10.0
       test-exclude: 7.0.1
       tinyrainbow: 2.0.0
-      vitest: 3.2.4(@types/node@24.10.9)(@vitest/ui@3.2.4)(jiti@2.6.1)(jsdom@27.4.0(@noble/hashes@1.8.0))(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.2)
+      vitest: 3.2.4(@types/node@22.19.7)(@vitest/ui@3.2.4)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@1.8.0))(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.2)
     transitivePeerDependencies:
       - supports-color
 
@@ -9665,7 +9672,7 @@ snapshots:
       sirv: 3.0.2
       tinyglobby: 0.2.15
       tinyrainbow: 2.0.0
-      vitest: 3.2.4(@types/node@24.10.9)(@vitest/ui@3.2.4)(jiti@2.6.1)(jsdom@27.4.0(@noble/hashes@1.8.0))(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.2)
+      vitest: 3.2.4(@types/node@22.19.7)(@vitest/ui@3.2.4)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@1.8.0))(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.2)
 
   '@vitest/utils@2.0.5':
     dependencies:
