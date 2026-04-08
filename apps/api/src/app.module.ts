@@ -15,6 +15,7 @@ import { BookingsModule } from './modules/bookings/bookings.module';
 import { DepartmentsModule } from './modules/departments/departments.module';
 import { DoctorsModule } from './modules/doctors/doctors.module';
 import { HealthModule } from './modules/health/health.module';
+import { ShiftsModule } from './modules/shifts/shifts.module';
 import { SlotsModule } from './modules/slots/slots.module';
 import { StaffModule } from './modules/staff/staff.module';
 import { SystemModule } from './modules/system/system.module';
@@ -73,6 +74,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     BookingsModule,
     DepartmentsModule,
     StaffModule,
+    ShiftsModule,
   ],
   providers: [
     // Global request/response logging with correlation IDs

@@ -5,6 +5,8 @@ import { Link } from '@tanstack/react-router';
 import {
   Building2,
   CalendarCheck,
+  CalendarDays,
+  Clock,
   LayoutDashboard,
   LogOut,
   Stethoscope,
@@ -21,6 +23,12 @@ const navItems = [
   { to: ROUTES.PATIENTS, label: NAV_LABELS.PATIENTS, icon: Users },
   { to: ROUTES.DEPARTMENTS, label: NAV_LABELS.DEPARTMENTS, icon: Building2 },
   { to: ROUTES.STAFF, label: NAV_LABELS.STAFF, icon: UserCog },
+  {
+    to: ROUTES.SHIFT_TEMPLATES,
+    label: NAV_LABELS.SHIFT_TEMPLATES,
+    icon: Clock,
+  },
+  { to: ROUTES.SHIFTS, label: NAV_LABELS.SHIFTS, icon: CalendarDays },
 ] as const;
 
 interface SidebarProps {

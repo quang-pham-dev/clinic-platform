@@ -5,6 +5,8 @@ import { createBookingHooks } from './hooks/useBookings';
 import { createDepartmentsHooks } from './hooks/useDepartments';
 import { createDoctorsHooks } from './hooks/useDoctors';
 import { createPatientsHooks } from './hooks/usePatients';
+import { createShiftTemplatesHooks } from './hooks/useShiftTemplates';
+import { createShiftsHooks } from './hooks/useShifts';
 import { createSlotsHooks } from './hooks/useSlots';
 import { createStaffHooks } from './hooks/useStaff';
 import { createUsersHooks } from './hooks/useUsers';
@@ -18,6 +20,10 @@ import type { DoctorsService } from './services/doctors.service';
 import { createDoctorsService } from './services/doctors.service';
 import type { PatientsService } from './services/patients.service';
 import { createPatientsService } from './services/patients.service';
+import type { ShiftTemplatesService } from './services/shift-templates.service';
+import { createShiftTemplatesService } from './services/shift-templates.service';
+import type { ShiftsService } from './services/shifts.service';
+import { createShiftsService } from './services/shifts.service';
 import type { SlotsService } from './services/slots.service';
 import { createSlotsService } from './services/slots.service';
 import type { StaffService } from './services/staff.service';
@@ -46,6 +52,8 @@ export {
   createUsersService,
   createDepartmentsService,
   createStaffService,
+  createShiftTemplatesService,
+  createShiftsService,
   type AuthService,
   type BookingsService,
   type DoctorsService,
@@ -54,6 +62,8 @@ export {
   type UsersService,
   type DepartmentsService,
   type StaffService,
+  type ShiftTemplatesService,
+  type ShiftsService,
 } from './services';
 
 export {
@@ -65,6 +75,8 @@ export {
   createUsersHooks,
   createDepartmentsHooks,
   createStaffHooks,
+  createShiftTemplatesHooks,
+  createShiftsHooks,
 } from './hooks';
 
 /**
@@ -81,6 +93,8 @@ export interface ApiClient {
   users: UsersService;
   departments: DepartmentsService;
   staff: StaffService;
+  shiftTemplates: ShiftTemplatesService;
+  shifts: ShiftsService;
 }
 
 /**
@@ -115,6 +129,8 @@ export function createApiClient(config: ClientConfig): ApiClient {
     users: createUsersService(http),
     departments: createDepartmentsService(http),
     staff: createStaffService(http),
+    shiftTemplates: createShiftTemplatesService(http),
+    shifts: createShiftsService(http),
   };
 }
 
@@ -140,5 +156,7 @@ export function createAllHooks(client: ApiClient) {
     users: createUsersHooks(client.users),
     departments: createDepartmentsHooks(client.departments),
     staff: createStaffHooks(client.staff),
+    shiftTemplates: createShiftTemplatesHooks(client.shiftTemplates),
+    shifts: createShiftsHooks(client.shifts),
   };
 }

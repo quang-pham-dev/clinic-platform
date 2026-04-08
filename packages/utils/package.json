@@ -44,6 +44,9 @@
     "test": "vitest run --passWithNoTests",
     "test:coverage": "vitest run --coverage --passWithNoTests"
   },
+  "dependencies": {
+    "@clinic-platform/types": "workspace:*"
+  },
   "devDependencies": {
     "@clinic-platform/eslint-config": "workspace:*",
     "@clinic-platform/prettier-config": "workspace:*",

@@ -24,6 +24,7 @@
     "@clinic-platform/design-system": "workspace:*",
     "@clinic-platform/types": "workspace:*",
     "@clinic-platform/ui": "workspace:*",
+    "@clinic-platform/utils": "workspace:*",
     "@tailwindcss/vite": "^4.1.18",
     "@tanstack/react-devtools": "latest",
     "@tanstack/react-query": "^5.0.0",
