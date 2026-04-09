@@ -16,6 +16,7 @@ import {
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools';
 import type { ReactNode } from 'react';
 import { useEffect } from 'react';
+import { Toaster } from 'sonner';
 
 export const Route = createRootRoute({
   beforeLoad: async () => {
@@ -75,6 +76,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <Outlet />
+      <Toaster theme="dark" position="top-right" />
     </QueryClientProvider>
   );
 }

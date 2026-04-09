@@ -74,3 +74,32 @@ export type {
   UpdateShiftStatusRequest,
   ShiftsQueryParams,
 } from './shifts';
+
+// Broadcast types (P2)
+export type {
+  BroadcastMessage,
+  CreateBroadcastRequest,
+  BroadcastHistoryParams,
+} from './broadcasts';
+
+// Schedule types (P2)
+export type {
+  DoctorScheduleDay,
+  ScheduleShift,
+  ScheduleSlot,
+  ScheduleQueryParams,
+} from './schedule';
+
+// Notification types (P3)
+export type {
+  NotificationLog,
+  NotificationTemplate,
+  NotificationFeedResponse,
+  NotificationQueryParams,
+  MarkReadRequest,
+  AdminNotificationQueryParams,
+  UpdateTemplateRequest,
+  PreviewTemplateRequest,
+  PreviewTemplateResponse,
+} from './notifications';
+export { NotificationChannel, NotificationStatus } from './notifications';

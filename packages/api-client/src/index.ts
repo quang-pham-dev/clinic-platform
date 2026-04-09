@@ -2,9 +2,12 @@ import type { ClientConfig, HttpClient } from './core/client';
 import { createHttpClient } from './core/client';
 import { createAuthHooks } from './hooks/useAuth';
 import { createBookingHooks } from './hooks/useBookings';
+import { createBroadcastsHooks } from './hooks/useBroadcasts';
 import { createDepartmentsHooks } from './hooks/useDepartments';
 import { createDoctorsHooks } from './hooks/useDoctors';
+import { createNotificationsHooks } from './hooks/useNotifications';
 import { createPatientsHooks } from './hooks/usePatients';
+import { createScheduleHooks } from './hooks/useSchedule';
 import { createShiftTemplatesHooks } from './hooks/useShiftTemplates';
 import { createShiftsHooks } from './hooks/useShifts';
 import { createSlotsHooks } from './hooks/useSlots';
@@ -14,12 +17,18 @@ import type { AuthService } from './services/auth.service';
 import { createAuthService } from './services/auth.service';
 import type { BookingsService } from './services/bookings.service';
 import { createBookingsService } from './services/bookings.service';
+import type { BroadcastsService } from './services/broadcasts.service';
+import { createBroadcastsService } from './services/broadcasts.service';
 import type { DepartmentsService } from './services/departments.service';
 import { createDepartmentsService } from './services/departments.service';
 import type { DoctorsService } from './services/doctors.service';
 import { createDoctorsService } from './services/doctors.service';
+import type { NotificationsService } from './services/notifications.service';
+import { createNotificationsService } from './services/notifications.service';
 import type { PatientsService } from './services/patients.service';
 import { createPatientsService } from './services/patients.service';
+import type { ScheduleService } from './services/schedule.service';
+import { createScheduleService } from './services/schedule.service';
 import type { ShiftTemplatesService } from './services/shift-templates.service';
 import { createShiftTemplatesService } from './services/shift-templates.service';
 import type { ShiftsService } from './services/shifts.service';
@@ -54,6 +63,9 @@ export {
   createStaffService,
   createShiftTemplatesService,
   createShiftsService,
+  createBroadcastsService,
+  createScheduleService,
+  createNotificationsService,
   type AuthService,
   type BookingsService,
   type DoctorsService,
@@ -64,6 +76,9 @@ export {
   type StaffService,
   type ShiftTemplatesService,
   type ShiftsService,
+  type BroadcastsService,
+  type ScheduleService,
+  type NotificationsService,
 } from './services';
 
 export {
@@ -77,6 +92,9 @@ export {
   createStaffHooks,
   createShiftTemplatesHooks,
   createShiftsHooks,
+  createBroadcastsHooks,
+  createScheduleHooks,
+  createNotificationsHooks,
 } from './hooks';
 
 /**
@@ -95,6 +113,9 @@ export interface ApiClient {
   staff: StaffService;
   shiftTemplates: ShiftTemplatesService;
   shifts: ShiftsService;
+  broadcasts: BroadcastsService;
+  schedule: ScheduleService;
+  notifications: NotificationsService;
 }
 
 /**
@@ -131,6 +152,9 @@ export function createApiClient(config: ClientConfig): ApiClient {
     staff: createStaffService(http),
     shiftTemplates: createShiftTemplatesService(http),
     shifts: createShiftsService(http),
+    broadcasts: createBroadcastsService(http),
+    schedule: createScheduleService(http),
+    notifications: createNotificationsService(http),
   };
 }
 
@@ -158,5 +182,8 @@ export function createAllHooks(client: ApiClient) {
     staff: createStaffHooks(client.staff),
     shiftTemplates: createShiftTemplatesHooks(client.shiftTemplates),
     shifts: createShiftsHooks(client.shifts),
+    broadcasts: createBroadcastsHooks(client.broadcasts),
+    schedule: createScheduleHooks(client.schedule),
+    notifications: createNotificationsHooks(client.notifications),
   };
 }
