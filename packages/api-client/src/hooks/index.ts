@@ -8,3 +8,6 @@ export { createDepartmentsHooks } from './useDepartments';
 export { createStaffHooks } from './useStaff';
 export { createShiftTemplatesHooks } from './useShiftTemplates';
 export { createShiftsHooks } from './useShifts';
+export { createBroadcastsHooks } from './useBroadcasts';
+export { createScheduleHooks } from './useSchedule';
+export { createNotificationsHooks } from './useNotifications';

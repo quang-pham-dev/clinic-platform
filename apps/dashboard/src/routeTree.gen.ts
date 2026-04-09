@@ -19,6 +19,7 @@ import { Route as DashboardShiftTemplatesIndexRouteImport } from './routes/_dash
 import { Route as DashboardPatientsIndexRouteImport } from './routes/_dashboard/patients/index'
 import { Route as DashboardDoctorsIndexRouteImport } from './routes/_dashboard/doctors/index'
 import { Route as DashboardDepartmentsIndexRouteImport } from './routes/_dashboard/departments/index'
+import { Route as DashboardBroadcastsIndexRouteImport } from './routes/_dashboard/broadcasts/index'
 import { Route as DashboardBookingsIndexRouteImport } from './routes/_dashboard/bookings/index'
 import { Route as DashboardDoctorsDoctorIdRouteImport } from './routes/_dashboard/doctors/$doctorId'
 import { Route as DashboardBookingsBookingIdRouteImport } from './routes/_dashboard/bookings/$bookingId'
@@ -75,6 +76,12 @@ const DashboardDepartmentsIndexRoute =
     path: '/departments/',
     getParentRoute: () => DashboardRoute,
   } as any)
+const DashboardBroadcastsIndexRoute =
+  DashboardBroadcastsIndexRouteImport.update({
+    id: '/broadcasts/',
+    path: '/broadcasts/',
+    getParentRoute: () => DashboardRoute,
+  } as any)
 const DashboardBookingsIndexRoute = DashboardBookingsIndexRouteImport.update({
   id: '/bookings/',
   path: '/bookings/',
@@ -111,6 +118,7 @@ export interface FileRoutesByFullPath {
   '/bookings/$bookingId': typeof DashboardBookingsBookingIdRoute
   '/doctors/$doctorId': typeof DashboardDoctorsDoctorIdRouteWithChildren
   '/bookings/': typeof DashboardBookingsIndexRoute
+  '/broadcasts/': typeof DashboardBroadcastsIndexRoute
   '/departments/': typeof DashboardDepartmentsIndexRoute
   '/doctors/': typeof DashboardDoctorsIndexRoute
   '/patients/': typeof DashboardPatientsIndexRoute
@@ -126,6 +134,7 @@ export interface FileRoutesByTo {
   '/bookings/$bookingId': typeof DashboardBookingsBookingIdRoute
   '/doctors/$doctorId': typeof DashboardDoctorsDoctorIdRouteWithChildren
   '/bookings': typeof DashboardBookingsIndexRoute
+  '/broadcasts': typeof DashboardBroadcastsIndexRoute
   '/departments': typeof DashboardDepartmentsIndexRoute
   '/doctors': typeof DashboardDoctorsIndexRoute
   '/patients': typeof DashboardPatientsIndexRoute
@@ -144,6 +153,7 @@ export interface FileRoutesById {
   '/_dashboard/bookings/$bookingId': typeof DashboardBookingsBookingIdRoute
   '/_dashboard/doctors/$doctorId': typeof DashboardDoctorsDoctorIdRouteWithChildren
   '/_dashboard/bookings/': typeof DashboardBookingsIndexRoute
+  '/_dashboard/broadcasts/': typeof DashboardBroadcastsIndexRoute
   '/_dashboard/departments/': typeof DashboardDepartmentsIndexRoute
   '/_dashboard/doctors/': typeof DashboardDoctorsIndexRoute
   '/_dashboard/patients/': typeof DashboardPatientsIndexRoute
@@ -161,6 +171,7 @@ export interface FileRouteTypes {
     | '/bookings/$bookingId'
     | '/doctors/$doctorId'
     | '/bookings/'
+    | '/broadcasts/'
     | '/departments/'
     | '/doctors/'
     | '/patients/'
@@ -176,6 +187,7 @@ export interface FileRouteTypes {
     | '/bookings/$bookingId'
     | '/doctors/$doctorId'
     | '/bookings'
+    | '/broadcasts'
     | '/departments'
     | '/doctors'
     | '/patients'
@@ -193,6 +205,7 @@ export interface FileRouteTypes {
     | '/_dashboard/bookings/$bookingId'
     | '/_dashboard/doctors/$doctorId'
     | '/_dashboard/bookings/'
+    | '/_dashboard/broadcasts/'
     | '/_dashboard/departments/'
     | '/_dashboard/doctors/'
     | '/_dashboard/patients/'
@@ -280,6 +293,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardDepartmentsIndexRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/_dashboard/broadcasts/': {
+      id: '/_dashboard/broadcasts/'
+      path: '/broadcasts'
+      fullPath: '/broadcasts/'
+      preLoaderRoute: typeof DashboardBroadcastsIndexRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/_dashboard/bookings/': {
       id: '/_dashboard/bookings/'
       path: '/bookings'
@@ -347,6 +367,7 @@ interface DashboardRouteChildren {
   DashboardBookingsBookingIdRoute: typeof DashboardBookingsBookingIdRoute
   DashboardDoctorsDoctorIdRoute: typeof DashboardDoctorsDoctorIdRouteWithChildren
   DashboardBookingsIndexRoute: typeof DashboardBookingsIndexRoute
+  DashboardBroadcastsIndexRoute: typeof DashboardBroadcastsIndexRoute
   DashboardDepartmentsIndexRoute: typeof DashboardDepartmentsIndexRoute
   DashboardDoctorsIndexRoute: typeof DashboardDoctorsIndexRoute
   DashboardPatientsIndexRoute: typeof DashboardPatientsIndexRoute
@@ -361,6 +382,7 @@ const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardBookingsBookingIdRoute: DashboardBookingsBookingIdRoute,
   DashboardDoctorsDoctorIdRoute: DashboardDoctorsDoctorIdRouteWithChildren,
   DashboardBookingsIndexRoute: DashboardBookingsIndexRoute,
+  DashboardBroadcastsIndexRoute: DashboardBroadcastsIndexRoute,
   DashboardDepartmentsIndexRoute: DashboardDepartmentsIndexRoute,
   DashboardDoctorsIndexRoute: DashboardDoctorsIndexRoute,
   DashboardPatientsIndexRoute: DashboardPatientsIndexRoute,

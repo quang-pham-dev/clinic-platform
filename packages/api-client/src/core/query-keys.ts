@@ -92,4 +92,19 @@ export const queryKeys = {
     details: () => [...queryKeys.shifts.all, 'detail'] as const,
     detail: (id: string) => [...queryKeys.shifts.details(), id] as const,
   },
+
+  notifications: {
+    all: ['notifications'] as const,
+    lists: () => [...queryKeys.notifications.all, 'list'] as const,
+    list: (params?: Record<string, unknown>) =>
+      [...queryKeys.notifications.lists(), params] as const,
+    admin: {
+      all: ['notifications', 'admin'] as const,
+      lists: () => [...queryKeys.notifications.admin.all, 'list'] as const,
+      list: (params?: Record<string, unknown>) =>
+        [...queryKeys.notifications.admin.lists(), params] as const,
+      templates: () =>
+        [...queryKeys.notifications.admin.all, 'templates'] as const,
+    },
+  },
 } as const;

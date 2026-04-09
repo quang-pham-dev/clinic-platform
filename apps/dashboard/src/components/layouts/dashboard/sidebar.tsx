@@ -9,6 +9,7 @@ import {
   Clock,
   LayoutDashboard,
   LogOut,
+  Megaphone,
   Stethoscope,
   UserCog,
   Users,
@@ -29,6 +30,7 @@ const navItems = [
     icon: Clock,
   },
   { to: ROUTES.SHIFTS, label: NAV_LABELS.SHIFTS, icon: CalendarDays },
+  { to: ROUTES.BROADCASTS, label: NAV_LABELS.BROADCASTS, icon: Megaphone },
 ] as const;
 
 interface SidebarProps {

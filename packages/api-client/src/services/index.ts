@@ -29,3 +29,18 @@ export {
 } from './shift-templates.service';
 
 export { createShiftsService, type ShiftsService } from './shifts.service';
+
+export {
+  createBroadcastsService,
+  type BroadcastsService,
+} from './broadcasts.service';
+
+export {
+  createScheduleService,
+  type ScheduleService,
+} from './schedule.service';
+
+export {
+  createNotificationsService,
+  type NotificationsService,
+} from './notifications.service';

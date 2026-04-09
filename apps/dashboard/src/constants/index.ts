@@ -13,6 +13,7 @@ export const ROUTES = {
   STAFF: '/staff',
   SHIFT_TEMPLATES: '/shift-templates',
   SHIFTS: '/shifts',
+  BROADCASTS: '/broadcasts',
 } as const;
 
 export const QUERY_DEFAULTS = {
@@ -38,6 +39,7 @@ export const NAV_LABELS = {
   STAFF: 'Staff',
   SHIFT_TEMPLATES: 'Shift Templates',
   SHIFTS: 'Shifts',
+  BROADCASTS: 'Broadcasts',
   SIGN_OUT: 'Sign out',
 } as const;
 
