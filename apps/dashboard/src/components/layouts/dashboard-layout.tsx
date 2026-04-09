@@ -1,13 +1,24 @@
+import { useWsStore } from '../../lib/ws';
 import { Header } from './dashboard/header';
 import { Sidebar } from './dashboard/sidebar';
 import { Outlet, useLocation } from '@tanstack/react-router';
 import { AnimatePresence, motion } from 'framer-motion';
 import * as React from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export function DashboardLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
+
+  const connectWs = useWsStore((state) => state.connect);
+  const disconnectWs = useWsStore((state) => state.disconnect);
+
+  useEffect(() => {
+    connectWs();
+    return () => {
+      disconnectWs();
+    };
+  }, [connectWs, disconnectWs]);
 
   return (
     <div className="min-h-screen flex">

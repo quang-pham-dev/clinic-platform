@@ -1,5 +1,11 @@
 // Enums
-export { Role, AppointmentStatus, AssignmentStatus } from './enums/index.js';
+export {
+  Role,
+  AppointmentStatus,
+  AssignmentStatus,
+  NotificationChannel,
+  NotificationStatus,
+} from './enums/index.js';
 
 // API types
 export type {

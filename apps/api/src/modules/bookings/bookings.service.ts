@@ -223,6 +223,22 @@ export class BookingsService {
         reason: dto.reason ?? undefined,
       });
 
+      // P3: Emit event for notification pipeline (after DB writes succeed)
+      this.eventEmitter.emit('booking.status.changed', {
+        appointmentId: appointment.id,
+        patientId: appointment.patientId,
+        doctorId: appointment.doctorId,
+        fromStatus: appointment.status,
+        toStatus: dto.status,
+        slot: appointment.slot
+          ? {
+              slotDate: appointment.slot.slotDate,
+              startTime: appointment.slot.startTime,
+            }
+          : undefined,
+        reason: dto.reason,
+      });
+
       return updated;
     });
   }

@@ -12,9 +12,12 @@ import { AuthModule } from './modules/auth/auth.module';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { RolesGuard } from './modules/auth/guards/roles.guard';
 import { BookingsModule } from './modules/bookings/bookings.module';
+import { BroadcastsModule } from './modules/broadcasts/broadcasts.module';
 import { DepartmentsModule } from './modules/departments/departments.module';
 import { DoctorsModule } from './modules/doctors/doctors.module';
 import { HealthModule } from './modules/health/health.module';
+import { NotificationsModule } from './modules/notifications/notifications.module';
+import { ScheduleModule } from './modules/schedule/schedule.module';
 import { ShiftsModule } from './modules/shifts/shifts.module';
 import { SlotsModule } from './modules/slots/slots.module';
 import { StaffModule } from './modules/staff/staff.module';
@@ -75,6 +78,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     DepartmentsModule,
     StaffModule,
     ShiftsModule,
+    BroadcastsModule,
+    ScheduleModule,
+    NotificationsModule,
   ],
   providers: [
     // Global request/response logging with correlation IDs

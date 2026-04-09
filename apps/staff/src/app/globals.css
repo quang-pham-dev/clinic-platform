@@ -1,0 +1,20 @@
+@import '@clinic-platform/design-system';
+@import '@clinic-platform/ui/styles.css';
+
+@import 'tailwindcss';
+
+:root {
+  --color-brand: oklch(55% 0.2 260);
+  --color-brand-dark: oklch(40% 0.22 260);
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  @apply bg-slate-950 text-white antialiased;
+}

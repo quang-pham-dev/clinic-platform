@@ -6,6 +6,7 @@ import { ShiftStateMachine } from './shift-state-machine';
 import { ShiftTemplatesService } from './shift-templates.service';
 import { buildPaginationMeta } from '@/common/helpers/pagination.helper';
 import { JwtPayload } from '@/common/types/jwt-payload.interface';
+import { BroadcastGateway } from '@/modules/broadcasts/broadcast.gateway';
 import { StaffProfile } from '@/modules/staff/entities/staff-profile.entity';
 import { AssignmentStatus, Role } from '@clinic-platform/types';
 import {
@@ -15,6 +16,7 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 
@@ -29,7 +31,9 @@ export class ShiftsService {
     private readonly staffProfileRepo: Repository<StaffProfile>,
     private readonly templatesService: ShiftTemplatesService,
     private readonly shiftStateMachine: ShiftStateMachine,
+    private readonly broadcastGateway: BroadcastGateway,
     private readonly dataSource: DataSource,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   async create(
@@ -104,7 +108,33 @@ export class ShiftsService {
         `Shift assigned: id=${saved.id}, staff=${dto.staffId}, date=${dto.shiftDate}`,
       );
 
-      return this.findOne(saved.id);
+      const fullAssignment = await this.findOne(saved.id);
+
+      this.broadcastGateway.emitShiftUpdated(dto.staffId, {
+        assignmentId: saved.id,
+        action: 'created',
+        shiftDate: dto.shiftDate,
+        template: {
+          name: fullAssignment.template.name,
+          startTime: fullAssignment.template.startTime.toString(),
+          endTime: fullAssignment.template.endTime.toString(),
+        },
+        status: AssignmentStatus.SCHEDULED,
+      });
+
+      // P3: Emit event for notification pipeline
+      this.eventEmitter.emit('shift.status.changed', {
+        assignmentId: saved.id,
+        staffId: dto.staffId,
+        fromStatus: null,
+        toStatus: AssignmentStatus.SCHEDULED,
+        shiftDate: dto.shiftDate,
+        shiftName: fullAssignment.template.name,
+        startTime: fullAssignment.template.startTime.toString(),
+        endTime: fullAssignment.template.endTime.toString(),
+      });
+
+      return fullAssignment;
     });
   }
 
@@ -173,6 +203,22 @@ export class ShiftsService {
       }
 
       this.logger.log(`Bulk assigned ${results.length} shifts`);
+
+      // Emit for each created assignment
+      for (const saved of results) {
+        const full = await this.findOne(saved.id);
+        this.broadcastGateway.emitShiftUpdated(saved.staffId, {
+          assignmentId: saved.id,
+          action: 'created',
+          shiftDate: saved.shiftDate as unknown as string,
+          template: {
+            name: full.template.name,
+            startTime: full.template.startTime.toString(),
+            endTime: full.template.endTime.toString(),
+          },
+          status: AssignmentStatus.SCHEDULED,
+        });
+      }
 
       return { created: results.length, assignments: results };
     });
@@ -307,7 +353,34 @@ export class ShiftsService {
         `Shift ${assignment.id}: ${assignment.status} → ${targetStatus} by ${actor.sub}`,
       );
 
-      return this.findOne(updated.id);
+      const fullAssignment = await this.findOne(updated.id);
+
+      this.broadcastGateway.emitShiftUpdated(assignment.staffId, {
+        assignmentId: assignment.id,
+        action:
+          targetStatus === AssignmentStatus.CANCELLED ? 'cancelled' : 'updated',
+        shiftDate: assignment.shiftDate as unknown as string,
+        template: {
+          name: fullAssignment.template.name,
+          startTime: fullAssignment.template.startTime.toString(),
+          endTime: fullAssignment.template.endTime.toString(),
+        },
+        status: targetStatus,
+      });
+
+      // P3: Emit event for notification pipeline
+      this.eventEmitter.emit('shift.status.changed', {
+        assignmentId: assignment.id,
+        staffId: assignment.staffId,
+        fromStatus: assignment.status,
+        toStatus: targetStatus,
+        shiftDate: assignment.shiftDate as unknown as string,
+        shiftName: fullAssignment.template.name,
+        startTime: fullAssignment.template.startTime.toString(),
+        endTime: fullAssignment.template.endTime.toString(),
+      });
+
+      return fullAssignment;
     });
   }
 

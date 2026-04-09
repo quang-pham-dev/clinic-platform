@@ -38,3 +38,26 @@ export enum AssignmentStatus {
   COMPLETED = 'completed',
   CANCELLED = 'cancelled',
 }
+
+/**
+ * Notification delivery channels.
+ * P3: email, sms, in_app
+ */
+export enum NotificationChannel {
+  EMAIL = 'email',
+  SMS = 'sms',
+  IN_APP = 'in_app',
+}
+
+/**
+ * Notification delivery status lifecycle.
+ * P3: queued → sent/delivered/failed; in_app: unread → read
+ */
+export enum NotificationStatus {
+  QUEUED = 'queued',
+  SENT = 'sent',
+  DELIVERED = 'delivered',
+  FAILED = 'failed',
+  UNREAD = 'unread',
+  READ = 'read',
+}
