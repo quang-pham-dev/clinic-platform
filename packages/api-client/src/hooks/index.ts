@@ -11,3 +11,4 @@ export { createShiftsHooks } from './useShifts';
 export { createBroadcastsHooks } from './useBroadcasts';
 export { createScheduleHooks } from './useSchedule';
 export { createNotificationsHooks } from './useNotifications';
+export { createVideoSessionsHooks } from './useVideoSessions';

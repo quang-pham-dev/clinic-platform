@@ -5,6 +5,7 @@ export {
   AssignmentStatus,
   NotificationChannel,
   NotificationStatus,
+  VideoSessionStatus,
 } from './enums/index.js';
 
 // API types

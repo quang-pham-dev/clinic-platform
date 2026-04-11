@@ -7,6 +7,8 @@ import { ShiftTemplatesService } from './shift-templates.service';
 import { ShiftsController } from './shifts.controller';
 import { ShiftsService } from './shifts.service';
 import { BroadcastsModule } from '@/modules/broadcasts/broadcasts.module';
+import { DoctorsModule } from '@/modules/doctors/doctors.module';
+import { ScheduleModule } from '@/modules/schedule/schedule.module';
 import { StaffProfile } from '@/modules/staff/entities/staff-profile.entity';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -20,6 +22,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       StaffProfile,
     ]),
     BroadcastsModule,
+    ScheduleModule,
+    DoctorsModule,
   ],
   controllers: [ShiftTemplatesController, ShiftsController],
   providers: [ShiftTemplatesService, ShiftsService, ShiftStateMachine],

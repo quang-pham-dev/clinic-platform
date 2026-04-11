@@ -1,12 +1,19 @@
 import { BroadcastsService } from './broadcasts.service';
 import { CreateBroadcastDto } from './dto/create-broadcast.dto';
+import {
+  ApiAuthResponses,
+  ApiDataResponse,
+  ApiStandardResponses,
+} from '@/common/decorators/api-responses.decorator';
 import { CurrentUser } from '@/common/decorators/current-user.decorator';
 import { Roles } from '@/common/decorators/roles.decorator';
+import { ErrorResponseDto } from '@/common/dto/error-response.dto';
 import type { JwtPayload } from '@/common/types/jwt-payload.interface';
 import { Role } from '@/common/types/role.enum';
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import {
   ApiBearerAuth,
+  ApiConflictResponse,
   ApiOperation,
   ApiQuery,
   ApiTags,
@@ -23,6 +30,18 @@ export class BroadcastsController {
   @ApiOperation({
     summary: 'Send a broadcast message (admin: any room, head_nurse: own dept)',
   })
+  @ApiDataResponse(
+    CreateBroadcastDto,
+    'Successfully sent broadcast message',
+    false,
+    201,
+  )
+  @ApiStandardResponses()
+  @ApiAuthResponses()
+  @ApiConflictResponse({
+    description: 'Cannot broadcast to this room',
+    type: ErrorResponseDto,
+  })
   async send(
     @Body() dto: CreateBroadcastDto,
     @CurrentUser() actor: JwtPayload,
@@ -35,6 +54,13 @@ export class BroadcastsController {
     summary:
       'Retrieve broadcast history (filtered by accessible rooms per role)',
   })
+  @ApiDataResponse(
+    CreateBroadcastDto,
+    'Successfully retrieved broadcast history',
+    true,
+  )
+  @ApiStandardResponses()
+  @ApiAuthResponses()
   @ApiQuery({
     name: 'room',
     required: false,

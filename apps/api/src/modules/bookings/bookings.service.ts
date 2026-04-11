@@ -174,10 +174,8 @@ export class BookingsService {
     dto: UpdateBookingStatusDto,
     actor: JwtPayload,
   ) {
-    const appointment = await this.appointmentsRepository.findOne({
-      where: { id },
-      relations: ['slot', 'doctor'],
-    });
+    // Load full relations so the notification payload has contact info (P3)
+    const appointment = await this.appointmentsRepository.findWithDetails(id);
     if (!appointment)
       throw new NotFoundException({ code: 'APPOINTMENT_NOT_FOUND' });
 
@@ -202,6 +200,17 @@ export class BookingsService {
       `Status transition: appointment=${id}, ${appointment.status}→${dto.status}, actor=${actor.sub}(${actor.role})`,
     );
 
+    // Extract contact/display info before transaction (relations already loaded)
+    const patientProfile = (
+      appointment.patient as { profile?: { fullName?: string; phone?: string } }
+    )?.profile;
+    const doctorProfile = (
+      appointment.doctor?.user as
+        | { profile?: { fullName?: string } }
+        | undefined
+    )?.profile;
+    const patientUser = appointment.patient as { email?: string } | undefined;
+
     return this.dataSource.transaction(async (manager) => {
       if (rule.releaseSlot) {
         await manager.update(TimeSlot, appointment.slotId, {
@@ -223,16 +232,20 @@ export class BookingsService {
         reason: dto.reason ?? undefined,
       });
 
-      // P3: Emit event for notification pipeline (after DB writes succeed)
+      // P3: Emit event for notification pipeline with full contact info
       this.eventEmitter.emit('booking.status.changed', {
         appointmentId: appointment.id,
         patientId: appointment.patientId,
+        patientEmail: patientUser?.email,
+        patientPhone: patientProfile?.phone,
+        patientName: patientProfile?.fullName,
         doctorId: appointment.doctorId,
+        doctorName: doctorProfile?.fullName,
         fromStatus: appointment.status,
         toStatus: dto.status,
         slot: appointment.slot
           ? {
-              slotDate: appointment.slot.slotDate,
+              slotDate: String(appointment.slot.slotDate),
               startTime: appointment.slot.startTime,
             }
           : undefined,

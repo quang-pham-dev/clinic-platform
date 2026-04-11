@@ -2,8 +2,14 @@ import { BulkAssignDto } from './dto/bulk-assign.dto';
 import { CreateAssignmentDto } from './dto/create-assignment.dto';
 import { UpdateAssignmentStatusDto } from './dto/update-assignment-status.dto';
 import { ShiftsService } from './shifts.service';
+import {
+  ApiAuthResponses,
+  ApiDataResponse,
+  ApiStandardResponses,
+} from '@/common/decorators/api-responses.decorator';
 import { CurrentUser } from '@/common/decorators/current-user.decorator';
 import { Roles } from '@/common/decorators/roles.decorator';
+import { ErrorResponseDto } from '@/common/dto/error-response.dto';
 import type { JwtPayload } from '@/common/types/jwt-payload.interface';
 import { Role } from '@/common/types/role.enum';
 import { AssignmentStatus } from '@clinic-platform/types';
@@ -19,6 +25,8 @@ import {
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
+  ApiConflictResponse,
+  ApiNotFoundResponse,
   ApiOperation,
   ApiQuery,
   ApiTags,
@@ -36,6 +44,14 @@ export class ShiftsController {
     summary:
       'Create a shift assignment (admin: any dept, head_nurse: own dept only)',
   })
+  @ApiDataResponse(
+    CreateAssignmentDto,
+    'Successfully created shift assignment',
+    false,
+    201,
+  )
+  @ApiStandardResponses()
+  @ApiAuthResponses()
   async create(
     @Body() dto: CreateAssignmentDto,
     @CurrentUser() actor: JwtPayload,
@@ -47,6 +63,18 @@ export class ShiftsController {
   @Roles(Role.ADMIN, Role.HEAD_NURSE)
   @ApiOperation({
     summary: 'Bulk create shift assignments — all-or-nothing transaction',
+  })
+  @ApiDataResponse(
+    CreateAssignmentDto,
+    'Successfully created shift assignments',
+    true,
+    201,
+  )
+  @ApiStandardResponses()
+  @ApiAuthResponses()
+  @ApiConflictResponse({
+    description: 'Bulk assignment failed - all-or-nothing transaction',
+    type: ErrorResponseDto,
   })
   async bulkCreate(
     @Body() dto: BulkAssignDto,
@@ -62,6 +90,13 @@ export class ShiftsController {
     summary:
       'List shift assignments (admin: all, head_nurse: own dept, staff: own)',
   })
+  @ApiDataResponse(
+    CreateAssignmentDto,
+    'Successfully retrieved shift assignments',
+    true,
+  )
+  @ApiStandardResponses()
+  @ApiAuthResponses()
   @ApiQuery({ name: 'staffId', required: false })
   @ApiQuery({ name: 'departmentId', required: false })
   @ApiQuery({ name: 'from', required: false, description: 'YYYY-MM-DD' })
@@ -95,6 +130,15 @@ export class ShiftsController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a shift assignment with full audit log' })
+  @ApiDataResponse(
+    UpdateAssignmentStatusDto,
+    'Successfully retrieved shift assignment',
+  )
+  @ApiStandardResponses()
+  @ApiNotFoundResponse({
+    description: 'Shift assignment not found',
+    type: ErrorResponseDto,
+  })
   async findOne(@Param('id', ParseUUIDPipe) id: string) {
     return { data: await this.shiftsService.findOne(id) };
   }
@@ -104,6 +148,20 @@ export class ShiftsController {
   @ApiOperation({
     summary:
       'Transition shift assignment status (see shift state machine for allowed transitions)',
+  })
+  @ApiDataResponse(
+    UpdateAssignmentStatusDto,
+    'Successfully updated shift status',
+  )
+  @ApiStandardResponses()
+  @ApiAuthResponses()
+  @ApiNotFoundResponse({
+    description: 'Shift assignment not found',
+    type: ErrorResponseDto,
+  })
+  @ApiConflictResponse({
+    description: 'Invalid state transition',
+    type: ErrorResponseDto,
   })
   async updateStatus(
     @Param('id', ParseUUIDPipe) id: string,
@@ -123,6 +181,16 @@ export class ShiftsController {
   @Patch(':id')
   @Roles(Role.ADMIN, Role.HEAD_NURSE)
   @ApiOperation({ summary: 'Update shift assignment notes' })
+  @ApiDataResponse(
+    UpdateAssignmentStatusDto,
+    'Successfully updated shift notes',
+  )
+  @ApiStandardResponses()
+  @ApiAuthResponses()
+  @ApiNotFoundResponse({
+    description: 'Shift assignment not found',
+    type: ErrorResponseDto,
+  })
   async updateNotes(
     @Param('id', ParseUUIDPipe) id: string,
     @Body('notes') notes: string,

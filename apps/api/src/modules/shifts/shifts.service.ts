@@ -7,6 +7,8 @@ import { ShiftTemplatesService } from './shift-templates.service';
 import { buildPaginationMeta } from '@/common/helpers/pagination.helper';
 import { JwtPayload } from '@/common/types/jwt-payload.interface';
 import { BroadcastGateway } from '@/modules/broadcasts/broadcast.gateway';
+import { DoctorsService } from '@/modules/doctors/doctors.service';
+import { ScheduleService } from '@/modules/schedule/schedule.service';
 import { StaffProfile } from '@/modules/staff/entities/staff-profile.entity';
 import { AssignmentStatus, Role } from '@clinic-platform/types';
 import {
@@ -32,6 +34,8 @@ export class ShiftsService {
     private readonly templatesService: ShiftTemplatesService,
     private readonly shiftStateMachine: ShiftStateMachine,
     private readonly broadcastGateway: BroadcastGateway,
+    private readonly scheduleService: ScheduleService,
+    private readonly doctorsService: DoctorsService,
     private readonly dataSource: DataSource,
     private readonly eventEmitter: EventEmitter2,
   ) {}
@@ -133,6 +137,15 @@ export class ShiftsService {
         startTime: fullAssignment.template.startTime.toString(),
         endTime: fullAssignment.template.endTime.toString(),
       });
+
+      // K2: Auto-generate doctor time slots if the staff is a doctor
+      const doctor = await this.doctorsService.findByUserId(dto.staffId);
+      if (doctor) {
+        await this.scheduleService.generateSlotsFromShift(
+          fullAssignment,
+          doctor.id,
+        );
+      }
 
       return fullAssignment;
     });

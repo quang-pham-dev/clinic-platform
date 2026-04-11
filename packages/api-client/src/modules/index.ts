@@ -103,3 +103,14 @@ export type {
   PreviewTemplateResponse,
 } from './notifications';
 export { NotificationChannel, NotificationStatus } from './notifications';
+
+// Video session types (P3)
+export type {
+  VideoSession,
+  VideoChatMessage,
+  IceConfig,
+  CreateVideoSessionRequest,
+  SendChatMessageRequest,
+  VideoSessionQueryParams,
+} from './video-sessions';
+export { VideoSessionStatus } from './video-sessions';

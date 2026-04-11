@@ -24,6 +24,9 @@
     "seed": "ts-node -r tsconfig-paths/register src/database/seeds/seed.ts"
   },
   "dependencies": {
+    "@bull-board/api": "^6.21.0",
+    "@bull-board/express": "^6.21.0",
+    "@bull-board/nestjs": "^6.21.0",
     "@clinic-platform/logger": "workspace:*",
     "@clinic-platform/types": "workspace:*",
     "@nestjs/bullmq": "^11.0.4",
@@ -41,6 +44,7 @@
     "@nestjs/typeorm": "catalog:nestjs",
     "@nestjs/websockets": "^11.1.18",
     "@sendgrid/mail": "^8.1.6",
+    "@socket.io/redis-adapter": "^8.3.0",
     "bcrypt": "catalog:nestjs",
     "bullmq": "^5.73.2",
     "cache-manager": "^7.2.8",

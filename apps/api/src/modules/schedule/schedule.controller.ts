@@ -1,9 +1,22 @@
 import { QueryScheduleDto } from './dto/query-schedule.dto';
 import { ScheduleService } from './schedule.service';
+import {
+  ApiAuthResponses,
+  ApiDataResponse,
+  ApiStandardResponses,
+} from '@/common/decorators/api-responses.decorator';
+import { ErrorResponseDto } from '@/common/dto/error-response.dto';
 import { Controller, Get, Param, Query } from '@nestjs/common';
-import { ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiNotFoundResponse,
+  ApiOperation,
+  ApiParam,
+  ApiTags,
+} from '@nestjs/swagger';
 
 @ApiTags('Schedule')
+@ApiBearerAuth('access-token')
 @Controller('schedule')
 export class ScheduleController {
   constructor(private readonly scheduleService: ScheduleService) {}
@@ -14,7 +27,14 @@ export class ScheduleController {
     description:
       'Returns both shift assignments and bookable time slots grouped by date.',
   })
+  @ApiDataResponse(QueryScheduleDto, 'Successfully retrieved doctor schedule')
+  @ApiStandardResponses()
+  @ApiAuthResponses()
   @ApiParam({ name: 'doctorId', description: 'Doctor profile UUID' })
+  @ApiNotFoundResponse({
+    description: 'Doctor not found',
+    type: ErrorResponseDto,
+  })
   async getDoctorSchedule(
     @Param('doctorId') doctorId: string,
     @Query() dto: QueryScheduleDto,

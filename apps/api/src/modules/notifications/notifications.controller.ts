@@ -8,7 +8,13 @@ import { QueryNotificationsDto } from './dto/query-notifications.dto';
 import { NotificationTemplate } from './entities/notification-template.entity';
 import { NotificationsService } from './notifications.service';
 import { TemplateService } from './templates/template.service';
+import {
+  ApiAuthResponses,
+  ApiDataResponse,
+  ApiStandardResponses,
+} from '@/common/decorators/api-responses.decorator';
 import { Roles } from '@/common/decorators/roles.decorator';
+import { ErrorResponseDto } from '@/common/dto/error-response.dto';
 import { JwtPayload } from '@/common/types/jwt-payload.interface';
 import { Role } from '@/common/types/role.enum';
 import {
@@ -21,7 +27,12 @@ import {
   Query,
   Req,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiNotFoundResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -40,6 +51,12 @@ export class NotificationsController {
 
   @Get('notifications/me')
   @ApiOperation({ summary: 'Get my in-app notification feed' })
+  @ApiDataResponse(
+    QueryNotificationsDto,
+    'Successfully retrieved notifications',
+    true,
+  )
+  @ApiStandardResponses()
   async getMyNotifications(
     @Req() req: { user: JwtPayload },
     @Query() query: QueryNotificationsDto,
@@ -59,6 +76,11 @@ export class NotificationsController {
   @ApiOperation({
     summary: 'Mark notifications as read',
   })
+  @ApiDataResponse(
+    MarkNotificationsReadDto,
+    'Successfully marked notifications as read',
+  )
+  @ApiStandardResponses()
   async markAsRead(
     @Req() req: { user: JwtPayload },
     @Body() dto: MarkNotificationsReadDto,
@@ -78,6 +100,13 @@ export class NotificationsController {
   @ApiOperation({
     summary: 'View notification delivery logs (admin)',
   })
+  @ApiDataResponse(
+    AdminQueryNotificationsDto,
+    'Successfully retrieved notification logs',
+    true,
+  )
+  @ApiStandardResponses()
+  @ApiAuthResponses()
   async getDeliveryLogs(@Query() query: AdminQueryNotificationsDto) {
     return this.notificationsService.getDeliveryLogs({
       userId: query.userId,
@@ -93,6 +122,13 @@ export class NotificationsController {
   @Get('admin/notification-templates')
   @Roles(Role.ADMIN)
   @ApiOperation({ summary: 'List all notification templates' })
+  @ApiDataResponse(
+    UpdateTemplateDto,
+    'Successfully retrieved notification templates',
+    true,
+  )
+  @ApiStandardResponses()
+  @ApiAuthResponses()
   async getTemplates() {
     const templates = await this.templatesRepo.find({
       order: { eventType: 'ASC', channel: 'ASC' },
@@ -103,6 +139,16 @@ export class NotificationsController {
   @Patch('admin/notification-templates/:id')
   @Roles(Role.ADMIN)
   @ApiOperation({ summary: 'Update a notification template' })
+  @ApiDataResponse(
+    UpdateTemplateDto,
+    'Successfully updated notification template',
+  )
+  @ApiStandardResponses()
+  @ApiAuthResponses()
+  @ApiNotFoundResponse({
+    description: 'Notification template not found',
+    type: ErrorResponseDto,
+  })
   async updateTemplate(
     @Param('id') id: string,
     @Body() dto: UpdateTemplateDto,
@@ -128,6 +174,12 @@ export class NotificationsController {
   @ApiOperation({
     summary: 'Preview a rendered notification template',
   })
+  @ApiDataResponse(
+    PreviewTemplateDto,
+    'Successfully rendered notification preview',
+  )
+  @ApiStandardResponses()
+  @ApiAuthResponses()
   async previewTemplate(@Body() dto: PreviewTemplateDto) {
     const result = await this.templateService.preview(
       dto.templateId,

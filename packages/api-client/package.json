@@ -26,6 +26,10 @@
       "types": "./dist/hooks/index.d.ts",
       "import": "./dist/hooks/index.js"
     },
+    "./webrtc": {
+      "types": "./dist/webrtc/index.d.ts",
+      "import": "./dist/webrtc/index.js"
+    },
     "./modules/*": {
       "types": "./dist/modules/*.d.ts",
       "import": "./dist/modules/*.js"
@@ -48,7 +52,8 @@
   },
   "dependencies": {
     "@clinic-platform/types": "workspace:*",
-    "axios": "catalog:web-ui"
+    "axios": "catalog:web-ui",
+    "socket.io-client": "^4.8.3"
   },
   "peerDependencies": {
     "@tanstack/react-query": "^5.0.0"
@@ -64,13 +69,13 @@
     "@clinic-platform/typescript-config": "workspace:*",
     "@clinic-platform/vitest-config": "workspace:*",
     "@types/node": "catalog:",
+    "@vitest/coverage-v8": "catalog:testing",
+    "axios": "catalog:web-ui",
     "eslint": "catalog:",
     "prettier": "catalog:",
     "tsup": "catalog:",
     "typescript": "catalog:",
-    "vitest": "catalog:testing",
-    "@vitest/coverage-v8": "catalog:testing",
-    "axios": "catalog:web-ui"
+    "vitest": "catalog:testing"
   },
   "prettier": "@clinic-platform/prettier-config/base"
 }
