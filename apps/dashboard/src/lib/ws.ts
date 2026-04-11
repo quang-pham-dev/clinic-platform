@@ -19,13 +19,11 @@ export const useWsStore = create<WsState>((set, get) => ({
     const token = useAuthStore.getState().accessToken;
     if (!token) return;
 
-    const newSocket = io(
-      import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000',
-      {
-        auth: { token },
-        transports: ['websocket'],
-      },
-    );
+    const newSocket = io('/', {
+      path: '/socket.io',
+      auth: { token },
+      transports: ['websocket'],
+    });
 
     newSocket.on('connect', () => {
       set({ isConnected: true });

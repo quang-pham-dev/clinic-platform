@@ -1,8 +1,8 @@
 # Healthcare Clinic Platform — Documentation Hub
 
-> **Version:** 1.1.0
-> **Last updated:** 2026-03-31
-> **Status:** P1 ✅ Complete — P2 planned
+> **Version:** 1.3.0
+> **Last updated:** 2026-04-10
+> **Status:** P3 ✅ Complete — P4 planned
 
 ---
 

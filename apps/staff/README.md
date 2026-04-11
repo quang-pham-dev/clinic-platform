@@ -71,10 +71,10 @@ The application runs at [http://localhost:3002](http://localhost:3002)
 
 ### Test Credentials
 
-| Role       | Email             | Password   |
-| ---------- | ----------------- | ---------- |
-| Head Nurse | headnurse@clinic  | Staff@123  |
-| Nurse      | nurse1@clinic     | Staff@123  |
+| Role       | Email            | Password  |
+| ---------- | ---------------- | --------- |
+| Head Nurse | headnurse@clinic | Staff@123 |
+| Nurse      | nurse1@clinic    | Staff@123 |
 
 ### Type Checking & Linting
 
@@ -91,7 +91,7 @@ pnpm --filter @clinic-platform/staff run build
 
 ## 🔐 Environment Variables
 
-| Variable              | Description          | Default                        |
-| --------------------- | -------------------- | ------------------------------ |
-| `NEXT_PUBLIC_API_URL` | Backend REST API URL | `http://localhost:8080/api/v1` |
-| `NEXT_PUBLIC_WS_URL`  | Backend WebSocket URL| `http://localhost:8080`        |
+| Variable              | Description           | Default                        |
+| --------------------- | --------------------- | ------------------------------ |
+| `NEXT_PUBLIC_API_URL` | Backend REST API URL  | `http://localhost:8080/api/v1` |
+| `NEXT_PUBLIC_WS_URL`  | Backend WebSocket URL | `http://localhost:8080`        |

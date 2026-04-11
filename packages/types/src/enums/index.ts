@@ -61,3 +61,21 @@ export enum NotificationStatus {
   UNREAD = 'unread',
   READ = 'read',
 }
+
+/**
+ * Video session lifecycle states.
+ * P3: Managed by VideoSessionStateMachine (see docs/3/07-video-session-state-machine.md).
+ *
+ * waiting  → Initiated by doctor; patient has not yet joined
+ * active   → Both parties have joined; session is live
+ * ended    → Session closed normally (either party ended it)
+ * missed   → Timeout fired (5 min) before any participant joined
+ * failed   → Technical error during session setup or teardown
+ */
+export enum VideoSessionStatus {
+  WAITING = 'waiting',
+  ACTIVE = 'active',
+  ENDED = 'ended',
+  MISSED = 'missed',
+  FAILED = 'failed',
+}

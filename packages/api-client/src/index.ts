@@ -13,6 +13,7 @@ import { createShiftsHooks } from './hooks/useShifts';
 import { createSlotsHooks } from './hooks/useSlots';
 import { createStaffHooks } from './hooks/useStaff';
 import { createUsersHooks } from './hooks/useUsers';
+import { createVideoSessionsHooks } from './hooks/useVideoSessions';
 import type { AuthService } from './services/auth.service';
 import { createAuthService } from './services/auth.service';
 import type { BookingsService } from './services/bookings.service';
@@ -39,6 +40,8 @@ import type { StaffService } from './services/staff.service';
 import { createStaffService } from './services/staff.service';
 import type { UsersService } from './services/users.service';
 import { createUsersService } from './services/users.service';
+import type { VideoSessionsService } from './services/video-sessions.service';
+import { createVideoSessionsService } from './services/video-sessions.service';
 
 export {
   createHttpClient,
@@ -95,6 +98,7 @@ export {
   createBroadcastsHooks,
   createScheduleHooks,
   createNotificationsHooks,
+  createVideoSessionsHooks,
 } from './hooks';
 
 /**
@@ -116,6 +120,7 @@ export interface ApiClient {
   broadcasts: BroadcastsService;
   schedule: ScheduleService;
   notifications: NotificationsService;
+  videoSessions: VideoSessionsService;
 }
 
 /**
@@ -155,6 +160,7 @@ export function createApiClient(config: ClientConfig): ApiClient {
     broadcasts: createBroadcastsService(http),
     schedule: createScheduleService(http),
     notifications: createNotificationsService(http),
+    videoSessions: createVideoSessionsService(http),
   };
 }
 
@@ -185,5 +191,6 @@ export function createAllHooks(client: ApiClient) {
     broadcasts: createBroadcastsHooks(client.broadcasts),
     schedule: createScheduleHooks(client.schedule),
     notifications: createNotificationsHooks(client.notifications),
+    videoSessions: createVideoSessionsHooks(client.videoSessions),
   };
 }

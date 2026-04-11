@@ -15,23 +15,58 @@ import {
   Users,
   X,
 } from 'lucide-react';
+import { Activity, Server, Video } from 'lucide-react';
 import * as React from 'react';
 
-const navItems = [
-  { to: ROUTES.DASHBOARD, label: NAV_LABELS.OVERVIEW, icon: LayoutDashboard },
-  { to: ROUTES.BOOKINGS, label: NAV_LABELS.BOOKINGS, icon: CalendarCheck },
-  { to: ROUTES.DOCTORS, label: NAV_LABELS.DOCTORS, icon: Stethoscope },
-  { to: ROUTES.PATIENTS, label: NAV_LABELS.PATIENTS, icon: Users },
-  { to: ROUTES.DEPARTMENTS, label: NAV_LABELS.DEPARTMENTS, icon: Building2 },
-  { to: ROUTES.STAFF, label: NAV_LABELS.STAFF, icon: UserCog },
+const navSections = [
   {
-    to: ROUTES.SHIFT_TEMPLATES,
-    label: NAV_LABELS.SHIFT_TEMPLATES,
-    icon: Clock,
+    title: 'Clinic',
+    items: [
+      {
+        to: ROUTES.DASHBOARD,
+        label: NAV_LABELS.OVERVIEW,
+        icon: LayoutDashboard,
+      },
+      { to: ROUTES.BOOKINGS, label: NAV_LABELS.BOOKINGS, icon: CalendarCheck },
+      { to: ROUTES.DOCTORS, label: NAV_LABELS.DOCTORS, icon: Stethoscope },
+      { to: ROUTES.PATIENTS, label: NAV_LABELS.PATIENTS, icon: Users },
+    ],
   },
-  { to: ROUTES.SHIFTS, label: NAV_LABELS.SHIFTS, icon: CalendarDays },
-  { to: ROUTES.BROADCASTS, label: NAV_LABELS.BROADCASTS, icon: Megaphone },
-] as const;
+  {
+    title: 'Staff Management',
+    items: [
+      {
+        to: ROUTES.DEPARTMENTS,
+        label: NAV_LABELS.DEPARTMENTS,
+        icon: Building2,
+      },
+      { to: ROUTES.STAFF, label: NAV_LABELS.STAFF, icon: UserCog },
+      {
+        to: ROUTES.SHIFT_TEMPLATES,
+        label: NAV_LABELS.SHIFT_TEMPLATES,
+        icon: Clock,
+      },
+      { to: ROUTES.SHIFTS, label: NAV_LABELS.SHIFTS, icon: CalendarDays },
+    ],
+  },
+  {
+    title: 'Telemedicine',
+    items: [{ to: '/video-sessions', label: 'Video Sessions', icon: Video }],
+  },
+  {
+    title: 'System',
+    items: [
+      { to: ROUTES.BROADCASTS, label: NAV_LABELS.BROADCASTS, icon: Megaphone },
+      { to: '/notifications', label: 'Notifications Log', icon: Activity },
+      {
+        href: '/api/v1/admin/queues',
+        label: 'Task Queues',
+        icon: Server,
+        external: true,
+      },
+    ],
+  },
+];
 
 interface SidebarProps {
   isOpen: boolean;
@@ -70,24 +105,51 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
           </button>
         </div>
 
-        <nav className="px-3 py-4 space-y-1">
-          {navItems.map((item) => (
-            <Link
-              key={item.to}
-              to={item.to}
-              onClick={onClose}
-              activeProps={{
-                className: 'bg-teal-500/10 text-teal-400 border-teal-500/20',
-              }}
-              inactiveProps={{
-                className:
-                  'text-gray-400 hover:text-white hover:bg-gray-800/50 border-transparent',
-              }}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors border"
-            >
-              <item.icon className="w-5 h-5 shrink-0" />
-              {item.label}
-            </Link>
+        <nav className="px-3 py-4 pb-20 space-y-6 flex-1 overflow-y-auto">
+          {navSections.map((section) => (
+            <div key={section.title}>
+              <h3 className="px-3 mb-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                {section.title}
+              </h3>
+              <div className="space-y-1">
+                {section.items.map((item) => {
+                  if ('external' in item) {
+                    return (
+                      <a
+                        key={item.label}
+                        href={item.href}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors border text-gray-400 hover:text-white hover:bg-gray-800/50 border-transparent"
+                      >
+                        <item.icon className="w-5 h-5 shrink-0" />
+                        {item.label}
+                      </a>
+                    );
+                  }
+
+                  return (
+                    <Link
+                      key={item.to}
+                      to={item.to}
+                      onClick={onClose}
+                      activeProps={{
+                        className:
+                          'bg-teal-500/10 text-teal-400 border-teal-500/20',
+                      }}
+                      inactiveProps={{
+                        className:
+                          'text-gray-400 hover:text-white hover:bg-gray-800/50 border-transparent',
+                      }}
+                      className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors border"
+                    >
+                      <item.icon className="w-5 h-5 shrink-0" />
+                      {item.label}
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
           ))}
         </nav>
 

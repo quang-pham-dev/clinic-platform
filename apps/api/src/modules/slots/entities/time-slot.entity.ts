@@ -35,6 +35,14 @@ export class TimeSlot {
   @Column({ name: 'is_available', default: true })
   isAvailable: boolean;
 
+  /**
+   * Optional link to the shift assignment that generated this slot (P2).
+   * Null for manually-created ad-hoc slots.
+   * ON DELETE SET NULL — so deleting the shift doesn't delete the slot.
+   */
+  @Column({ name: 'shift_assignment_id', type: 'uuid', nullable: true })
+  shiftAssignmentId: string | null;
+
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
   createdAt: Date;
 

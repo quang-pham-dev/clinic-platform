@@ -2,6 +2,8 @@
 
 import { useAuth } from '@/features/auth/contexts/auth-context';
 import { useTheme } from '@/features/theme/providers/theme-provider';
+import { IncomingCallModal } from '@/features/video/components/incoming-call-modal';
+import { useWsStore } from '@/lib/ws';
 import {
   CalendarCheck,
   LogOut,
@@ -27,16 +29,27 @@ export default function PortalLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { user, isAuthenticated, isLoading, logout } = useAuth();
+  const { user, token, isAuthenticated, isLoading, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const pathname = usePathname();
   const router = useRouter();
+  const connectWs = useWsStore((s) => s.connect);
+  const disconnectWs = useWsStore((s) => s.disconnect);
 
   React.useEffect(() => {
     if (!isLoading && !isAuthenticated) {
       router.replace('/login');
     }
   }, [isLoading, isAuthenticated, router]);
+
+  React.useEffect(() => {
+    if (isAuthenticated && token) {
+      connectWs(token);
+    }
+    return () => {
+      disconnectWs();
+    };
+  }, [isAuthenticated, token, connectWs, disconnectWs]);
 
   if (isLoading || !isAuthenticated) {
     return (
@@ -48,11 +61,13 @@ export default function PortalLayout({
 
   const handleLogout = () => {
     logout();
+    disconnectWs();
     router.push('/login');
   };
 
   return (
     <div className="min-h-screen flex flex-col">
+      <IncomingCallModal />
       {/* Navbar */}
       <nav className="sticky top-0 z-50 border-b border-gray-800 bg-gray-950/80 backdrop-blur-xl transition-colors">
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">

@@ -27,6 +27,10 @@ const config = defineConfig(({ mode }) => {
           target: env.VITE_API_PROXY_TARGET || DEFAULT_PROXY_TARGET,
           changeOrigin: true,
         },
+        '/socket.io': {
+          target: env.VITE_API_PROXY_TARGET || DEFAULT_PROXY_TARGET,
+          ws: true,
+        },
       },
     },
   };

@@ -22,7 +22,9 @@
     "lucide-react": "catalog:web-ui",
     "next": "catalog:nextjs",
     "react": "catalog:react19",
-    "react-dom": "catalog:react19"
+    "react-dom": "catalog:react19",
+    "socket.io-client": "^4.8.3",
+    "zustand": "^5.0.12"
   },
   "devDependencies": {
     "@clinic-platform/eslint-config": "workspace:*",

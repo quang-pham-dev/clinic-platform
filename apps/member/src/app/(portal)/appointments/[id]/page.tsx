@@ -1,7 +1,7 @@
 'use client';
 
 import { apiHooks } from '@/lib/api';
-import { AppointmentStatus } from '@clinic-platform/types';
+import { AppointmentStatus, VideoSessionStatus } from '@clinic-platform/types';
 import { format } from 'date-fns';
 import {
   AlertCircle,
@@ -10,6 +10,7 @@ import {
   Clock,
   FileText,
   Stethoscope,
+  Video,
   XCircle,
 } from 'lucide-react';
 import Link from 'next/link';
@@ -32,6 +33,8 @@ export default function AppointmentDetailPage() {
   const [cancelError, setCancelError] = React.useState('');
 
   const { data, isLoading } = apiHooks.bookings.useBooking(id);
+  const { data: sessionData } =
+    apiHooks.videoSessions.useVideoSessionByAppointment(id);
   const { mutate: cancelBooking, isPending: isCancelling } =
     apiHooks.bookings.useCancelBooking({
       onSuccess: () => router.push('/appointments'),
@@ -39,6 +42,7 @@ export default function AppointmentDetailPage() {
     });
 
   const booking = data?.data;
+  const session = sessionData?.data;
 
   if (isLoading) {
     return (
@@ -90,21 +94,35 @@ export default function AppointmentDetailPage() {
       {/* Info Card */}
       <div className="rounded-xl border border-gray-800 bg-gray-900/80 p-6 space-y-5">
         {/* Doctor */}
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-full bg-teal-500/10 border border-teal-500/20 flex items-center justify-center text-teal-400 font-bold text-lg">
-            {(booking.doctor?.user?.profile?.fullName ?? 'D').charAt(0)}
-          </div>
-          <div>
-            <p className="font-semibold text-white">
-              {booking.doctor?.user?.profile?.fullName
-                ? `Dr. ${booking.doctor.user.profile.fullName}`
-                : 'Unknown Doctor'}
-            </p>
-            <div className="flex items-center gap-1 text-sm text-gray-500">
-              <Stethoscope className="w-3 h-3" />
-              {booking.doctor?.specialty ?? '—'}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-full bg-teal-500/10 border border-teal-500/20 flex items-center justify-center text-teal-400 font-bold text-lg">
+              {(booking.doctor?.user?.profile?.fullName ?? 'D').charAt(0)}
+            </div>
+            <div>
+              <p className="font-semibold text-white">
+                {booking.doctor?.user?.profile?.fullName
+                  ? `Dr. ${booking.doctor.user.profile.fullName}`
+                  : 'Unknown Doctor'}
+              </p>
+              <div className="flex items-center gap-1 text-sm text-gray-500">
+                <Stethoscope className="w-3 h-3" />
+                {booking.doctor?.specialty ?? '—'}
+              </div>
             </div>
           </div>
+
+          {session &&
+            (session.status === VideoSessionStatus.WAITING ||
+              session.status === VideoSessionStatus.ACTIVE) && (
+              <Link
+                href={`/video/${session.id}`}
+                className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-teal-500 hover:bg-teal-600 text-white font-medium text-sm transition-colors shadow-lg shadow-teal-500/20 w-fit"
+              >
+                <Video className="w-4 h-4" />
+                Join Video Call
+              </Link>
+            )}
         </div>
 
         {/* Date/Time */}

@@ -7,6 +7,7 @@ import * as React from 'react';
 
 interface AuthContextType {
   user: AuthUser | null;
+  token: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
@@ -24,6 +25,7 @@ const AuthContext = React.createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = React.useState<AuthUser | null>(null);
+  const [token, setToken] = React.useState<string | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
   const queryClient = useQueryClient();
 
@@ -33,6 +35,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (token && storedUser) {
       try {
         setUser(JSON.parse(storedUser));
+        setToken(token);
       } catch {
         localStorage.removeItem('auth_user');
       }
@@ -52,6 +55,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         localStorage.setItem('refresh_token', refreshToken);
       }
       localStorage.setItem('auth_user', JSON.stringify(authUser));
+      setToken(accessToken);
       setUser(authUser);
     },
     [queryClient],
@@ -82,19 +86,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     localStorage.removeItem('auth_user');
     // Clear all cached queries so the next user sees fresh data
     queryClient.clear();
+    setToken(null);
     setUser(null);
   }, [queryClient]);
 
   const value = React.useMemo(
     () => ({
       user,
+      token,
       isAuthenticated: !!user,
       isLoading,
       login,
       register,
       logout,
     }),
-    [user, isLoading, login, register, logout],
+    [user, token, isLoading, login, register, logout],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

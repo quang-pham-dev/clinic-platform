@@ -5,9 +5,12 @@ import { JwtService } from '@nestjs/jwt';
 import {
   OnGatewayConnection,
   OnGatewayDisconnect,
+  OnGatewayInit,
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
+import { createAdapter } from '@socket.io/redis-adapter';
+import Redis from 'ioredis';
 import type { Server, Socket } from 'socket.io';
 
 export interface BroadcastPayload {
@@ -36,7 +39,7 @@ export interface ShiftUpdatedPayload {
   },
 })
 export class BroadcastGateway
-  implements OnGatewayConnection, OnGatewayDisconnect
+  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
   @WebSocketServer()
   server: Server;
@@ -45,6 +48,39 @@ export class BroadcastGateway
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
   ) {}
+
+  /**
+   * Attach Redis pub/sub adapter after the WS server is initialised.
+   * This enables horizontal scaling — room membership is shared across processes.
+   * Gracefully skips if Redis is unreachable (useful in local dev without Redis).
+   */
+  async afterInit(server: Server) {
+    const host = this.configService.get<string>('REDIS_HOST', 'localhost');
+    const port = this.configService.get<number>('REDIS_PORT', 6379);
+    const password = this.configService.get<string>('REDIS_PASSWORD', '');
+
+    try {
+      const redisOpts = {
+        host,
+        port,
+        ...(password ? { password } : {}),
+        keyPrefix: 'ws:',
+        lazyConnect: true,
+      };
+      const pubClient = new Redis(redisOpts);
+      const subClient = pubClient.duplicate();
+
+      await pubClient.connect();
+      await subClient.connect();
+
+      server.adapter(createAdapter(pubClient, subClient));
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.warn(
+        `[BroadcastGateway] Redis adapter unavailable, using in-memory: ${msg}`,
+      );
+    }
+  }
 
   async handleConnection(client: Socket) {
     const token = (client.handshake.auth?.token ??
@@ -102,8 +138,7 @@ export class BroadcastGateway
   }
 
   async handleDisconnect(_client: Socket) {
-    // In-memory rooms are auto-cleaned by Socket.io
-    // Redis adapter would need explicit cleanup here
+    // Redis adapter auto-cleans room membership on disconnect
   }
 
   /**

@@ -1,7 +1,13 @@
 import { CreateStaffDto } from './dto/create-staff.dto';
 import { UpdateStaffDto } from './dto/update-staff.dto';
 import { StaffService } from './staff.service';
+import {
+  ApiAuthResponses,
+  ApiDataResponse,
+  ApiStandardResponses,
+} from '@/common/decorators/api-responses.decorator';
 import { Roles } from '@/common/decorators/roles.decorator';
+import { ErrorResponseDto } from '@/common/dto/error-response.dto';
 import { Role } from '@/common/types/role.enum';
 import {
   Body,
@@ -15,6 +21,8 @@ import {
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
+  ApiConflictResponse,
+  ApiNotFoundResponse,
   ApiOperation,
   ApiQuery,
   ApiTags,
@@ -32,6 +40,18 @@ export class StaffController {
     summary:
       'Create a new staff account with user, profile and staff profile (admin only)',
   })
+  @ApiDataResponse(
+    CreateStaffDto,
+    'Successfully created staff account',
+    false,
+    201,
+  )
+  @ApiStandardResponses()
+  @ApiAuthResponses()
+  @ApiConflictResponse({
+    description: 'Staff account already exists or email already in use',
+    type: ErrorResponseDto,
+  })
   async create(@Body() dto: CreateStaffDto) {
     return { data: await this.staffService.create(dto) };
   }
@@ -41,6 +61,9 @@ export class StaffController {
   @ApiOperation({
     summary: 'List staff members (admin: all, head_nurse: own dept)',
   })
+  @ApiDataResponse(CreateStaffDto, 'Successfully retrieved staff list', true)
+  @ApiStandardResponses()
+  @ApiAuthResponses()
   @ApiQuery({ name: 'role', required: false, type: String })
   @ApiQuery({ name: 'departmentId', required: false, type: String })
   @ApiQuery({ name: 'isActive', required: false, type: String })
@@ -68,6 +91,13 @@ export class StaffController {
   @Get(':id')
   @Roles(Role.ADMIN, Role.HEAD_NURSE, Role.NURSE, Role.RECEPTIONIST)
   @ApiOperation({ summary: 'Get a single staff profile with full details' })
+  @ApiDataResponse(UpdateStaffDto, 'Successfully retrieved staff profile')
+  @ApiStandardResponses()
+  @ApiAuthResponses()
+  @ApiNotFoundResponse({
+    description: 'Staff not found',
+    type: ErrorResponseDto,
+  })
   async findOne(@Param('id', ParseUUIDPipe) id: string) {
     return { data: await this.staffService.findOne(id) };
   }
@@ -77,6 +107,13 @@ export class StaffController {
   @ApiOperation({
     summary:
       'Update staff profile or department assignment (admin / head_nurse own dept)',
+  })
+  @ApiDataResponse(UpdateStaffDto, 'Successfully updated staff profile')
+  @ApiStandardResponses()
+  @ApiAuthResponses()
+  @ApiNotFoundResponse({
+    description: 'Staff not found',
+    type: ErrorResponseDto,
   })
   async update(
     @Param('id', ParseUUIDPipe) id: string,
@@ -88,6 +125,13 @@ export class StaffController {
   @Patch(':id/deactivate')
   @Roles(Role.ADMIN)
   @ApiOperation({ summary: 'Deactivate a staff account (admin only)' })
+  @ApiDataResponse(UpdateStaffDto, 'Successfully deactivated staff account')
+  @ApiStandardResponses()
+  @ApiAuthResponses()
+  @ApiNotFoundResponse({
+    description: 'Staff not found',
+    type: ErrorResponseDto,
+  })
   async deactivate(@Param('id', ParseUUIDPipe) id: string) {
     return { data: await this.staffService.deactivate(id) };
   }

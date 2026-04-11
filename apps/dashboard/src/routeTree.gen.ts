@@ -12,6 +12,8 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as DashboardRouteImport } from './routes/_dashboard'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as DashboardIndexRouteImport } from './routes/_dashboard/index'
+import { Route as DashboardVideoSessionsRouteImport } from './routes/_dashboard/video-sessions'
+import { Route as DashboardNotificationsRouteImport } from './routes/_dashboard/notifications'
 import { Route as AuthLoginRouteImport } from './routes/_auth/login'
 import { Route as DashboardStaffIndexRouteImport } from './routes/_dashboard/staff/index'
 import { Route as DashboardShiftsIndexRouteImport } from './routes/_dashboard/shifts/index'
@@ -21,6 +23,7 @@ import { Route as DashboardDoctorsIndexRouteImport } from './routes/_dashboard/d
 import { Route as DashboardDepartmentsIndexRouteImport } from './routes/_dashboard/departments/index'
 import { Route as DashboardBroadcastsIndexRouteImport } from './routes/_dashboard/broadcasts/index'
 import { Route as DashboardBookingsIndexRouteImport } from './routes/_dashboard/bookings/index'
+import { Route as DashboardVideoSessionIdRouteImport } from './routes/_dashboard/video/$sessionId'
 import { Route as DashboardDoctorsDoctorIdRouteImport } from './routes/_dashboard/doctors/$doctorId'
 import { Route as DashboardBookingsBookingIdRouteImport } from './routes/_dashboard/bookings/$bookingId'
 import { Route as DashboardDepartmentsDepartmentIdIndexRouteImport } from './routes/_dashboard/departments/$departmentId/index'
@@ -37,6 +40,16 @@ const AuthRoute = AuthRouteImport.update({
 const DashboardIndexRoute = DashboardIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardVideoSessionsRoute = DashboardVideoSessionsRouteImport.update({
+  id: '/video-sessions',
+  path: '/video-sessions',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardNotificationsRoute = DashboardNotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
   getParentRoute: () => DashboardRoute,
 } as any)
 const AuthLoginRoute = AuthLoginRouteImport.update({
@@ -87,6 +100,11 @@ const DashboardBookingsIndexRoute = DashboardBookingsIndexRouteImport.update({
   path: '/bookings/',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardVideoSessionIdRoute = DashboardVideoSessionIdRouteImport.update({
+  id: '/video/$sessionId',
+  path: '/video/$sessionId',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardDoctorsDoctorIdRoute =
   DashboardDoctorsDoctorIdRouteImport.update({
     id: '/doctors/$doctorId',
@@ -115,8 +133,11 @@ const DashboardDoctorsDoctorIdSlotsRoute =
 export interface FileRoutesByFullPath {
   '/': typeof DashboardIndexRoute
   '/login': typeof AuthLoginRoute
+  '/notifications': typeof DashboardNotificationsRoute
+  '/video-sessions': typeof DashboardVideoSessionsRoute
   '/bookings/$bookingId': typeof DashboardBookingsBookingIdRoute
   '/doctors/$doctorId': typeof DashboardDoctorsDoctorIdRouteWithChildren
+  '/video/$sessionId': typeof DashboardVideoSessionIdRoute
   '/bookings/': typeof DashboardBookingsIndexRoute
   '/broadcasts/': typeof DashboardBroadcastsIndexRoute
   '/departments/': typeof DashboardDepartmentsIndexRoute
@@ -131,8 +152,11 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof DashboardIndexRoute
   '/login': typeof AuthLoginRoute
+  '/notifications': typeof DashboardNotificationsRoute
+  '/video-sessions': typeof DashboardVideoSessionsRoute
   '/bookings/$bookingId': typeof DashboardBookingsBookingIdRoute
   '/doctors/$doctorId': typeof DashboardDoctorsDoctorIdRouteWithChildren
+  '/video/$sessionId': typeof DashboardVideoSessionIdRoute
   '/bookings': typeof DashboardBookingsIndexRoute
   '/broadcasts': typeof DashboardBroadcastsIndexRoute
   '/departments': typeof DashboardDepartmentsIndexRoute
@@ -149,9 +173,12 @@ export interface FileRoutesById {
   '/_auth': typeof AuthRouteWithChildren
   '/_dashboard': typeof DashboardRouteWithChildren
   '/_auth/login': typeof AuthLoginRoute
+  '/_dashboard/notifications': typeof DashboardNotificationsRoute
+  '/_dashboard/video-sessions': typeof DashboardVideoSessionsRoute
   '/_dashboard/': typeof DashboardIndexRoute
   '/_dashboard/bookings/$bookingId': typeof DashboardBookingsBookingIdRoute
   '/_dashboard/doctors/$doctorId': typeof DashboardDoctorsDoctorIdRouteWithChildren
+  '/_dashboard/video/$sessionId': typeof DashboardVideoSessionIdRoute
   '/_dashboard/bookings/': typeof DashboardBookingsIndexRoute
   '/_dashboard/broadcasts/': typeof DashboardBroadcastsIndexRoute
   '/_dashboard/departments/': typeof DashboardDepartmentsIndexRoute
@@ -168,8 +195,11 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/login'
+    | '/notifications'
+    | '/video-sessions'
     | '/bookings/$bookingId'
     | '/doctors/$doctorId'
+    | '/video/$sessionId'
     | '/bookings/'
     | '/broadcasts/'
     | '/departments/'
@@ -184,8 +214,11 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/login'
+    | '/notifications'
+    | '/video-sessions'
     | '/bookings/$bookingId'
     | '/doctors/$doctorId'
+    | '/video/$sessionId'
     | '/bookings'
     | '/broadcasts'
     | '/departments'
@@ -201,9 +234,12 @@ export interface FileRouteTypes {
     | '/_auth'
     | '/_dashboard'
     | '/_auth/login'
+    | '/_dashboard/notifications'
+    | '/_dashboard/video-sessions'
     | '/_dashboard/'
     | '/_dashboard/bookings/$bookingId'
     | '/_dashboard/doctors/$doctorId'
+    | '/_dashboard/video/$sessionId'
     | '/_dashboard/bookings/'
     | '/_dashboard/broadcasts/'
     | '/_dashboard/departments/'
@@ -242,6 +278,20 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof DashboardIndexRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/_dashboard/video-sessions': {
+      id: '/_dashboard/video-sessions'
+      path: '/video-sessions'
+      fullPath: '/video-sessions'
+      preLoaderRoute: typeof DashboardVideoSessionsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/_dashboard/notifications': {
+      id: '/_dashboard/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof DashboardNotificationsRouteImport
       parentRoute: typeof DashboardRoute
     }
     '/_auth/login': {
@@ -307,6 +357,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardBookingsIndexRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/_dashboard/video/$sessionId': {
+      id: '/_dashboard/video/$sessionId'
+      path: '/video/$sessionId'
+      fullPath: '/video/$sessionId'
+      preLoaderRoute: typeof DashboardVideoSessionIdRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/_dashboard/doctors/$doctorId': {
       id: '/_dashboard/doctors/$doctorId'
       path: '/doctors/$doctorId'
@@ -363,9 +420,12 @@ const DashboardDoctorsDoctorIdRouteWithChildren =
   )
 
 interface DashboardRouteChildren {
+  DashboardNotificationsRoute: typeof DashboardNotificationsRoute
+  DashboardVideoSessionsRoute: typeof DashboardVideoSessionsRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
   DashboardBookingsBookingIdRoute: typeof DashboardBookingsBookingIdRoute
   DashboardDoctorsDoctorIdRoute: typeof DashboardDoctorsDoctorIdRouteWithChildren
+  DashboardVideoSessionIdRoute: typeof DashboardVideoSessionIdRoute
   DashboardBookingsIndexRoute: typeof DashboardBookingsIndexRoute
   DashboardBroadcastsIndexRoute: typeof DashboardBroadcastsIndexRoute
   DashboardDepartmentsIndexRoute: typeof DashboardDepartmentsIndexRoute
@@ -378,9 +438,12 @@ interface DashboardRouteChildren {
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
+  DashboardNotificationsRoute: DashboardNotificationsRoute,
+  DashboardVideoSessionsRoute: DashboardVideoSessionsRoute,
   DashboardIndexRoute: DashboardIndexRoute,
   DashboardBookingsBookingIdRoute: DashboardBookingsBookingIdRoute,
   DashboardDoctorsDoctorIdRoute: DashboardDoctorsDoctorIdRouteWithChildren,
+  DashboardVideoSessionIdRoute: DashboardVideoSessionIdRoute,
   DashboardBookingsIndexRoute: DashboardBookingsIndexRoute,
   DashboardBroadcastsIndexRoute: DashboardBroadcastsIndexRoute,
   DashboardDepartmentsIndexRoute: DashboardDepartmentsIndexRoute,

@@ -277,6 +277,72 @@ export class NotificationsService {
     }
   }
 
+  /* ──────── Video Session event listeners (P3) ──────── */
+
+  @OnEvent('video.session.created')
+  async handleVideoSessionCreated(payload: {
+    sessionId: string;
+    roomId: string;
+    appointmentId: string;
+    doctorUserId: string;
+    patientUserId: string;
+  }): Promise<void> {
+    this.logger.log(
+      `Video session created: session=${payload.sessionId}, notifying patient=${payload.patientUserId}`,
+    );
+
+    // In-app "call:incoming" notification to patient
+    await this.send({
+      userId: payload.patientUserId,
+      channel: NotificationChannel.IN_APP,
+      eventType: 'video.call.incoming',
+      data: {
+        sessionId: payload.sessionId,
+        roomId: payload.roomId,
+        appointmentId: payload.appointmentId,
+        referenceId: payload.sessionId,
+        referenceType: 'video_session',
+      },
+      referenceId: payload.sessionId,
+      referenceType: 'video_session',
+    });
+  }
+
+  @OnEvent('video.session.missed')
+  async handleVideoSessionMissed(payload: {
+    sessionId: string;
+    doctorUserId: string;
+    patientUserId: string;
+  }): Promise<void> {
+    this.logger.log(`Video session missed: session=${payload.sessionId}`);
+
+    const templateData = {
+      referenceId: payload.sessionId,
+      referenceType: 'video_session',
+      sessionId: payload.sessionId,
+    };
+
+    // Notify both doctor and patient
+    await Promise.all([
+      this.send({
+        userId: payload.doctorUserId,
+        channel: NotificationChannel.IN_APP,
+        eventType: 'video.session.missed',
+        data: templateData,
+        referenceId: payload.sessionId,
+        referenceType: 'video_session',
+      }),
+      this.send({
+        userId: payload.patientUserId,
+        channel: NotificationChannel.IN_APP,
+        eventType: 'video.session.missed',
+        data: templateData,
+        referenceId: payload.sessionId,
+        referenceType: 'video_session',
+      }),
+    ]);
+  }
+
   /* ──────── Query methods ──────── */
 
   async getMyNotifications(
