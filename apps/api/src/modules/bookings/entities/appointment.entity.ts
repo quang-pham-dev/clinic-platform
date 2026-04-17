@@ -53,6 +53,25 @@ export class Appointment {
   @Column({ type: 'text', nullable: true })
   notes: string;
 
+  @Column({ name: 'video_session_id', type: 'uuid', nullable: true })
+  videoSessionId: string | null;
+
+  @Column({
+    name: 'email_reminder_job_id',
+    type: 'varchar',
+    length: 255,
+    nullable: true,
+  })
+  emailReminderJobId: string | null;
+
+  @Column({
+    name: 'sms_reminder_job_id',
+    type: 'varchar',
+    length: 255,
+    nullable: true,
+  })
+  smsReminderJobId: string | null;
+
   @VersionColumn()
   version: number;
 

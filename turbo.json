@@ -8,6 +8,7 @@
     "API_PREFIX",
     "CORS_ORIGIN",
     "NEXT_PUBLIC_API_URL",
+    "STRAPI_URL",
     "DB_HOST",
     "DB_PORT",
     "DB_NAME",
