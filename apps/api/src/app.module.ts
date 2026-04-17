@@ -23,6 +23,9 @@ import { SlotsModule } from './modules/slots/slots.module';
 import { StaffModule } from './modules/staff/staff.module';
 import { SystemModule } from './modules/system/system.module';
 import { UsersModule } from './modules/users/users.module';
+import { VideoModule } from './modules/video/video.module';
+import { ExpressAdapter } from '@bull-board/express';
+import { BullBoardModule } from '@bull-board/nestjs';
 import { createNestLoggerModule } from '@clinic-platform/logger/nestjs';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -35,6 +38,16 @@ import { TypeOrmModule } from '@nestjs/typeorm';
   imports: [
     // Config (global)
     EventEmitterModule.forRoot(),
+    BullBoardModule.forRoot({
+      route: '/admin/queues',
+      adapter: ExpressAdapter,
+      boardOptions: {
+        uiConfig: {
+          boardTitle: 'Clinic Platform Queues',
+        },
+      },
+      // Require SUPER_ADMIN role (we enforce it via a basic auth express middleware to avoid NestJS context boundary issues)
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
       load: [appConfig, databaseConfig, redisConfig, jwtConfig, cookieConfig],
@@ -81,6 +94,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     BroadcastsModule,
     ScheduleModule,
     NotificationsModule,
+    VideoModule,
   ],
   providers: [
     // Global request/response logging with correlation IDs

@@ -1,6 +1,6 @@
 import { AuditTimeline } from '@/features/bookings/components/audit-timeline';
 import { apiHooks } from '@/lib/api';
-import { AppointmentStatus } from '@clinic-platform/types';
+import { AppointmentStatus, VideoSessionStatus } from '@clinic-platform/types';
 import { Button, StatusBadge } from '@clinic-platform/ui';
 import { Link, createFileRoute, useNavigate } from '@tanstack/react-router';
 import { format } from 'date-fns';
@@ -13,6 +13,7 @@ import {
   FileText,
   Stethoscope,
   User,
+  Video,
   XCircle,
 } from 'lucide-react';
 import * as React from 'react';
@@ -28,6 +29,13 @@ function BookingDetailPage() {
   const [notes, setNotes] = React.useState('');
 
   const { data, isLoading } = apiHooks.bookings.useBooking(bookingId);
+  const { data: sessionData, isLoading: isLoadingSession } =
+    apiHooks.videoSessions.useVideoSessionByAppointment(bookingId);
+  const { mutate: createSession, isPending: isCreatingSession } =
+    apiHooks.videoSessions.useCreateSession({
+      onSuccess: (res) => navigate({ to: `/video/${res.data.id}` as string }),
+    });
+
   const { mutate: updateStatus, isPending: isUpdating } =
     apiHooks.bookings.useUpdateBookingStatus();
   const { mutate: updateNotes, isPending: isSavingNotes } =
@@ -40,6 +48,7 @@ function BookingDetailPage() {
     });
 
   const booking = data?.data;
+  const session = sessionData?.data;
 
   React.useEffect(() => {
     if (booking?.notes) setNotes(booking.notes);
@@ -318,6 +327,38 @@ function BookingDetailPage() {
             <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">
               Actions
             </h2>
+
+            {/* Telemedicine Action */}
+            {(booking.status === AppointmentStatus.CONFIRMED ||
+              booking.status === AppointmentStatus.IN_PROGRESS) && (
+              <div className="mb-4 pb-4 border-b border-gray-800">
+                {!session ? (
+                  <Button
+                    className="w-full bg-teal-500 hover:bg-teal-600 text-white shadow-lg shadow-teal-500/20"
+                    onClick={() => createSession({ appointmentId: bookingId })}
+                    disabled={isCreatingSession || isLoadingSession}
+                  >
+                    <Video className="w-4 h-4 mr-2" />
+                    Start Video Call
+                  </Button>
+                ) : (
+                  <Button
+                    className="w-full bg-teal-500 hover:bg-teal-600 text-white shadow-lg shadow-teal-500/20"
+                    onClick={() =>
+                      navigate({ to: `/video/${session.id}` as string })
+                    }
+                  >
+                    <Video className="w-4 h-4 mr-2" />
+                    {session.status === VideoSessionStatus.WAITING
+                      ? 'Join Call Room'
+                      : session.status === VideoSessionStatus.ACTIVE
+                        ? 'Rejoin Call'
+                        : 'View Session'}
+                  </Button>
+                )}
+              </div>
+            )}
+
             {transitions.length > 0 ? (
               <div className="space-y-2">
                 {transitions.map((t) => (

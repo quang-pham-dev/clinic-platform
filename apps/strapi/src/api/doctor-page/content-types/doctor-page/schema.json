@@ -1,0 +1,42 @@
+{
+  "kind": "collectionType",
+  "collectionName": "doctor_pages",
+  "info": {
+    "singularName": "doctor-page",
+    "pluralName": "doctor-pages",
+    "displayName": "Doctor Page",
+    "description": "Public CMS content used to enrich doctor listing and profile pages"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "doctorId": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "displayName": {
+      "type": "string",
+      "required": true
+    },
+    "specialtyLabel": {
+      "type": "string"
+    },
+    "shortBio": {
+      "type": "text"
+    },
+    "longBio": {
+      "type": "richtext"
+    },
+    "languages": {
+      "type": "json"
+    },
+    "photo": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    }
+  }
+}

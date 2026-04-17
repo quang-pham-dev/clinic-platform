@@ -13,6 +13,7 @@ export default defineConfig((options) => ({
     'modules/departments': 'src/modules/departments.ts',
     'modules/staff': 'src/modules/staff.ts',
     'hooks/index': 'src/hooks/index.ts',
+    'webrtc/index': 'src/webrtc/index.ts',
   },
   format: ['esm'],
   dts: true,

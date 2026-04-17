@@ -199,7 +199,7 @@ describe('BookingsService', () => {
 
   describe('updateStatus', () => {
     it('should throw NotFoundException if appointment not found', async () => {
-      mockRepo.findOne.mockResolvedValueOnce(null);
+      mockRepo.findWithDetails.mockResolvedValueOnce(null);
       await expect(
         service.updateStatus(
           'id1',
@@ -215,7 +215,7 @@ describe('BookingsService', () => {
         status: AppointmentStatus.PENDING,
         slotId: 'slot1',
       };
-      mockRepo.findOne.mockResolvedValueOnce(mockAppt);
+      mockRepo.findWithDetails.mockResolvedValueOnce(mockAppt);
 
       await service.updateStatus(
         'id1',

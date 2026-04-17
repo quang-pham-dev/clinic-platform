@@ -44,3 +44,8 @@ export {
   createNotificationsService,
   type NotificationsService,
 } from './notifications.service';
+
+export {
+  createVideoSessionsService,
+  type VideoSessionsService,
+} from './video-sessions.service';
