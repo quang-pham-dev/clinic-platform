@@ -13,9 +13,13 @@ import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { RolesGuard } from './modules/auth/guards/roles.guard';
 import { BookingsModule } from './modules/bookings/bookings.module';
 import { BroadcastsModule } from './modules/broadcasts/broadcasts.module';
+import { CmsWebhookModule } from './modules/cms-webhook/cms-webhook.module';
+import { ConsentsModule } from './modules/consents/consents.module';
 import { DepartmentsModule } from './modules/departments/departments.module';
 import { DoctorsModule } from './modules/doctors/doctors.module';
+import { FilesModule } from './modules/files/files.module';
 import { HealthModule } from './modules/health/health.module';
+import { MedicalRecordsModule } from './modules/medical-records/medical-records.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { ScheduleModule } from './modules/schedule/schedule.module';
 import { ShiftsModule } from './modules/shifts/shifts.module';
@@ -95,6 +99,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     ScheduleModule,
     NotificationsModule,
     VideoModule,
+    // P4 — Patient Portal & CMS
+    MedicalRecordsModule,
+    FilesModule,
+    ConsentsModule,
+    CmsWebhookModule,
   ],
   providers: [
     // Global request/response logging with correlation IDs

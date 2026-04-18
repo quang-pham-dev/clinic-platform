@@ -35,6 +35,9 @@ export class TimeSlot {
   @Column({ name: 'is_available', default: true })
   isAvailable: boolean;
 
+  @Column({ name: 'is_telemedicine', default: false })
+  isTelemedicine: boolean;
+
   /**
    * Optional link to the shift assignment that generated this slot (P2).
    * Null for manually-created ad-hoc slots.
