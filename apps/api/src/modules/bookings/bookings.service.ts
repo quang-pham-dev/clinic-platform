@@ -9,6 +9,7 @@ import { buildPaginationMeta } from '@/common/helpers/pagination.helper';
 import { AppointmentStatus } from '@/common/types/appointment-status.enum';
 import { JwtPayload } from '@/common/types/jwt-payload.interface';
 import { Role } from '@/common/types/role.enum';
+import { ConsentsService } from '@/modules/consents/consents.service';
 import { DoctorsService } from '@/modules/doctors/doctors.service';
 import { TimeSlot } from '@/modules/slots/entities/time-slot.entity';
 import {
@@ -17,6 +18,7 @@ import {
   Injectable,
   Logger,
   NotFoundException,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { DataSource } from 'typeorm';
@@ -30,6 +32,7 @@ export class BookingsService {
     private readonly dataSource: DataSource,
     private readonly bookingStateMachine: BookingStateMachine,
     private readonly doctorsService: DoctorsService,
+    private readonly consentsService: ConsentsService,
     private readonly eventEmitter: EventEmitter2,
   ) {}
 
@@ -55,6 +58,29 @@ export class BookingsService {
           `Slot unavailable: slotId=${dto.slotId}, patient=${patient.sub}`,
         );
         throw new ConflictException({ code: 'SLOT_UNAVAILABLE' });
+      }
+
+      // P4 Consent Gate: telemedicine slots require signed current consent
+      if (slot.isTelemedicine) {
+        const currentVersion =
+          this.consentsService.getCurrentVersion('telemedicine');
+        if (currentVersion) {
+          const latestConsent = await this.consentsService.getLatestConsent(
+            patient.sub,
+            'telemedicine',
+          );
+          if (
+            !latestConsent ||
+            latestConsent.versionSigned !== currentVersion
+          ) {
+            throw new UnprocessableEntityException({
+              code: 'CONSENT_REQUIRED',
+              message: `Telemedicine bookings require consent v${currentVersion}`,
+              currentVersion,
+              signUrl: '/consent/telemedicine',
+            });
+          }
+        }
       }
 
       // Mark slot as booked

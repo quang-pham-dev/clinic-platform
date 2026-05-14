@@ -1,0 +1,44 @@
+{
+  "kind": "collectionType",
+  "collectionName": "consent_forms",
+  "info": {
+    "singularName": "consent-form",
+    "pluralName": "consent-forms",
+    "displayName": "Consent Form",
+    "description": "Versioned legal and medical consent forms"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "version": {
+      "type": "string",
+      "required": true
+    },
+    "form_type": {
+      "type": "enumeration",
+      "enum": ["telemedicine", "general", "procedure", "data-processing"],
+      "required": true
+    },
+    "content": {
+      "type": "blocks",
+      "required": true
+    },
+    "effective_date": {
+      "type": "date",
+      "required": true
+    },
+    "is_current": {
+      "type": "boolean",
+      "default": false
+    },
+    "change_summary": {
+      "type": "text"
+    }
+  }
+}
