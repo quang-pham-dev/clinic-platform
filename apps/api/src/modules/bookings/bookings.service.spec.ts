@@ -5,12 +5,14 @@ import { BookingAuditLog } from './entities/booking-audit-log.entity';
 import { AppointmentsRepository } from './repositories/appointment.repository';
 import { AppointmentStatus } from '@/common/types/appointment-status.enum';
 import { Role } from '@/common/types/role.enum';
+import { ConsentsService } from '@/modules/consents/consents.service';
 import { DoctorsService } from '@/modules/doctors/doctors.service';
 import { TimeSlot } from '@/modules/slots/entities/time-slot.entity';
 import {
   ConflictException,
   ForbiddenException,
   NotFoundException,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -60,6 +62,11 @@ describe('BookingsService', () => {
     findByUserId: vi.fn(),
   };
 
+  const mockConsentsService = {
+    getCurrentVersion: vi.fn(),
+    getLatestConsent: vi.fn(),
+  };
+
   const mockEventEmitter = {
     emit: vi.fn(),
   };
@@ -74,6 +81,7 @@ describe('BookingsService', () => {
         { provide: DataSource, useValue: mockDataSource },
         BookingStateMachine,
         { provide: DoctorsService, useValue: mockDoctorsService },
+        { provide: ConsentsService, useValue: mockConsentsService },
         { provide: EventEmitter2, useValue: mockEventEmitter },
       ],
     }).compile();
@@ -88,6 +96,8 @@ describe('BookingsService', () => {
       ownerOnly: true,
       releaseSlot: true,
     });
+    mockConsentsService.getCurrentVersion.mockReturnValue(undefined);
+    mockConsentsService.getLatestConsent.mockResolvedValue(null);
   });
 
   afterEach(() => {
@@ -129,6 +139,51 @@ describe('BookingsService', () => {
         { isAvailable: false },
       );
       expect(mockQueryRunner.manager.save).toHaveBeenCalledTimes(2);
+    });
+
+    it('should require current consent before booking telemedicine slot', async () => {
+      mockQueryBuilder.getOne.mockResolvedValueOnce({
+        id: 'slot1',
+        doctorId: 'doc1',
+        isTelemedicine: true,
+      });
+      mockConsentsService.getCurrentVersion.mockReturnValueOnce('2.0');
+      mockConsentsService.getLatestConsent.mockResolvedValueOnce(null);
+
+      await expect(
+        service.create(
+          { slotId: 'slot1' },
+          { sub: 'pat1', email: 'e@e.com', role: Role.PATIENT },
+        ),
+      ).rejects.toThrow(UnprocessableEntityException);
+
+      expect(mockQueryRunner.manager.update).not.toHaveBeenCalled();
+    });
+
+    it('should allow telemedicine booking with current signed consent', async () => {
+      mockQueryBuilder.getOne.mockResolvedValueOnce({
+        id: 'slot1',
+        doctorId: 'doc1',
+        isTelemedicine: true,
+      });
+      mockConsentsService.getCurrentVersion.mockReturnValueOnce('2.0');
+      mockConsentsService.getLatestConsent.mockResolvedValueOnce({
+        versionSigned: '2.0',
+      });
+      vi.spyOn(service, 'findOne').mockResolvedValueOnce({
+        id: 'saved-id',
+      } as Appointment);
+
+      await service.create(
+        { slotId: 'slot1' },
+        { sub: 'pat1', email: 'e@e.com', role: Role.PATIENT },
+      );
+
+      expect(mockQueryRunner.manager.update).toHaveBeenCalledWith(
+        expect.anything(),
+        'slot1',
+        { isAvailable: false },
+      );
     });
   });
 
