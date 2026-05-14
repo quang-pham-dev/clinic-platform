@@ -2,7 +2,7 @@
  * Article lifecycle hooks.
  * On publish, notify NestJS to trigger ISR revalidation.
  */
-import { notifyNestJs } from '../../../helpers/notify-nestjs';
+import { notifyNestJs } from '../../../../helpers/notify-nestjs';
 
 export default {
   async afterCreate(event) {

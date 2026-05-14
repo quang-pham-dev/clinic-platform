@@ -7,7 +7,7 @@
  * afterUpdate: When a current consent form is published, notify NestJS
  * to update the consent version cache and trigger ISR revalidation.
  */
-import { notifyNestJs } from '../../../helpers/notify-nestjs';
+import { notifyNestJs } from '../../../../helpers/notify-nestjs';
 
 export default {
   async beforeUpdate(event) {
@@ -35,12 +35,12 @@ export default {
 
         // Set is_current = false for all except the one being updated
         for (const form of currentForms) {
-          const formId = form.documentId || form.id;
-          const targetId = where.documentId || where.id;
-          if (formId !== targetId) {
+          const formId = form.documentId;
+          const targetId = where.documentId;
+          if (formId && formId !== targetId) {
             await strapi.documents('api::consent-form.consent-form').update({
               documentId: formId,
-              data: { is_current: false },
+              data: { is_current: false } as Record<string, unknown>,
             });
           }
         }
