@@ -1,0 +1,19 @@
+{
+  "collectionName": "components_doctor_achievements",
+  "info": {
+    "displayName": "Achievement",
+    "icon": "trophy",
+    "description": "Doctor achievement or certification"
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "year": {
+      "type": "integer",
+      "min": 1900,
+      "max": 2100
+    }
+  }
+}

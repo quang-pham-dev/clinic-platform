@@ -37,6 +37,22 @@
       "type": "media",
       "multiple": false,
       "allowedTypes": ["images"]
+    },
+    "achievements": {
+      "type": "component",
+      "repeatable": true,
+      "component": "doctor.achievement"
+    },
+    "articles": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::article.article",
+      "mappedBy": "author"
+    },
+    "seo": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.seo-meta"
     }
   }
 }

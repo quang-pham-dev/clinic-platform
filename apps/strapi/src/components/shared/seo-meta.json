@@ -1,0 +1,18 @@
+{
+  "collectionName": "components_shared_seo_metas",
+  "info": {
+    "displayName": "SeoMeta",
+    "icon": "search",
+    "description": "SEO metadata for pages"
+  },
+  "attributes": {
+    "seo_title": {
+      "type": "string",
+      "maxLength": 70
+    },
+    "seo_description": {
+      "type": "text",
+      "maxLength": 160
+    }
+  }
+}

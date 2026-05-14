@@ -22,6 +22,10 @@
     "REDIS_HOST",
     "REDIS_PORT",
     "REDIS_PASSWORD",
+    "REVALIDATION_SECRET",
+    "STRAPI_WEBHOOK_SECRET",
+    "STRAPI_API_TOKEN",
+    "NEXTJS_MEMBER_URL",
     "DEV"
   ],
   "globalPassThroughEnv": ["CI"],
