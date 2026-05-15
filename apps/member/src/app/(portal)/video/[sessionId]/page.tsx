@@ -27,7 +27,7 @@ export default function VideoRoomPage() {
     queryKey: ['video-sessions', 'ice-config', sessionId],
     queryFn: async () => {
       const res = await fetch(
-        `\${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3000/api/v1'}/video-sessions/\${sessionId}/ice-config`,
+        `\${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api/v1'}/video-sessions/\${sessionId}/ice-config`,
         {
           headers: { Authorization: `Bearer \${token}` },
         },
