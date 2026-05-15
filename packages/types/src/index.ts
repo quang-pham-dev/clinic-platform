@@ -6,7 +6,15 @@ export {
   NotificationChannel,
   NotificationStatus,
   VideoSessionStatus,
+  // P5 — Multi-Clinic SaaS
+  Plan,
+  TenantStatus,
+  Feature,
+  PLAN_LIMITS,
+  PLAN_FEATURES,
 } from './enums/index.js';
+
+export type { PlanLimits } from './enums/index.js';
 
 // API types
 export type {

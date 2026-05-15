@@ -89,19 +89,29 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
       </head>
       <body className="font-sans antialiased bg-gray-950 text-white min-h-screen">
         {children}
-        {import.meta.env.DEV && (
-          <TanStackDevtools
-            config={{ position: 'bottom-right' }}
-            plugins={[
-              {
-                name: 'Router',
-                render: <TanStackRouterDevtoolsPanel />,
-              },
-            ]}
-          />
-        )}
+        <DashboardDevtools />
         <Scripts />
       </body>
     </html>
+  );
+}
+
+function DashboardDevtools() {
+  if (!import.meta.env.DEV) {
+    return null;
+  }
+
+  return (
+    <>
+      <TanStackDevtools
+        config={{ position: 'bottom-right' }}
+        plugins={[
+          {
+            name: 'Router',
+            render: <TanStackRouterDevtoolsPanel />,
+          },
+        ]}
+      />
+    </>
   );
 }
