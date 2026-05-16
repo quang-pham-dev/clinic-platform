@@ -20,12 +20,18 @@ import type { BookingsService } from './services/bookings.service';
 import { createBookingsService } from './services/bookings.service';
 import type { BroadcastsService } from './services/broadcasts.service';
 import { createBroadcastsService } from './services/broadcasts.service';
+import type { ConsentsService } from './services/consents.service';
+import { createConsentsService } from './services/consents.service';
 import type { DepartmentsService } from './services/departments.service';
 import { createDepartmentsService } from './services/departments.service';
 import type { DoctorsService } from './services/doctors.service';
 import { createDoctorsService } from './services/doctors.service';
+import type { MedicalRecordsService } from './services/medical-records.service';
+import { createMedicalRecordsService } from './services/medical-records.service';
 import type { NotificationsService } from './services/notifications.service';
 import { createNotificationsService } from './services/notifications.service';
+import type { PatientFilesService } from './services/patient-files.service';
+import { createPatientFilesService } from './services/patient-files.service';
 import type { PatientsService } from './services/patients.service';
 import { createPatientsService } from './services/patients.service';
 import type { ScheduleService } from './services/schedule.service';
@@ -69,6 +75,9 @@ export {
   createBroadcastsService,
   createScheduleService,
   createNotificationsService,
+  createMedicalRecordsService,
+  createPatientFilesService,
+  createConsentsService,
   type AuthService,
   type BookingsService,
   type DoctorsService,
@@ -82,6 +91,9 @@ export {
   type BroadcastsService,
   type ScheduleService,
   type NotificationsService,
+  type MedicalRecordsService,
+  type PatientFilesService,
+  type ConsentsService,
 } from './services';
 
 export {
@@ -121,6 +133,9 @@ export interface ApiClient {
   schedule: ScheduleService;
   notifications: NotificationsService;
   videoSessions: VideoSessionsService;
+  medicalRecords: MedicalRecordsService;
+  patientFiles: PatientFilesService;
+  consents: ConsentsService;
 }
 
 /**
@@ -161,6 +176,9 @@ export function createApiClient(config: ClientConfig): ApiClient {
     schedule: createScheduleService(http),
     notifications: createNotificationsService(http),
     videoSessions: createVideoSessionsService(http),
+    medicalRecords: createMedicalRecordsService(http),
+    patientFiles: createPatientFilesService(http),
+    consents: createConsentsService(http),
   };
 }
 

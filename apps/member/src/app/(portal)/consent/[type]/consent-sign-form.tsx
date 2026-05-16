@@ -1,7 +1,8 @@
 'use client';
 
 import { useAuth } from '@/features/auth/contexts/auth-context';
-import { useState } from 'react';
+import { apiClient } from '@/lib/api';
+import { useEffect, useState } from 'react';
 
 interface ConsentSignFormProps {
   formType: string;
@@ -13,7 +14,30 @@ export function ConsentSignForm({ formType, version }: ConsentSignFormProps) {
   const [agreed, setAgreed] = useState(false);
   const [signing, setSigning] = useState(false);
   const [signed, setSigned] = useState(false);
+  const [signedAt, setSignedAt] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!token) return;
+
+    apiClient.consents
+      .getMyConsents()
+      .then((response) => {
+        const currentConsent = response.data.find(
+          (consent) =>
+            consent.formType === formType &&
+            consent.versionSigned === version &&
+            consent.isCurrent,
+        );
+        if (currentConsent) {
+          setSigned(true);
+          setSignedAt(currentConsent.signedAt);
+        }
+      })
+      .catch(() => {
+        // Signing remains available if the status check fails.
+      });
+  }, [formType, token, version]);
 
   const handleSign = async () => {
     if (!agreed || !token) return;
@@ -22,27 +46,13 @@ export function ConsentSignForm({ formType, version }: ConsentSignFormProps) {
     setError(null);
 
     try {
-      const apiUrl =
-        process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3000/api/v1';
-
-      const response = await fetch(`${apiUrl}/consents`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          formType,
-          versionSigned: version,
-        }),
+      const response = await apiClient.consents.sign({
+        formType,
+        versionSigned: version,
       });
 
-      if (!response.ok) {
-        const data = (await response.json()) as { message?: string };
-        throw new Error(data.message ?? 'Failed to sign consent');
-      }
-
       setSigned(true);
+      setSignedAt(response.data.signedAt);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
@@ -66,7 +76,10 @@ export function ConsentSignForm({ formType, version }: ConsentSignFormProps) {
       <div className="consent-sign-section consent-signed">
         <div className="consent-success">
           <span className="consent-success-icon">✓</span>
-          <p>You have signed this consent form (v{version}) successfully.</p>
+          <p>
+            You have signed this consent form (v{version})
+            {signedAt ? ` on ${new Date(signedAt).toLocaleDateString()}` : ''}.
+          </p>
         </div>
       </div>
     );

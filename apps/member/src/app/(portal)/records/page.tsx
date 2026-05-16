@@ -1,6 +1,7 @@
 'use client';
 
 import { useAuth } from '@/features/auth/contexts/auth-context';
+import { apiClient } from '@/lib/api';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
@@ -31,16 +32,9 @@ export default function RecordsPage() {
   useEffect(() => {
     if (!token) return;
 
-    const apiUrl =
-      process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3000/api/v1';
-
-    fetch(`${apiUrl}/medical-records/me`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((res) => res.json())
-      .then((json: { data?: MedicalRecord[] }) => {
-        setRecords(json.data ?? []);
-      })
+    apiClient.medicalRecords
+      .getMyRecords()
+      .then((response) => setRecords((response.data ?? []) as MedicalRecord[]))
       .catch(() => setRecords([]))
       .finally(() => setLoading(false));
   }, [token]);
@@ -58,7 +52,7 @@ export default function RecordsPage() {
     <main className="records-page">
       <div className="records-header">
         <h1>My Medical Records</h1>
-        <Link href="/portal/records/upload" className="upload-button">
+        <Link href="/records/upload" className="upload-button">
           Upload Files
         </Link>
       </div>
@@ -75,7 +69,7 @@ export default function RecordsPage() {
           {records.map((record) => (
             <Link
               key={record.id}
-              href={`/portal/records/${record.id}`}
+              href={`/records/${record.id}`}
               className="record-card"
             >
               <div className="record-date">

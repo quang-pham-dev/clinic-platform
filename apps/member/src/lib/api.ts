@@ -4,6 +4,7 @@ import { createAllHooks, createApiClient } from '@clinic-platform/api-client';
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3000/api/v1';
+const TENANT_ID = process.env.NEXT_PUBLIC_TENANT_ID ?? 'default';
 
 function getAccessToken(): string | null {
   if (typeof window === 'undefined') return null;
@@ -19,6 +20,7 @@ export const apiClient = createApiClient({
   baseUrl: API_BASE_URL,
   getAccessToken,
   getRefreshToken,
+  getTenantId: () => TENANT_ID,
   onTokenRefreshed: (accessToken, _expiresIn, refreshToken) => {
     localStorage.setItem('access_token', accessToken);
     if (refreshToken) {

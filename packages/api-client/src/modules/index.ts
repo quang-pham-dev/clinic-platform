@@ -114,3 +114,17 @@ export type {
   VideoSessionQueryParams,
 } from './video-sessions';
 export { VideoSessionStatus } from './video-sessions';
+
+// Patient portal types (P4)
+export type {
+  ConsentAdminQueryParams,
+  CurrentConsentVersion,
+  MedicalRecord,
+  MedicalRecordQueryParams,
+  PatientConsent,
+  PatientFile,
+  PatientFileQueryParams,
+  SignedFileUrl,
+  SignConsentRequest,
+  UploadPatientFileRequest,
+} from '../services';

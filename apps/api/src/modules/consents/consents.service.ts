@@ -1,3 +1,4 @@
+import { RedisService } from '@/modules/auth/redis/redis.service';
 import { SignConsentDto } from '@/modules/consents/dto/sign-consent.dto';
 import { PatientConsent } from '@/modules/consents/entities/patient-consent.entity';
 import {
@@ -8,16 +9,17 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
+const CONSENT_VERSION_PREFIX = 'consent:current-version:';
+
 @Injectable()
 export class ConsentsService {
   private readonly logger = new Logger(ConsentsService.name);
 
   /**
-   * In-memory cache for consent versions.
-   * In production, this would be Redis-backed via CmsWebhookService.
-   * Default versions are provided for local dev without Strapi.
+   * Local development defaults used only when Redis has not received a
+   * Strapi-published current consent version yet.
    */
-  private consentVersionCache = new Map<string, string>([
+  private readonly defaultConsentVersions = new Map<string, string>([
     ['telemedicine', '1.0'],
     ['general', '1.0'],
     ['procedure', '1.0'],
@@ -26,6 +28,7 @@ export class ConsentsService {
   constructor(
     @InjectRepository(PatientConsent)
     private readonly consentsRepo: Repository<PatientConsent>,
+    private readonly redisService: RedisService,
   ) {}
 
   async sign(
@@ -34,7 +37,7 @@ export class ConsentsService {
     ipAddress?: string,
     userAgent?: string,
   ): Promise<PatientConsent> {
-    const currentVersion = this.getCurrentVersion(dto.formType);
+    const currentVersion = await this.getCurrentVersion(dto.formType);
     if (currentVersion && dto.versionSigned !== currentVersion) {
       throw new UnprocessableEntityException({
         code: 'CONSENT_VERSION_MISMATCH',
@@ -64,11 +67,44 @@ export class ConsentsService {
       order: { signedAt: 'DESC' },
     });
 
-    return consents.map((consent) => ({
-      ...consent,
-      isCurrent:
-        consent.versionSigned === this.getCurrentVersion(consent.formType),
-    }));
+    const latestCurrentConsentIds = new Set<string>();
+    const currentVersions = new Map<string, string | undefined>();
+
+    for (const consent of consents) {
+      if (!currentVersions.has(consent.formType)) {
+        currentVersions.set(
+          consent.formType,
+          await this.getCurrentVersion(consent.formType),
+        );
+      }
+
+      const currentVersion = currentVersions.get(consent.formType);
+      if (
+        currentVersion &&
+        consent.versionSigned === currentVersion &&
+        !latestCurrentConsentIds.has(consent.formType)
+      ) {
+        latestCurrentConsentIds.add(consent.formType);
+      }
+    }
+
+    const seenCurrentFormTypes = new Set<string>();
+
+    return consents.map((consent) => {
+      const currentVersion = currentVersions.get(consent.formType);
+      const isCurrent =
+        currentVersion === consent.versionSigned &&
+        !seenCurrentFormTypes.has(consent.formType);
+
+      if (isCurrent) {
+        seenCurrentFormTypes.add(consent.formType);
+      }
+
+      return {
+        ...consent,
+        isCurrent,
+      };
+    });
   }
 
   async getLatestConsent(
@@ -81,12 +117,16 @@ export class ConsentsService {
     });
   }
 
-  getCurrentVersion(formType: string): string | undefined {
-    return this.consentVersionCache.get(formType);
+  async getCurrentVersion(formType: string): Promise<string | undefined> {
+    const version = await this.redisService.get(
+      `${CONSENT_VERSION_PREFIX}${formType}`,
+    );
+
+    return version ?? this.defaultConsentVersions.get(formType);
   }
 
-  getCurrentVersionInfo(formType: string) {
-    const currentVersion = this.consentVersionCache.get(formType);
+  async getCurrentVersionInfo(formType: string) {
+    const currentVersion = await this.getCurrentVersion(formType);
     return {
       formType,
       currentVersion: currentVersion ?? null,
@@ -95,8 +135,11 @@ export class ConsentsService {
   }
 
   /** Called by CmsWebhookService when a consent-form is published */
-  updateConsentVersion(formType: string, version: string) {
-    this.consentVersionCache.set(formType, version);
+  async updateConsentVersion(formType: string, version: string) {
+    await this.redisService.set(
+      `${CONSENT_VERSION_PREFIX}${formType}`,
+      version,
+    );
     this.logger.log(
       `Consent version updated: form=${formType}, version=${version}`,
     );

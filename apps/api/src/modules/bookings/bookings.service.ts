@@ -63,7 +63,7 @@ export class BookingsService {
       // P4 Consent Gate: telemedicine slots require signed current consent
       if (slot.isTelemedicine) {
         const currentVersion =
-          this.consentsService.getCurrentVersion('telemedicine');
+          await this.consentsService.getCurrentVersion('telemedicine');
         if (currentVersion) {
           const latestConsent = await this.consentsService.getLatestConsent(
             patient.sub,

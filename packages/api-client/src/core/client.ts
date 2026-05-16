@@ -25,6 +25,8 @@ export interface ClientConfig {
   clientType?: ClientType;
   /** Function to retrieve the current access token from storage */
   getAccessToken: () => string | null;
+  /** Function to retrieve the current tenant ID for multi-tenant APIs */
+  getTenantId?: () => string | null;
   /** Function to retrieve the current refresh token. Only needed for mobile (web uses httpOnly cookies) */
   getRefreshToken?: () => string | null;
   /** Called when tokens are successfully refreshed */
@@ -112,6 +114,13 @@ export function createHttpClient(config: ClientConfig): HttpClient {
       if (token) {
         request.headers.Authorization = `Bearer ${token}`;
       }
+      const tenantId = config.getTenantId?.();
+      if (tenantId) {
+        request.headers['X-Tenant-ID'] = tenantId;
+      }
+      if (isFormData(request.data)) {
+        delete request.headers['Content-Type'];
+      }
       return request;
     },
     (error) => Promise.reject(error),
@@ -148,6 +157,13 @@ export function createHttpClient(config: ClientConfig): HttpClient {
             clientType === 'mobile' && config.getRefreshToken
               ? { refreshToken: config.getRefreshToken() }
               : {}; // Web: empty body, cookie is auto-attached
+          const refreshHeaders: Record<string, string> = {
+            'X-Client-Type': clientType,
+          };
+          const tenantId = config.getTenantId?.();
+          if (tenantId) {
+            refreshHeaders['X-Tenant-ID'] = tenantId;
+          }
 
           const { data } = await axios.post<{ data: TokenPair }>(
             `${config.baseUrl}/auth/refresh`,
@@ -155,7 +171,7 @@ export function createHttpClient(config: ClientConfig): HttpClient {
             {
               timeout: 10_000,
               withCredentials: true,
-              headers: { 'X-Client-Type': clientType },
+              headers: refreshHeaders,
             },
           );
 
@@ -195,4 +211,8 @@ export function createHttpClient(config: ClientConfig): HttpClient {
 
   // Cast: interceptor changes runtime return type to match HttpClient
   return instance as unknown as HttpClient;
+}
+
+function isFormData(value: unknown): value is FormData {
+  return typeof FormData !== 'undefined' && value instanceof FormData;
 }

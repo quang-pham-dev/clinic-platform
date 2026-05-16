@@ -71,37 +71,50 @@ export class CmsWebhookService {
   }
 
   private async handleDoctorPagePublish(dto: StrapiWebhookDto) {
-    const doctorId = dto.entry.doctor_id;
+    const doctorId = dto.entry.doctor_id ?? dto.entry.doctorId;
     if (doctorId) {
-      await this.nextjsRevalidate(`/doctors/${doctorId}`);
+      await this.nextjsRevalidate({
+        path: `/doctors/${doctorId}`,
+        tag: `doctor-page-${doctorId}`,
+      });
     }
-    await this.nextjsRevalidate('/doctors');
+    await this.nextjsRevalidate({ path: '/doctors', tag: 'doctor-listing' });
   }
 
   private async handleArticlePublish(dto: StrapiWebhookDto) {
     const slug = dto.entry.slug;
     if (slug) {
-      await this.nextjsRevalidate(`/articles/${slug}`);
+      await this.nextjsRevalidate({
+        path: `/articles/${slug}`,
+        tag: `article-${slug}`,
+      });
     }
-    await this.nextjsRevalidate('/articles');
+    await this.nextjsRevalidate({ path: '/articles', tag: 'article-listing' });
   }
 
   private async handleConsentFormPublish(dto: StrapiWebhookDto) {
-    const { form_type, version } = dto.entry;
-    if (form_type && version) {
-      this.consentsService.updateConsentVersion(
-        form_type as string,
+    const formType = dto.entry.form_type ?? dto.entry.formType;
+    const { version } = dto.entry;
+    if (formType && version) {
+      await this.consentsService.updateConsentVersion(
+        formType as string,
         version as string,
       );
-      await this.nextjsRevalidate(`/consent/${form_type}`);
+      await this.nextjsRevalidate({
+        path: `/consent/${formType}`,
+        tag: `consent-${formType}`,
+      });
     }
   }
 
   private async handleFaqPublish() {
-    await this.nextjsRevalidate('/faq');
+    await this.nextjsRevalidate({ path: '/faq', tag: 'faq-page' });
   }
 
-  private async nextjsRevalidate(urlPath: string): Promise<void> {
+  private async nextjsRevalidate(input: {
+    path: string;
+    tag?: string;
+  }): Promise<void> {
     const nextjsUrl = this.configService.get<string>(
       'NEXTJS_MEMBER_URL',
       'http://localhost:3001',
@@ -117,28 +130,35 @@ export class CmsWebhookService {
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ path: urlPath }),
+          body: JSON.stringify(input),
         },
       );
 
       if (!response.ok) {
-        this.logger.warn(
-          `ISR revalidation failed for ${urlPath}: ${response.status}`,
-        );
+        const message = `ISR revalidation failed for ${input.path}: ${response.status}`;
+        this.logger.warn(message);
+        throw new Error(message);
       } else {
-        this.logger.log(`ISR revalidated: ${urlPath}`);
+        this.logger.log(`ISR revalidated: ${input.path}`);
       }
     } catch (error) {
-      this.logger.warn(
-        `ISR revalidation unreachable for ${urlPath}: ${error instanceof Error ? error.message : 'unknown'}`,
-      );
+      if (
+        error instanceof Error &&
+        error.message.startsWith('ISR revalidation')
+      ) {
+        throw error;
+      }
+
+      const message = `ISR revalidation unreachable for ${input.path}: ${error instanceof Error ? error.message : 'unknown'}`;
+      this.logger.warn(message);
+      throw new Error(message);
     }
   }
 
   async syncAllConsentVersions(): Promise<Record<string, string>> {
     const result: Record<string, string> = {};
     for (const formType of ['telemedicine', 'general', 'procedure']) {
-      const version = this.consentsService.getCurrentVersion(formType);
+      const version = await this.consentsService.getCurrentVersion(formType);
       if (version) {
         result[formType] = version;
       }
