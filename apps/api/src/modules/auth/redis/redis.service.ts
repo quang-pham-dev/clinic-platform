@@ -40,4 +40,12 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
   async deleteRefreshToken(userId: string): Promise<void> {
     await this.client.del(`${REFRESH_TOKEN_PREFIX}${userId}`);
   }
+
+  async get(key: string): Promise<string | null> {
+    return this.client.get(key);
+  }
+
+  async set(key: string, value: string): Promise<void> {
+    await this.client.set(key, value);
+  }
 }

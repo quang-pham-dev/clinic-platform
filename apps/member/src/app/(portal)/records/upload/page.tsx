@@ -1,6 +1,7 @@
 'use client';
 
 import { useAuth } from '@/features/auth/contexts/auth-context';
+import { apiClient } from '@/lib/api';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 interface PatientFile {
@@ -37,19 +38,17 @@ export default function UploadPage() {
 
   const apiUrl =
     process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3000/api/v1';
+  const tenantId = process.env.NEXT_PUBLIC_TENANT_ID ?? 'default';
 
   const fetchFiles = useCallback(async () => {
     if (!token) return;
     try {
-      const res = await fetch(`${apiUrl}/files/me`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const json = (await res.json()) as { data?: PatientFile[] };
-      setFiles(json.data ?? []);
+      const response = await apiClient.patientFiles.getMyFiles();
+      setFiles((response.data ?? []) as PatientFile[]);
     } catch {
       // ignore
     }
-  }, [token, apiUrl]);
+  }, [token]);
 
   useEffect(() => {
     fetchFiles();
@@ -101,16 +100,14 @@ export default function UploadPage() {
 
     xhr.open('POST', `${apiUrl}/files`);
     xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+    xhr.setRequestHeader('X-Tenant-ID', tenantId);
     xhr.send(formData);
   };
 
   const handleDelete = async (fileId: string) => {
     if (!token) return;
     try {
-      await fetch(`${apiUrl}/files/${fileId}`, {
-        method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await apiClient.patientFiles.delete(fileId);
       setFiles((prev) => prev.filter((f) => f.id !== fileId));
     } catch {
       setError('Failed to delete file.');

@@ -1,6 +1,7 @@
 'use client';
 
 import { useAuth } from '@/features/auth/contexts/auth-context';
+import { apiClient } from '@/lib/api';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -38,17 +39,9 @@ export default function RecordDetailPage() {
   useEffect(() => {
     if (!token || !id) return;
 
-    const apiUrl =
-      process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3000/api/v1';
-
-    fetch(`${apiUrl}/medical-records/${id}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error('Record not found');
-        return res.json();
-      })
-      .then((json: MedicalRecordDetail) => setRecord(json))
+    apiClient.medicalRecords
+      .getById(id)
+      .then((response) => setRecord(response.data as MedicalRecordDetail))
       .catch((err: Error) => setError(err.message))
       .finally(() => setLoading(false));
   }, [token, id]);
@@ -66,7 +59,7 @@ export default function RecordDetailPage() {
       <main className="record-detail-page">
         <div className="error-state">
           <p>{error ?? 'Record not found'}</p>
-          <Link href="/portal/records">← Back to Records</Link>
+          <Link href="/records">← Back to Records</Link>
         </div>
       </main>
     );
@@ -75,7 +68,7 @@ export default function RecordDetailPage() {
   return (
     <main className="record-detail-page">
       <nav className="breadcrumb">
-        <Link href="/portal/records">← Back to Records</Link>
+        <Link href="/records">← Back to Records</Link>
       </nav>
 
       <div className="record-detail-header">

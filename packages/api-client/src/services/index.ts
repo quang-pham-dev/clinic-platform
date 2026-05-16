@@ -49,3 +49,28 @@ export {
   createVideoSessionsService,
   type VideoSessionsService,
 } from './video-sessions.service';
+
+export {
+  createMedicalRecordsService,
+  type MedicalRecord,
+  type MedicalRecordQueryParams,
+  type MedicalRecordsService,
+} from './medical-records.service';
+
+export {
+  createPatientFilesService,
+  type PatientFile,
+  type PatientFileQueryParams,
+  type PatientFilesService,
+  type SignedFileUrl,
+  type UploadPatientFileRequest,
+} from './patient-files.service';
+
+export {
+  createConsentsService,
+  type ConsentAdminQueryParams,
+  type ConsentsService,
+  type CurrentConsentVersion,
+  type PatientConsent,
+  type SignConsentRequest,
+} from './consents.service';

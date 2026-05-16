@@ -5,7 +5,9 @@ import { useTheme } from '@/features/theme/providers/theme-provider';
 import { IncomingCallModal } from '@/features/video/components/incoming-call-modal';
 import { useWsStore } from '@/lib/ws';
 import {
+  Bell,
   CalendarCheck,
+  FileText,
   LogOut,
   Moon,
   Search,
@@ -21,6 +23,8 @@ import * as React from 'react';
 const NAV_ITEMS = [
   { href: '/doctors', label: 'Doctors', icon: Search },
   { href: '/appointments', label: 'My Appointments', icon: CalendarCheck },
+  { href: '/records', label: 'Records', icon: FileText },
+  { href: '/notifications', label: 'Notifications', icon: Bell },
   { href: '/profile', label: 'Profile', icon: User },
 ];
 

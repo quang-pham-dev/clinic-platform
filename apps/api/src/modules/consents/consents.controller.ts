@@ -48,6 +48,11 @@ export class ConsentsController {
     return this.consentsService.getCurrentVersionInfo(formType);
   }
 
+  @Get('current/:formType')
+  getCurrent(@Param('formType') formType: string) {
+    return this.consentsService.getCurrentVersionInfo(formType);
+  }
+
   @Get('admin')
   @Roles(Role.ADMIN)
   findAllAdmin(
