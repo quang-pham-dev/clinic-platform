@@ -1,5 +1,7 @@
 import { NotificationProducer } from './producers/notification.producer';
+import { FilesWorker } from './workers/files.worker';
 import { VideoWorker } from './workers/video.worker';
+import { FilesStorageModule } from '@/modules/files/storage/files-storage.module';
 import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
 import { BullBoardModule } from '@bull-board/nestjs';
 import { BullModule } from '@nestjs/bullmq';
@@ -8,6 +10,7 @@ import { ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
+    FilesStorageModule,
     BullModule.forRootAsync({
       useFactory: (configService: ConfigService) => ({
         connection: {
@@ -30,15 +33,17 @@ import { ConfigService } from '@nestjs/config';
       { name: 'sms-queue' },
       { name: 'in-app-queue' },
       { name: 'video-queue' },
+      { name: 'files-queue' },
     ),
     BullBoardModule.forFeature(
       { name: 'email-queue', adapter: BullMQAdapter },
       { name: 'sms-queue', adapter: BullMQAdapter },
       { name: 'in-app-queue', adapter: BullMQAdapter },
       { name: 'video-queue', adapter: BullMQAdapter },
+      { name: 'files-queue', adapter: BullMQAdapter },
     ),
   ],
-  providers: [NotificationProducer, VideoWorker],
+  providers: [FilesWorker, NotificationProducer, VideoWorker],
   exports: [BullModule, NotificationProducer],
 })
 export class QueueModule {}

@@ -125,6 +125,7 @@ export type {
   PatientFile,
   PatientFileQueryParams,
   SignedFileUrl,
+  UploadedPatientFile,
   SignConsentRequest,
   UploadPatientFileRequest,
 } from '../services';

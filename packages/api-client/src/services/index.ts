@@ -63,6 +63,7 @@ export {
   type PatientFileQueryParams,
   type PatientFilesService,
   type SignedFileUrl,
+  type UploadedPatientFile,
   type UploadPatientFileRequest,
 } from './patient-files.service';
 

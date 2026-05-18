@@ -73,6 +73,15 @@ const s3Schema = {
   S3_SECRET_KEY: Joi.string().optional(),
   S3_REGION: Joi.string().optional(),
   S3_ENDPOINT: Joi.string().uri().optional(),
+  S3_PATIENT_FILES_BUCKET: Joi.string().optional(),
+  S3_ACCESS_KEY_ID: Joi.string().optional(),
+  S3_SECRET_ACCESS_KEY: Joi.string().optional(),
+  S3_FORCE_PATH_STYLE: Joi.boolean().default(true),
+  S3_SIGNED_URL_TTL_SECONDS: Joi.number()
+    .integer()
+    .min(60)
+    .max(3600)
+    .default(3600),
 };
 
 // ─── P4: Strapi (optional until P4 activates) ──────────────

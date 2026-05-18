@@ -65,6 +65,7 @@ export class FilesController {
   }
 
   @Get('files/:id/url')
+  @Roles(Role.PATIENT, Role.DOCTOR, Role.ADMIN)
   getSignedUrl(
     @Param('id', ParseUUIDPipe) id: string,
     @CurrentUser() actor: JwtPayload,
