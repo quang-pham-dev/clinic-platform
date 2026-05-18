@@ -1,411 +1,74 @@
-# @clinic-platform/eslint-config
+<p align="center">
+  <img src="https://avatars.githubusercontent.com/u/6019716" width="100" alt="ESLint Logo" style="border-radius: 20%;" />
+</p>
 
-<div align="center">
+<h1 align="center">⚙️ Clinic Platform ESLint Config</h1>
 
-Shared ESLint configurations for the monorepo.
+<p align="center">
+  <strong>Shared ESLint configuration for the Clinic Platform monorepo</strong>
+</p>
 
-[![ESLint](https://img.shields.io/badge/ESLint-9.x-4B32C3)](https://eslint.org/)
-
-</div>
+<p align="center">
+  <a href="#"><img src="https://img.shields.io/badge/ESLint-8.x%2B-4B32C3?logo=eslint&logoColor=white" alt="ESLint" /></a>
+  <a href="#"><img src="https://img.shields.io/badge/pnpm-10.x-F69220?logo=pnpm&logoColor=white" alt="pnpm" /></a>
+</p>
 
 ---
 
-## 📋 Overview
+## Overview
 
-This package contains shared ESLint configurations used across all packages and applications in the monorepo. It enforces consistent code quality, style, and best practices.
+Shared ESLint flat configuration designed to keep code quality and styles consistent across all applications and packages within the monorepo. This package leverages ESLint Flat Config (`eslint.config.js`).
 
-## 📦 Installation
-
-This package is automatically available to workspace packages:
-
-```json
-{
-  "devDependencies": {
-    "@clinic-platform/eslint-config": "workspace:*"
-  }
-}
-```
-
-## 🛠 Available Configurations
-
-### `base.js`
-
-The foundational ESLint configuration for TypeScript projects.
-
-```javascript
-import { config } from '@clinic-platform/eslint-config/base';
-
-export default [...config];
-```
-
-### `react.js`
-
-React-specific rules extending the base configuration.
-
-```javascript
-import { config } from '@clinic-platform/eslint-config/react';
-
-export default [...config];
-```
-
-## 💻 Usage
-
-### Flat Config (ESLint 9.x)
-
-In `eslint.config.mjs` or `eslint.config.js`:
-
-```javascript
-import { config } from '@clinic-platform/eslint-config/base';
-
-/** @type {import("eslint").Linter.Config} */
-export default [
-  ...config,
-  {
-    ignores: ['dist', 'node_modules', '*.config.js'],
-  },
-];
-```
-
-### With Custom Rules
-
-```javascript
-import { config } from '@clinic-platform/eslint-config/base';
-
-export default [
-  ...config,
-  {
-    rules: {
-      // Override or add rules
-      '@typescript-eslint/no-unused-vars': 'warn',
-    },
-  },
-];
-```
-
-### React Configuration
-
-```javascript
-import { config } from '@clinic-platform/eslint-config/react';
-
-export default [
-  ...config,
-  {
-    ignores: ['*.config.js'],
-  },
-];
-```
-
-## ⚙️ Configuration Details
-
-### Base Configuration Includes
-
-- ✅ **TypeScript**: Full TypeScript support with type-aware linting
-- ✅ **Import Rules**: Proper import ordering and organization
-- ✅ **Code Quality**: Best practices and code quality rules
-- ✅ **Security**: Security-focused rules
-- ✅ **Performance**: Performance optimization rules
-
-### React Configuration Adds
-
-- ✅ **React Rules**: React-specific linting
-- ✅ **React Hooks**: Hooks rules enforcement
-- ✅ **JSX**: JSX syntax and formatting rules
-- ✅ **Accessibility**: React accessibility rules
-
-## 🎯 Key Rules
-
-### TypeScript Rules
-
-```typescript
-// ✅ Correct - Explicit types
-function greet(name: string): string {
-  return `Hello, ${name}`;
-}
-
-// ❌ Wrong - Implicit any
-function greet(name) {
-  return `Hello, ${name}`;
-}
-```
-
-### Import Organization
-
-```typescript
-// ✅ Correct - Organized imports
-import { useState } from 'react';
-import { View, Text } from 'react-native';
-
-import { Button } from '@clinic-platform/ui/button';
-import { useTheme } from '@clinic-platform/theme';
-
-import { localHelper } from './utils';
-
-// ❌ Wrong - Unorganized
-import { localHelper } from './utils';
-import { Button } from '@clinic-platform/ui/button';
-import { useState } from 'react';
-```
-
-### Unused Variables
-
-```typescript
-// ✅ Correct - All variables used
-const name = 'John';
-console.log(name);
-
-// ❌ Wrong - Unused variable
-const unused = 'value'; // ESLint error
-const name = 'John';
-console.log(name);
-```
-
-### Console Statements
-
-```typescript
-// ⚠️ Warning in production
-console.log('Debug info'); // Warning: Unexpected console statement
-
-// ✅ Acceptable for errors
-console.error('Error occurred');
-console.warn('Warning message');
-```
-
-## 📝 Scripts
-
-Add these scripts to your `package.json`:
-
-```json
-{
-  "scripts": {
-    "lint": "eslint . --max-warnings 0",
-    "lint:fix": "eslint . --fix"
-  }
-}
-```
-
-### Running Lint
+## Installation
 
 ```bash
-# Check for linting errors
-pnpm lint
-
-# Auto-fix linting errors
-pnpm lint:fix
-
-# Lint specific files
-eslint src/**/*.ts
+pnpm add -D @clinic-platform/eslint-config
 ```
 
-## 🔧 IDE Integration
+## Usage
 
-### VS Code
+This package exposes multiple specific presets based on the project type.
 
-Install the [ESLint extension](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint).
+### NestJS Backend (`apps/api`)
 
-Add to `.vscode/settings.json`:
-
-```json
-{
-  "eslint.enable": true,
-  "eslint.validate": [
-    "javascript",
-    "javascriptreact",
-    "typescript",
-    "typescriptreact"
-  ],
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit"
-  }
-}
-```
-
-### WebStorm / IntelliJ
-
-1. Go to `Settings > Languages & Frameworks > JavaScript > Code Quality Tools > ESLint`
-2. Check "Automatic ESLint configuration"
-3. Check "Run eslint --fix on save"
-
-## 📄 .eslintignore
-
-Create a `.eslintignore` file or use `ignores` in config:
+Create `eslint.config.js` in your app root:
 
 ```javascript
-export default [
-  ...config,
-  {
-    ignores: [
-      'node_modules',
-      'dist',
-      'build',
-      '.next',
-      '.expo',
-      '*.config.js',
-      'coverage',
-      '.turbo',
-    ],
-  },
-];
+import nestJsConfig from '@clinic-platform/eslint-config/nestjs';
+
+export default [...nestJsConfig];
 ```
 
-## 🎨 Rule Categories
+### Next.js Apps
 
-### Error Prevention
+Create `eslint.config.js` in your app root:
 
-```typescript
-// ✅ Prevents common errors
-const obj = { a: 1 };
-console.log(obj.a); // ✅
+```javascript
+import nextConfig from '@clinic-platform/eslint-config/next-internal-library';
 
-console.log(obj.b); // ⚠️ Warning: Property 'b' doesn't exist
+export default [...nextConfig];
 ```
 
-### Code Quality
+### React/Vite Apps
 
-```typescript
-// ✅ Enforces best practices
-if (condition) {
-  doSomething();
-} else {
-  doSomethingElse();
-}
+Create `eslint.config.js` in your app root:
 
-// ❌ Unnecessary else
-if (condition) {
-  return value;
-} else {
-  // ESLint: Unnecessary else after return
-  return otherValue;
-}
+```javascript
+import reactConfig from '@clinic-platform/eslint-config/react-internal-library';
+
+export default [...reactConfig];
 ```
 
-### React Specific
+### Generic Node/TS Packages
 
-```typescript
-// ✅ Correct React code
-function Component() {
-  const [count, setCount] = useState(0);
+Create `eslint.config.js` in your package root:
 
-  useEffect(() => {
-    // Effect logic
-  }, [count]); // ✅ Dependencies specified
+```javascript
+import baseConfig from '@clinic-platform/eslint-config/base';
 
-  return <View />;
-}
-
-// ❌ Missing dependencies
-function Component() {
-  const [count, setCount] = useState(0);
-
-  useEffect(() => {
-    console.log(count);
-  }, []); // ⚠️ Warning: Missing dependency 'count'
-}
+export default [...baseConfig];
 ```
 
-## 🔄 Pre-commit Integration
-
-ESLint runs automatically via Husky hooks:
-
-```json
-{
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx}": ["prettier --write", "eslint --fix"]
-  }
-}
-```
-
-## 📚 Best Practices
-
-### 1. Fix Issues, Don't Disable
-
-```typescript
-// ❌ Avoid disabling rules
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const data: any = fetchData();
-
-// ✅ Fix the underlying issue
-interface Data {
-  id: string;
-  name: string;
-}
-const data: Data = fetchData();
-```
-
-### 2. Use Proper Types
-
-```typescript
-// ✅ Explicit types
-function processUser(user: User): string {
-  return user.name;
-}
-
-// ❌ Implicit types
-function processUser(user) {
-  // ESLint error
-  return user.name;
-}
-```
-
-### 3. Handle Unused Vars
-
-```typescript
-// ✅ Use underscore for intentionally unused params
-function onClick(_event: Event, data: Data) {
-  console.log(data);
-}
-
-// ✅ Or destructure only what you need
-function onClick({ target }: Event) {
-  console.log(target);
-}
-```
-
-## 🐛 Troubleshooting
-
-### ESLint Not Working
-
-```bash
-# Clear ESLint cache
-rm -rf node_modules/.cache/eslint
-
-# Reinstall dependencies
-pnpm install
-
-# Restart VS Code
-```
-
-### Type Information Not Available
-
-Ensure your `tsconfig.json` is properly configured:
-
-```json
-{
-  "include": ["src/**/*"],
-  "exclude": ["node_modules"]
-}
-```
-
-### Conflicts with Prettier
-
-The config includes `eslint-config-prettier` to disable conflicting rules automatically.
-
-## 📖 Reference
-
-- [ESLint Documentation](https://eslint.org/docs/latest/)
-- [TypeScript ESLint](https://typescript-eslint.io/)
-- [ESLint React](https://github.com/jsx-eslint/eslint-plugin-react)
-
-## 🤝 Contributing
-
-To modify ESLint configuration:
-
-1. Update rules in `packages/eslint-config/base.js` or `react.js`
-2. Test across packages: `pnpm lint`
-3. Document rule changes
-4. Update this README
-
----
-
-<div align="center">
-Part of the Clinic Platform monorepo
-</div>
+## Best Practices
+- Avoid overriding standard rules locally unless absolutely necessary.
+- Fix all warnings before committing (`pnpm lint:fix`).

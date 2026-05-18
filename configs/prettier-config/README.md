@@ -1,57 +1,35 @@
-# @clinic-platform/prettier-config
+<p align="center">
+  <img src="https://avatars.githubusercontent.com/u/25822731" width="100" alt="Prettier Logo" style="border-radius: 20%;" />
+</p>
 
-<div align="center">
+<h1 align="center">💅 Clinic Platform Prettier Config</h1>
 
-Shared Prettier configuration for the monorepo.
+<p align="center">
+  <strong>Shared Prettier configuration for the Clinic Platform monorepo</strong>
+</p>
 
-[![Prettier](https://img.shields.io/badge/Prettier-3.x-F7B93E)](https://prettier.io/)
-
-</div>
+<p align="center">
+  <a href="#"><img src="https://img.shields.io/badge/Prettier-3.x-F7B93E?logo=prettier&logoColor=black" alt="Prettier" /></a>
+  <a href="#"><img src="https://img.shields.io/badge/pnpm-10.x-F69220?logo=pnpm&logoColor=white" alt="pnpm" /></a>
+</p>
 
 ---
 
-## 📋 Overview
+## Overview
 
-This package contains the shared Prettier configuration used across all packages and applications in the monorepo. It ensures consistent code formatting throughout the codebase.
+Centralized code formatting rules for the monorepo to ensure a unified code style without developer arguments. This config automatically formats TS, TSX, JS, JSON, CSS, and Markdown. It also includes plugins for sorting imports.
 
-## 📦 Installation
+## Installation
 
-This package is automatically available to workspace packages:
-
-```json
-{
-  "devDependencies": {
-    "@clinic-platform/prettier-config": "workspace:*"
-  }
-}
+```bash
+pnpm add -D @clinic-platform/prettier-config
 ```
 
-## 💻 Usage
+## Usage
 
-### In `prettier.config.js`
+You do not need a `.prettierrc` file in every package. Instead, declare the prettier configuration directly in the package's `package.json`.
 
-```javascript
-const baseConfig = require('@clinic-platform/prettier-config/base');
-
-/** @type {import("prettier").Config} */
-module.exports = baseConfig;
-```
-
-### With Custom Overrides
-
-```javascript
-const baseConfig = require('@clinic-platform/prettier-config/base');
-
-/** @type {import("prettier").Config} */
-module.exports = {
-  ...baseConfig,
-  // Your custom overrides
-  printWidth: 100,
-  tabWidth: 4,
-};
-```
-
-### In `package.json`
+In any app or package `package.json`, add:
 
 ```json
 {
@@ -59,322 +37,13 @@ module.exports = {
 }
 ```
 
-## ⚙️ Configuration
+## IDE Setup (VSCode)
 
-### Base Configuration
-
-```javascript
-module.exports = {
-  // Basic formatting
-  semi: true,
-  singleQuote: true,
-  tabWidth: 2,
-  useTabs: false,
-  printWidth: 80,
-
-  // Trailing commas
-  trailingComma: 'all',
-
-  // Quotes
-  quoteProps: 'as-needed',
-  jsxSingleQuote: false,
-
-  // Brackets
-  bracketSpacing: true,
-  bracketSameLine: false,
-  arrowParens: 'always',
-
-  // Line endings
-  endOfLine: 'lf',
-
-  // Prose
-  proseWrap: 'preserve',
-
-  // File extensions
-  overrides: [],
-};
-```
-
-## 🎯 Key Rules
-
-### Semicolons: Always
-
-```typescript
-// ✅ Correct
-const x = 1;
-function foo() {
-  return 'bar';
-}
-
-// ❌ Wrong (Prettier will auto-fix)
-const x = 1
-function foo() {
-  return 'bar'
-}
-```
-
-### Single Quotes: For Strings
-
-```typescript
-// ✅ Correct
-const message = 'Hello World';
-import { Button } from '@clinic-platform/ui';
-
-// ❌ Wrong (Prettier will auto-fix)
-const message = "Hello World";
-```
-
-### Trailing Commas: All
-
-```typescript
-// ✅ Correct
-const obj = {
-  a: 1,
-  b: 2,
-};
-
-const arr = [1, 2, 3];
-
-// ❌ Wrong (Prettier will auto-fix)
-const obj = {
-  a: 1,
-  b: 2
-};
-```
-
-### Print Width: 80 Characters
-
-```typescript
-// ✅ Correct - Properly wrapped
-const message = formatMessage(
-  'This is a very long message that exceeds the print width',
-  options,
-);
-
-// ❌ Wrong - Too long
-const message = formatMessage('This is a very long message that exceeds the print width', options);
-```
-
-## 📝 Scripts
-
-Add these scripts to your `package.json`:
-
-```json
-{
-  "scripts": {
-    "format": "prettier --check --ignore-path .gitignore .",
-    "format:fix": "prettier --write --ignore-path .gitignore ."
-  }
-}
-```
-
-### Running Format Check
-
-```bash
-# Check formatting
-pnpm format
-
-# Auto-fix formatting
-pnpm format:fix
-
-# Format specific files
-prettier --write "src/**/*.{ts,tsx}"
-```
-
-## 🔧 IDE Integration
-
-### VS Code
-
-Install the [Prettier extension](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode).
-
-Add to `.vscode/settings.json`:
+Ensure your IDE uses Prettier as the default formatter. Add this to your `.vscode/settings.json` (already configured at monorepo root):
 
 ```json
 {
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.formatOnSave": true,
-  "[javascript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[typescriptreact]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+  "editor.formatOnSave": true
 }
 ```
-
-### WebStorm / IntelliJ
-
-1. Go to `Settings > Languages & Frameworks > JavaScript > Prettier`
-2. Set Prettier package path
-3. Check "On code reformat"
-4. Check "On save"
-
-## 📄 .prettierignore
-
-Create a `.prettierignore` file in your project root:
-
-```gitignore
-# Dependencies
-node_modules
-
-# Build outputs
-dist
-build
-.next
-.expo
-
-# Generated files
-*.min.js
-*.bundle.js
-
-# Package manager files
-pnpm-lock.yaml
-package-lock.json
-yarn.lock
-
-# Cache
-.turbo
-.cache
-```
-
-## 🎨 File Type Specific
-
-### TypeScript/JavaScript
-
-```typescript
-// Formatted automatically
-const MyComponent = ({ title, description }: Props) => {
-  return (
-    <View>
-      <Text>{title}</Text>
-      <Text>{description}</Text>
-    </View>
-  );
-};
-```
-
-### JSON
-
-```json
-{
-  "name": "package",
-  "version": "1.0.0",
-  "scripts": {
-    "format": "prettier --write ."
-  }
-}
-```
-
-### Markdown
-
-```markdown
-# Title
-
-This is properly formatted markdown with consistent line breaks
-and spacing.
-
-- List item 1
-- List item 2
-```
-
-## 🔄 Pre-commit Integration
-
-Prettier runs automatically via Husky hooks (configured at root level):
-
-```json
-{
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx}": ["prettier --write", "eslint --fix"],
-    "*.{json,md,yml,yaml}": ["prettier --write"]
-  }
-}
-```
-
-## 📚 Best Practices
-
-### 1. Don't Disable Formatting
-
-```typescript
-// ❌ Avoid disabling Prettier
-// prettier-ignore
-const ugly = {a:1,b:2,c:3};
-
-// ✅ Let Prettier format
-const clean = { a: 1, b: 2, c: 3 };
-```
-
-### 2. Use Consistent Config
-
-```javascript
-// ✅ Use base config
-module.exports = require('@clinic-platform/prettier-config/base');
-
-// ❌ Don't create completely custom config
-module.exports = {
-  /* custom config */
-};
-```
-
-### 3. Format Before Commit
-
-```bash
-# Always format before committing
-pnpm format:fix
-git add .
-git commit -m "feat: add new feature"
-```
-
-## 🐛 Troubleshooting
-
-### Formatting Not Applied
-
-```bash
-# Clear Prettier cache
-rm -rf node_modules/.cache/prettier
-
-# Reinstall
-pnpm install
-
-# Force format
-pnpm format:fix
-```
-
-### Conflicts with ESLint
-
-Ensure you have `eslint-config-prettier` installed to disable conflicting ESLint rules:
-
-```json
-{
-  "extends": ["@clinic-platform/eslint-config", "prettier"]
-}
-```
-
-### Different Formatting in IDE vs CLI
-
-1. Ensure VS Code uses workspace Prettier version
-2. Check `.vscode/settings.json` configuration
-3. Restart VS Code
-
-## 📖 Reference
-
-- [Prettier Documentation](https://prettier.io/docs/en/)
-- [Configuration Options](https://prettier.io/docs/en/options.html)
-- [Ignore Code](https://prettier.io/docs/en/ignore.html)
-
-## 🤝 Contributing
-
-To modify Prettier configuration:
-
-1. Update `base.js` in `tooling/prettier-config`
-2. Test formatting across packages: `pnpm format`
-3. Document changes in this README
-4. Update all packages: `pnpm format:fix`
-
----
-
-<div align="center">
-Part of the Clinic Platform monorepo
-</div>

@@ -1,131 +1,61 @@
-# @clinic-platform/vitest-config
+<p align="center">
+  <img src="https://avatars.githubusercontent.com/u/95747107" width="100" alt="Vitest Logo" style="border-radius: 20%;" />
+</p>
 
-<div align="center">
+<h1 align="center">⚡ Clinic Platform Vitest Config</h1>
 
-Shared Vitest configurations for the monorepo. Standardizes testing environment, coverage thresholds, and React ecosystem stability.
+<p align="center">
+  <strong>Shared Vitest configuration for the Clinic Platform monorepo</strong>
+</p>
 
-[![Vitest](https://img.shields.io/badge/Vitest-3.x-6E9F18)](https://vitest.dev/)
-
-</div>
-
----
-
-## 📋 Overview
-
-This package provides a unified testing configuration system for the entire monorepo. It handles the complexities of modern testing environments, specifically focusing on path resolution, React 19 instance deduplication, and consistent code coverage reporting.
-
-## 📦 Installation
-
-Add the dependency to your package:
-
-```json
-{
-  "devDependencies": {
-    "@clinic-platform/vitest-config": "workspace:*"
-  }
-}
-```
-
-## 🛠 Available Configurations
-
-### `@clinic-platform/vitest-config/base`
-
-The foundational configuration for any TypeScript project.
-
-- **Features:**
-  - `globals: true` enabled by default.
-  - V8 coverage provider with 80% thresholds.
-  - Multi-reporter output (`text`, `json`, `html`, `lcov`).
-
-### `@clinic-platform/vitest-config/react`
-
-Extended configuration for React-based applications and libraries.
-
-- **Features:**
-  - `jsdom` environment.
-  - Integrated `@vitejs/plugin-react` and `vite-tsconfig-paths`.
-  - Helpers for React instance deduplication (crucial for React 19).
-
-### `@clinic-platform/vitest-config/node`
-
-Tailored for backend utilities and CLI tools.
-
-- **Features:**
-  - `node` environment.
-  - Optimized for performance without DOM overhead.
-
-## 💻 Usage
-
-### For React Libraries (UI, Components)
-
-In `vitest.config.ts`:
-
-```typescript
-import { getReactAliases, reactConfig } from '@clinic-platform/vitest-config/react';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { defineConfig, mergeConfig } from 'vitest/config';
-
-const rootDir = path.resolve(
-  fileURLToPath(new URL('.', import.meta.url)),
-  '../..',
-);
-
-export default mergeConfig(
-  reactConfig,
-  defineConfig({
-    resolve: {
-      alias: getReactAliases(rootDir),
-    },
-    test: {
-      setupFiles: ['./tests/vitest.setup.ts'],
-      include: ['src/**/*.{test,spec}.{ts,tsx}'],
-    },
-  }),
-);
-```
-
-### For Node Utilities
-
-In `vitest.config.ts`:
-
-```typescript
-import { nodeConfig } from '@clinic-platform/vitest-config/node';
-import { defineConfig, mergeConfig } from 'vitest/config';
-
-export default mergeConfig(
-  nodeConfig,
-  defineConfig({
-    test: {
-      include: ['src/**/*.test.ts'],
-    },
-  }),
-);
-```
-
-## ⚙️ Configuration Details
-
-### Global Coverage Thresholds
-
-We enforce a strict 80% coverage policy by default:
-
-- `lines: 80`
-- `functions: 80`
-- `branches: 80`
-- `statements: 80`
-
-You can override these in your local config if a legacy package requires it.
-
-## 🤝 Contributing
-
-To modify testing standards:
-
-1. Update logic in `src/`.
-2. Ensure you don't break existing package tests.
-3. Update this README if new features are added.
+<p align="center">
+  <a href="#"><img src="https://img.shields.io/badge/Vitest-3.x-6E9F18?logo=vitest&logoColor=white" alt="Vitest" /></a>
+  <a href="#"><img src="https://img.shields.io/badge/pnpm-10.x-F69220?logo=pnpm&logoColor=white" alt="pnpm" /></a>
+</p>
 
 ---
 
-<div align="center">
-Part of the Clinic Platform monorepo
-</div>
+## Overview
+
+Centralized testing setup and configuration for Vitest. Used across all modules to ensure tests run consistently and quickly. Includes configurations for pure Node environments and React testing (jsdom).
+
+## Installation
+
+```bash
+pnpm add -D @clinic-platform/vitest-config vitest
+```
+
+## Usage
+
+### Node.js Backend or Packages
+
+Create `vitest.config.ts` in the package root:
+
+```typescript
+import { defineProject } from 'vitest/config';
+import nodeConfig from '@clinic-platform/vitest-config/node';
+
+export default defineProject({
+  ...nodeConfig,
+  // Add project-specific overrides here
+});
+```
+
+### React Frontend Apps
+
+Create `vitest.config.ts` in the package root:
+
+```typescript
+import { defineProject } from 'vitest/config';
+import reactConfig from '@clinic-platform/vitest-config/react';
+
+export default defineProject({
+  ...reactConfig,
+  // Add project-specific overrides here
+});
+```
+
+## Best Practices
+- Write co-located `.spec.ts` files alongside implementation files.
+- Avoid using `jest` globals; Vitest provides native replacements or allows auto-importing.
+- Run `pnpm test:coverage` to ensure code coverage meets standards before pushing.

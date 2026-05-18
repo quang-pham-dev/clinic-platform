@@ -1,276 +1,74 @@
-# @clinic-platform/typescript-config
+<p align="center">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/4/4c/Typescript_logo_2020.svg" width="100" alt="TypeScript Logo" style="border-radius: 20%;" />
+</p>
 
-<div align="center">
+<h1 align="center">📐 Clinic Platform TypeScript Config</h1>
 
-Shared TypeScript configurations for the monorepo.
+<p align="center">
+  <strong>Shared tsconfig.json configurations for the Clinic Platform monorepo</strong>
+</p>
 
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue)](https://www.typescriptlang.org/)
-
-</div>
+<p align="center">
+  <a href="#"><img src="https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript&logoColor=white" alt="TypeScript" /></a>
+  <a href="#"><img src="https://img.shields.io/badge/pnpm-10.x-F69220?logo=pnpm&logoColor=white" alt="pnpm" /></a>
+</p>
 
 ---
 
-## 📋 Overview
+## Overview
 
-This package contains shared TypeScript configuration files used across all packages and applications in the monorepo. It ensures consistent TypeScript settings, type checking rules, and compilation options.
+Shared `tsconfig.json` bases used by various applications and packages in the monorepo to maintain strict, modern, and consistent type-checking. All configurations enforce strict mode and standard outputs.
 
-## 📦 Installation
-
-This package is automatically available to workspace packages:
-
-```json
-{
-  "devDependencies": {
-    "@clinic-platform/typescript-config": "workspace:*"
-  }
-}
-```
-
-## 🛠 Available Configurations
-
-### `base.json`
-
-The foundational TypeScript configuration with strict type checking.
-
-```json
-{
-  "extends": "@clinic-platform/typescript-config/base.json"
-}
-```
-
-**Features:**
-
-- Strict mode enabled
-- ESNext module resolution
-- ES2022 target compilation
-- Declaration file generation
-- Source maps enabled
-
-### `react-native-library.json`
-
-Optimized configuration for React Native library packages.
-
-```json
-{
-  "extends": "@clinic-platform/typescript-config/react-native-library.json"
-}
-```
-
-**Features:**
-
-- React JSX transformation
-- React Native types included
-- Bundler module resolution
-- ES2019 target for compatibility
-- Path aliases support
-
-## 💻 Usage
-
-### For React Native Libraries
-
-```json
-{
-  "extends": "@clinic-platform/typescript-config/react-native-library.json",
-  "compilerOptions": {
-    "outDir": "dist"
-  },
-  "include": ["src"],
-  "exclude": ["node_modules", "dist"]
-}
-```
-
-### For Base Packages (Config packages, Utils)
-
-```json
-{
-  "extends": "@clinic-platform/typescript-config/base.json",
-  "compilerOptions": {
-    "outDir": "dist"
-  },
-  "include": ["src"],
-  "exclude": ["node_modules", "dist"]
-}
-```
-
-## ⚙️ Configuration Details
-
-### Base Configuration
-
-```json
-{
-  "$schema": "https://json.schemastore.org/tsconfig",
-  "compilerOptions": {
-    "declaration": true,
-    "declarationMap": true,
-    "esModuleInterop": true,
-    "incremental": false,
-    "isolatedModules": true,
-    "lib": ["es2022", "DOM", "DOM.Iterable"],
-    "module": "NodeNext",
-    "moduleDetection": "force",
-    "moduleResolution": "NodeNext",
-    "noUncheckedIndexedAccess": true,
-    "resolveJsonModule": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "target": "ES2022"
-  }
-}
-```
-
-### React Native Library Configuration
-
-Extends `base.json` with:
-
-```json
-{
-  "compilerOptions": {
-    "jsx": "react-jsx",
-    "jsxImportSource": "react",
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
-    "target": "ES2019",
-    "types": ["react-native"],
-    "allowJs": true,
-    "allowSyntheticDefaultImports": true,
-    "noEmit": true
-  }
-}
-```
-
-## 🎯 Strict Type Checking
-
-All configurations enable strict TypeScript checking:
-
-- ✅ `strict: true` - Enable all strict type checking options
-- ✅ `noUncheckedIndexedAccess` - Prevent unsafe array/object access
-- ✅ `isolatedModules` - Ensure files can be safely transpiled
-- ✅ `skipLibCheck` - Skip type checking of declaration files
-
-## 📝 Path Aliases
-
-The React Native library config supports path aliases:
-
-```typescript
-{
-  "paths": {
-    "@/*": ["./src/*"],
-    "~/*": ["./src/*"],
-    "@/components/*": ["./src/components/*"],
-    "@/screens/*": ["./src/screens/*"]
-  }
-}
-```
-
-## 🔧 Custom Overrides
-
-You can override any setting in your package's `tsconfig.json`:
-
-```json
-{
-  "extends": "@clinic-platform/typescript-config/react-native-library.json",
-  "compilerOptions": {
-    "outDir": "dist",
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./custom/path/*"]
-    }
-  }
-}
-```
-
-## 📚 Best Practices
-
-### 1. Don't Override Strict Settings
-
-```json
-// ❌ Don't disable strict mode
-{
-  "extends": "@clinic-platform/typescript-config/base.json",
-  "compilerOptions": {
-    "strict": false
-  }
-}
-
-// ✅ Keep strict mode enabled
-{
-  "extends": "@clinic-platform/typescript-config/base.json"
-}
-```
-
-### 2. Use Appropriate Config
-
-```json
-// ✅ For React Native components
-{
-  "extends": "@clinic-platform/typescript-config/react-native-library.json"
-}
-
-// ✅ For utility packages
-{
-  "extends": "@clinic-platform/typescript-config/base.json"
-}
-```
-
-### 3. Specify Include/Exclude
-
-```json
-{
-  "extends": "@clinic-platform/typescript-config/base.json",
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "**/*.test.ts"]
-}
-```
-
-## 🐛 Troubleshooting
-
-### Module Resolution Issues
-
-If you encounter module resolution errors:
+## Installation
 
 ```bash
-# Clear TypeScript cache
-rm -rf node_modules/.cache
-
-# Reinstall dependencies
-pnpm install
-
-# Run type check
-pnpm check-types
+pnpm add -D @clinic-platform/typescript-config
 ```
 
-### Path Alias Not Working
+## Usage
 
-Ensure your `tsconfig.json` has:
+Extend the appropriate configuration in your app or package's `tsconfig.json`.
 
+### Base (Generic Node Packages)
 ```json
 {
+  "extends": "@clinic-platform/typescript-config/base.json",
   "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./src/*"]
-    }
-  }
+    "outDir": "dist"
+  },
+  "include": ["src"]
 }
 ```
 
-## 📖 Reference
+### NestJS
+```json
+{
+  "extends": "@clinic-platform/typescript-config/nestjs.json",
+  "compilerOptions": {
+    "outDir": "dist"
+  },
+  "include": ["src"]
+}
+```
 
-- [TypeScript Handbook](https://www.typescriptlang.org/docs/)
-- [TSConfig Reference](https://www.typescriptlang.org/tsconfig)
-- [React Native TypeScript](https://reactnative.dev/docs/typescript)
+### React (Vite)
+```json
+{
+  "extends": "@clinic-platform/typescript-config/vite-app.json",
+  "compilerOptions": {
+    "outDir": "dist"
+  },
+  "include": ["src"]
+}
+```
 
-## 🤝 Contributing
-
-To modify TypeScript configurations:
-
-1. Update the appropriate config file in `packages/typescript-config`
-2. Test across all packages: `pnpm check-types`
-3. Document any breaking changes
-4. Update this README
-
----
-
-<div align="center">
-Part of the Clinic Platform monorepo
-</div>
+### Next.js
+```json
+{
+  "extends": "@clinic-platform/typescript-config/nextjs-library.json",
+  "compilerOptions": {
+    "outDir": "dist"
+  },
+  "include": ["src"]
+}
+```
