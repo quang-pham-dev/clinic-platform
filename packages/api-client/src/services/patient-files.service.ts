@@ -22,6 +22,11 @@ export interface SignedFileUrl {
   expiresAt: string;
 }
 
+export interface UploadedPatientFile extends PatientFile {
+  signedUrl: string;
+  signedUrlExpiresAt: string;
+}
+
 export interface UploadPatientFileRequest {
   file: File | Blob;
   appointmentId?: string;
@@ -33,7 +38,9 @@ export interface PatientFilesService {
     params?: PatientFileQueryParams,
   ): Promise<PaginatedResponse<PatientFile>>;
   getSignedUrl(id: string): Promise<ApiResponse<SignedFileUrl>>;
-  upload(dto: UploadPatientFileRequest): Promise<ApiResponse<PatientFile>>;
+  upload(
+    dto: UploadPatientFileRequest,
+  ): Promise<ApiResponse<UploadedPatientFile>>;
   delete(id: string): Promise<ApiResponse<void>>;
 }
 
