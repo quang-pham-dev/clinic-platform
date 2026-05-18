@@ -1,6 +1,24 @@
-# @clinic-platform/staff
+<p align="center">
+  <img src="https://assets.vercel.com/image/upload/v1662130559/nextjs/Icon_dark_background.png" width="100" alt="Next.js Logo" />
+</p>
 
-Staff-facing portal for the Clinic Appointment Booking System, designed specifically for clinical staff (nurses, head nurses, and receptionists).
+<h1 align="center">🏥 Clinic Platform Staff Portal</h1>
+
+<p align="center">
+  <strong>Staff-facing portal for the Clinic Platform</strong>
+</p>
+
+<p align="center">
+  <a href="#"><img src="https://img.shields.io/badge/Next.js-15-black?logo=nextdotjs&logoColor=white" alt="Next.js" /></a>
+  <a href="#"><img src="https://img.shields.io/badge/React-19.x-61DAFB?logo=react&logoColor=black" alt="React" /></a>
+  <a href="#"><img src="https://img.shields.io/badge/TailwindCSS-v4-06B6D4?logo=tailwindcss&logoColor=white" alt="Tailwind CSS" /></a>
+  <a href="#"><img src="https://img.shields.io/badge/Zustand-State-black?logo=react&logoColor=white" alt="Zustand" /></a>
+  <a href="#"><img src="https://img.shields.io/badge/pnpm-10.x-F69220?logo=pnpm&logoColor=white" alt="pnpm" /></a>
+</p>
+
+---
+
+The staff-facing portal for the Clinic Appointment Booking System, designed specifically for clinical staff (nurses, head nurses, and receptionists).
 
 This application allows clinic staff to manage their schedules, view assigned shifts, supervise departmental rosters, and stay updated with real-time broadcasts.
 

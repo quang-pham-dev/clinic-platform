@@ -1,4 +1,20 @@
-# @clinic-platform/design-system
+<p align="center">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/d/d5/Tailwind_CSS_Logo.svg" width="100" alt="Tailwind CSS Logo" />
+</p>
+
+<h1 align="center">🎨 Clinic Platform Design System</h1>
+
+<p align="center">
+  <strong>Shared Tailwind CSS v4 design system for the Clinic Platform</strong>
+</p>
+
+<p align="center">
+  <a href="#"><img src="https://img.shields.io/badge/TailwindCSS-v4-06B6D4?logo=tailwindcss&logoColor=white" alt="Tailwind CSS" /></a>
+  <a href="#"><img src="https://img.shields.io/badge/PostCSS-DD3A0A?logo=postcss&logoColor=white" alt="PostCSS" /></a>
+  <a href="#"><img src="https://img.shields.io/badge/pnpm-10.x-F69220?logo=pnpm&logoColor=white" alt="pnpm" /></a>
+</p>
+
+---
 
 Shared Tailwind CSS v4 design system for the Clinic Platform monorepo. This package
 ships tokens, themes, base styles, and custom utilities as CSS, plus a PostCSS
