@@ -1,10 +1,19 @@
-# @clinic-platform/api-client
+<p align="center">
+  <img src="https://avatars.githubusercontent.com/u/32372333" width="100" alt="Axios Logo" style="border-radius: 20%;" />
+</p>
 
-> Type-safe API client for the Healthcare Clinic Platform — used by dashboard, member, staff, and super-admin apps.
+<h1 align="center">📦 Clinic Platform API Client</h1>
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.9+-blue.svg)](https://www.typescriptlang.org/)
-[![Axios](https://img.shields.io/badge/Axios-1.7+-green.svg)](https://axios-http.com/)
+<p align="center">
+  <strong>Type-safe API client for the Clinic Platform monorepo</strong>
+</p>
+
+<p align="center">
+  <a href="#"><img src="https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript&logoColor=white" alt="TypeScript" /></a>
+  <a href="#"><img src="https://img.shields.io/badge/Axios-1.7+-green?logo=axios&logoColor=white" alt="Axios" /></a>
+  <a href="#"><img src="https://img.shields.io/badge/TanStack%20Query-red?logo=reactquery&logoColor=white" alt="TanStack Query" /></a>
+  <a href="#"><img src="https://img.shields.io/badge/pnpm-10.x-F69220?logo=pnpm&logoColor=white" alt="pnpm" /></a>
+</p>
 
 ---
 

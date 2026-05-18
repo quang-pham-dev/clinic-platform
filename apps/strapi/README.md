@@ -1,61 +1,126 @@
-# 🚀 Getting started with Strapi
+<p align="center">
+  <img src="https://strapi.io/assets/strapi-logo-dark.svg" width="150" alt="Strapi Logo" />
+</p>
 
-Strapi comes with a full featured [Command Line Interface](https://docs.strapi.io/dev-docs/cli) (CLI) which lets you scaffold and manage your project in seconds.
+<h1 align="center">🏥 Clinic Platform Headless CMS</h1>
 
-### `develop`
+<p align="center">
+  <strong>Strapi v5 Headless CMS for the Clinic Platform</strong>
+</p>
 
-Start your Strapi application with autoReload enabled. [Learn more](https://docs.strapi.io/dev-docs/cli#strapi-develop)
-
-```
-npm run develop
-# or
-yarn develop
-```
-
-### `start`
-
-Start your Strapi application with autoReload disabled. [Learn more](https://docs.strapi.io/dev-docs/cli#strapi-start)
-
-```
-npm run start
-# or
-yarn start
-```
-
-### `build`
-
-Build your admin panel. [Learn more](https://docs.strapi.io/dev-docs/cli#strapi-build)
-
-```
-npm run build
-# or
-yarn build
-```
-
-## ⚙️ Deployment
-
-Strapi gives you many possible deployment options for your project including [Strapi Cloud](https://cloud.strapi.io). Browse the [deployment section of the documentation](https://docs.strapi.io/dev-docs/deployment) to find the best solution for your use case.
-
-```
-yarn strapi deploy
-```
-
-## 📚 Learn more
-
-- [Resource center](https://strapi.io/resource-center) - Strapi resource center.
-- [Strapi documentation](https://docs.strapi.io) - Official Strapi documentation.
-- [Strapi tutorials](https://strapi.io/tutorials) - List of tutorials made by the core team and the community.
-- [Strapi blog](https://strapi.io/blog) - Official Strapi blog containing articles made by the Strapi team and the community.
-- [Changelog](https://strapi.io/changelog) - Find out about the Strapi product updates, new features and general improvements.
-
-Feel free to check out the [Strapi GitHub repository](https://github.com/strapi/strapi). Your feedback and contributions are welcome!
-
-## ✨ Community
-
-- [Discord](https://discord.strapi.io) - Come chat with the Strapi community including the core team.
-- [Forum](https://forum.strapi.io/) - Place to discuss, ask questions and find answers, show your Strapi project and get feedback or just talk with other Community members.
-- [Awesome Strapi](https://github.com/strapi/awesome-strapi) - A curated list of awesome things related to Strapi.
+<p align="center">
+  <a href="#"><img src="https://img.shields.io/badge/Strapi-5.x-2F2E8B?logo=strapi&logoColor=white" alt="Strapi" /></a>
+  <a href="#"><img src="https://img.shields.io/badge/Node.js-20+-339933?logo=nodedotjs&logoColor=white" alt="Node.js" /></a>
+  <a href="#"><img src="https://img.shields.io/badge/SQLite-003B57?logo=sqlite&logoColor=white" alt="SQLite" /></a>
+  <a href="#"><img src="https://img.shields.io/badge/React-18.x-61DAFB?logo=react&logoColor=black" alt="React" /></a>
+  <a href="#"><img src="https://img.shields.io/badge/pnpm-10.x-F69220?logo=pnpm&logoColor=white" alt="pnpm" /></a>
+</p>
 
 ---
 
-<sub>🤫 Psst! [Strapi is hiring](https://strapi.io/careers).</sub>
+## 📖 Table of Contents
+
+- [Overview](#-overview)
+- [Tech Stack](#-tech-stack)
+- [Getting Started](#-getting-started)
+- [Scripts](#-scripts)
+- [Environment Variables](#-environment-variables)
+- [Contributing](#-contributing)
+
+---
+
+## 🏗️ Overview
+
+This is the **Headless CMS** for the **Clinic Platform** — part of a Turborepo monorepo (`strapi`). It is built with **Strapi v5** and manages the static content, settings, and other CMS-related data required by the frontend applications.
+
+- 🛠️ **Content Types Builder:** Allows managing custom models for clinic announcements, landing page content, and policy documents.
+- 🔑 **Users & Permissions:** Default Strapi role-based access control for content editors.
+- 🚀 **REST / GraphQL APIs:** Provides out-of-the-box headless APIs consumed by the member and dashboard apps.
+
+---
+
+## 🛠️ Tech Stack
+
+| Category            | Technology                              |
+| ------------------- | --------------------------------------- |
+| **Runtime**         | Node.js 20+                             |
+| **Framework**       | Strapi 5                                |
+| **Database**        | SQLite (via `better-sqlite3`)           |
+| **Admin UI**        | React 18                                |
+| **Package Manager** | pnpm 10 (workspace)                     |
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- **Node.js** ≥ 20
+- **pnpm** ≥ 10
+
+### Installation
+
+```bash
+# From monorepo root
+pnpm install
+
+# Build the admin panel (required for first run or when UI changes)
+pnpm --filter strapi build
+```
+
+### Run Development Server
+
+```bash
+# From monorepo root
+pnpm --filter strapi dev
+
+# Or from this directory
+pnpm dev
+```
+
+The Admin Panel will be available at:
+`http://localhost:1337/admin`
+
+The API endpoints will be accessible at:
+`http://localhost:1337/api`
+
+---
+
+## 📜 Scripts
+
+| Script             | Description                            |
+| ------------------ | -------------------------------------- |
+| `pnpm dev`         | Start Strapi in development mode (auto-reload) |
+| `pnpm build`       | Build the Strapi admin UI              |
+| `pnpm start`       | Start Strapi in production mode        |
+
+---
+
+## 🔐 Environment Variables
+
+Ensure you have a `.env` file configured. Example default variables for Strapi:
+
+| Variable                 | Default                 | Description                             |
+| ------------------------ | ----------------------- | --------------------------------------- |
+| `HOST`                   | `0.0.0.0`               | Server host                             |
+| `PORT`                   | `1337`                  | Server port                             |
+| `APP_KEYS`               | `toBeModified1,toBeModified2`| Keys for signing sessions          |
+| `API_TOKEN_SALT`         | `toBeModified`          | Salt for API tokens                     |
+| `ADMIN_JWT_SECRET`       | `toBeModified`          | Secret for Admin JWT                    |
+| `TRANSFER_TOKEN_SALT`    | `toBeModified`          | Salt for transfer tokens                |
+| `JWT_SECRET`             | `toBeModified`          | Secret for User JWT                     |
+
+*(Note: Never use the default secrets in production!)*
+
+---
+
+## 🤝 Contributing
+
+1. Follow the rules in [`RULES.md`](../../RULES.md) at the repo root
+2. Use conventional commits
+
+---
+
+## 📄 License
+
+This project is private and proprietary. All rights reserved.

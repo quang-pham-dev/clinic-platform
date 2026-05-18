@@ -1,4 +1,22 @@
-# Clinic Platform - Admin Dashboard
+<p align="center">
+  <img src="https://vitejs.dev/logo.svg" width="100" alt="Vite Logo" />
+</p>
+
+<h1 align="center">🏥 Clinic Platform Admin Dashboard</h1>
+
+<p align="center">
+  <strong>Admin & Doctor Dashboard for the Clinic Platform</strong>
+</p>
+
+<p align="center">
+  <a href="#"><img src="https://img.shields.io/badge/React-19.x-61DAFB?logo=react&logoColor=black" alt="React" /></a>
+  <a href="#"><img src="https://img.shields.io/badge/Vite-5.x-646CFF?logo=vite&logoColor=white" alt="Vite" /></a>
+  <a href="#"><img src="https://img.shields.io/badge/TailwindCSS-v4-06B6D4?logo=tailwindcss&logoColor=white" alt="Tailwind CSS" /></a>
+  <a href="#"><img src="https://img.shields.io/badge/Zustand-State-black?logo=react&logoColor=white" alt="Zustand" /></a>
+  <a href="#"><img src="https://img.shields.io/badge/pnpm-10.x-F69220?logo=pnpm&logoColor=white" alt="pnpm" /></a>
+</p>
+
+---
 
 The central administrative dashboard for the Clinic Platform, designed to manage patients, doctors, bookings, and clinic schedules. This application is built with modern React features, employing a modular, feature-slice design architecture to ensure high maintainability and scalability.
 
