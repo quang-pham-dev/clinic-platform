@@ -1,5 +1,6 @@
 import { CacheModule } from './common/cache/cache.module';
 import { TenantContextModule } from './common/context/tenant-context.module';
+import { TenantDatabaseModule } from './common/database/tenant-database.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { FeatureGuard } from './common/guards/feature.guard';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
@@ -95,6 +96,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
     // P5 — Tenant context (global via @Global())
     TenantContextModule,
+
+    // P5 — Tenant schema query execution boundary
+    TenantDatabaseModule,
 
     // TypeORM
     TypeOrmModule.forRootAsync({

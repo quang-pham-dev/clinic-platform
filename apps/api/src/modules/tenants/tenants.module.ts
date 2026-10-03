@@ -7,11 +7,15 @@ import { Tenant } from './entities/tenant.entity';
 import { TenantProvisioningService } from './tenant-provisioning.service';
 import { TenantsController } from './tenants.controller';
 import { TenantsService } from './tenants.service';
+import { TenantDatabaseModule } from '@/common/database/tenant-database.module';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Tenant, FeatureFlag])],
+  imports: [
+    TypeOrmModule.forFeature([Tenant, FeatureFlag]),
+    TenantDatabaseModule,
+  ],
   controllers: [TenantsController],
   providers: [TenantsService, TenantProvisioningService],
   exports: [TenantsService, TenantProvisioningService],

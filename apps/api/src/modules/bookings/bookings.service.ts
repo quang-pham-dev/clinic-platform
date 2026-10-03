@@ -5,6 +5,8 @@ import { Appointment } from './entities/appointment.entity';
 import { BookingAuditLog } from './entities/booking-audit-log.entity';
 import { BookingCreatedEvent } from './events/booking-created.event';
 import { AppointmentsRepository } from './repositories/appointment.repository';
+import { CacheService } from '@/common/cache/cache.service';
+import { TenantContextService } from '@/common/context/tenant-context.service';
 import { buildPaginationMeta } from '@/common/helpers/pagination.helper';
 import { AppointmentStatus } from '@/common/types/appointment-status.enum';
 import { JwtPayload } from '@/common/types/jwt-payload.interface';
@@ -34,6 +36,8 @@ export class BookingsService {
     private readonly doctorsService: DoctorsService,
     private readonly consentsService: ConsentsService,
     private readonly eventEmitter: EventEmitter2,
+    private readonly cache: CacheService,
+    private readonly tenantContext: TenantContextService,
   ) {}
 
   /**
@@ -117,6 +121,16 @@ export class BookingsService {
 
       return saved.id;
     });
+
+    const resetsAt = new Date(
+      new Date().getFullYear(),
+      new Date().getMonth() + 1,
+      1,
+    );
+    await this.cache.incrementWithExpiry(
+      `bookings:month:${this.tenantContext.tenantId}`,
+      resetsAt,
+    );
 
     return this.findOne(savedId, patient);
   }
