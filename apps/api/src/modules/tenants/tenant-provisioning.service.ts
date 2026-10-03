@@ -8,11 +8,34 @@
 import { FeatureFlag } from './entities/feature-flag.entity';
 import { Tenant } from './entities/tenant.entity';
 import { CacheService } from '@/common/cache/cache.service';
+import { TenantDatabaseService } from '@/common/database/tenant-database.service';
 import { PLAN_FEATURES, Plan } from '@/common/types/plan.enum';
+import { Role } from '@/common/types/role.enum';
 import { TenantStatus } from '@/common/types/tenant-status.enum';
+import { UserProfile } from '@/modules/users/entities/user-profile.entity';
+import { User } from '@/modules/users/entities/user.entity';
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt';
+import { randomBytes } from 'crypto';
+import {
+  DataSource,
+  EntityManager,
+  MigrationInterface,
+  QueryRunner,
+  Repository,
+} from 'typeorm';
+
+const PUBLIC_MIGRATION_TIMESTAMP = 1776000000000;
+const REQUIRED_TENANT_TABLES = [
+  'users',
+  'doctors',
+  'time_slots',
+  'appointments',
+  'medical_records',
+  'patient_files',
+  'patient_consents',
+] as const;
 
 @Injectable()
 export class TenantProvisioningService {
@@ -20,6 +43,7 @@ export class TenantProvisioningService {
 
   constructor(
     private readonly dataSource: DataSource,
+    private readonly tenantDatabase: TenantDatabaseService,
     @InjectRepository(Tenant)
     private readonly tenantsRepo: Repository<Tenant>,
     @InjectRepository(FeatureFlag)
@@ -51,19 +75,21 @@ export class TenantProvisioningService {
         `CREATE SCHEMA IF NOT EXISTS "${schemaName}"`,
       );
 
-      // 2. Run P1–P4 migrations in the tenant schema
-      // Note: In production, this would use a migration runner.
-      // For now, we create the tables directly using raw SQL
-      // that mirrors the P1–P4 migration definitions.
+      // 2. Run P1–P4 migrations in the tenant schema.
+      // Fail closed until real tenant migrations are wired so tenants are not
+      // marked active without a complete isolated schema.
       await this.runTenantMigrations(schemaName);
 
-      // 3. Seed feature flags for plan
+      // 3. Verify the tenant schema and seed its first administrator.
+      await this.verifyAndSeedTenantAdmin(schemaName, tenant.adminEmail);
+
+      // 4. Seed feature flags for plan
       await this.seedFeatureFlags(tenantId, plan);
 
-      // 4. Cache feature flags in Redis
+      // 5. Cache feature flags in Redis
       await this.cacheFeatureFlags(tenantId);
 
-      // 5. Mark tenant active
+      // 6. Mark tenant active
       await this.tenantsRepo.update(tenantId, {
         status: TenantStatus.ACTIVE,
         provisionedAt: new Date(),
@@ -134,17 +160,88 @@ export class TenantProvisioningService {
   private async runTenantMigrations(schemaName: string): Promise<void> {
     this.logger.log(`Running migrations for schema: ${schemaName}`);
 
-    // Set search_path for migration execution
-    await this.dataSource.query(`SET search_path = "${schemaName}", public`);
+    const tenantMigrations = this.dataSource.migrations
+      .filter((migration) => {
+        const name = migration.name ?? '';
+        const timestamp = Number(name.split('-')[0]);
+        return (
+          Number.isFinite(timestamp) && timestamp < PUBLIC_MIGRATION_TIMESTAMP
+        );
+      })
+      .sort((left, right) =>
+        (left.name ?? '').localeCompare(right.name ?? ''),
+      ) as unknown as Array<new () => MigrationInterface>;
 
-    // In production, we would run migrations via:
-    // await this.dataSource.runMigrations({ transaction: 'each' });
-    //
-    // For P5 MVP, the tenant provisioning is enqueued as a BullMQ job
-    // and uses a dedicated DataSource instance with the correct
-    // search_path to avoid race conditions.
-    //
-    // Placeholder: log completion
-    this.logger.log(`Migrations completed for schema: ${schemaName}`);
+    await this.tenantDatabase.runInTenantSchema(
+      schemaName,
+      async (manager: EntityManager) => {
+        const queryRunner = manager.queryRunner as QueryRunner | undefined;
+        if (!queryRunner) {
+          throw new Error(
+            'TENANT_MIGRATION_QUERY_RUNNER_UNAVAILABLE: migrations require the tenant query runner',
+          );
+        }
+
+        for (const Migration of tenantMigrations) {
+          const migration = new Migration();
+          await migration.up(queryRunner);
+        }
+      },
+    );
+
+    this.logger.log(
+      `Tenant migrations completed for schema: ${schemaName} (${tenantMigrations.length} migrations)`,
+    );
+  }
+
+  private async verifyAndSeedTenantAdmin(
+    schemaName: string,
+    adminEmail: string,
+  ): Promise<void> {
+    await this.tenantDatabase.runInTenantSchema(schemaName, async (manager) => {
+      const rows = (await manager.query(
+        `SELECT table_name
+           FROM information_schema.tables
+          WHERE table_schema = $1
+            AND table_name = ANY($2::text[])`,
+        [schemaName, [...REQUIRED_TENANT_TABLES]],
+      )) as Array<{ table_name: string }>;
+      const existingTables = new Set(rows.map((row) => row.table_name));
+      const missingTables = REQUIRED_TENANT_TABLES.filter(
+        (table) => !existingTables.has(table),
+      );
+
+      if (missingTables.length > 0) {
+        throw new Error(
+          `TENANT_SCHEMA_INCOMPLETE: missing tables: ${missingTables.join(', ')}`,
+        );
+      }
+
+      const normalizedEmail = adminEmail.toLowerCase();
+      const existingAdmin = await manager.findOne(User, {
+        where: { email: normalizedEmail },
+      });
+      if (existingAdmin) return;
+
+      // The random credential is intentionally never exposed. The account is
+      // activated through the platform's password-reset/invitation flow.
+      const passwordHash = await bcrypt.hash(
+        randomBytes(32).toString('hex'),
+        12,
+      );
+      const admin = manager.create(User, {
+        email: normalizedEmail,
+        passwordHash,
+        role: Role.ADMIN,
+        isActive: true,
+      });
+      const savedAdmin = await manager.save(admin);
+      await manager.save(
+        manager.create(UserProfile, {
+          userId: savedAdmin.id,
+          fullName: normalizedEmail.split('@')[0] || 'Clinic Administrator',
+        }),
+      );
+    });
   }
 }

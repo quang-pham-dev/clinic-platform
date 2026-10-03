@@ -18,6 +18,7 @@
 ---
 
 The patient-facing portal for the Clinic Appointment Booking System. This application allows patients to browse doctors, book appointments, and manage their health profiles.
+
 ## Tech Stack
 
 | Layer     | Technology                                       |

@@ -64,6 +64,26 @@ export class CacheService {
     }
   }
 
+  async incrementWithExpiry(
+    key: string,
+    expiresAt: Date,
+  ): Promise<number | null> {
+    try {
+      const value = await this.client.incr(key);
+      if (value === 1) {
+        const ttl = Math.max(
+          1,
+          Math.ceil((expiresAt.getTime() - Date.now()) / 1000),
+        );
+        await this.client.expire(key, ttl);
+      }
+      return value;
+    } catch (err) {
+      this.logger.warn(`Cache INCR failed for key "${key}"`, err);
+      return null;
+    }
+  }
+
   /** Delete all keys matching a glob pattern, e.g. "doctors:*" */
   async delByPattern(pattern: string): Promise<void> {
     try {

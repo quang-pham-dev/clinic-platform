@@ -3,6 +3,8 @@ import { BookingsService } from './bookings.service';
 import { Appointment } from './entities/appointment.entity';
 import { BookingAuditLog } from './entities/booking-audit-log.entity';
 import { AppointmentsRepository } from './repositories/appointment.repository';
+import { CacheService } from '@/common/cache/cache.service';
+import { TenantContextService } from '@/common/context/tenant-context.service';
 import { AppointmentStatus } from '@/common/types/appointment-status.enum';
 import { Role } from '@/common/types/role.enum';
 import { ConsentsService } from '@/modules/consents/consents.service';
@@ -70,6 +72,12 @@ describe('BookingsService', () => {
   const mockEventEmitter = {
     emit: vi.fn(),
   };
+  const mockCache = {
+    incrementWithExpiry: vi.fn().mockResolvedValue(1),
+  };
+  const mockTenantContext = {
+    tenantId: 'tenant-1',
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -83,6 +91,8 @@ describe('BookingsService', () => {
         { provide: DoctorsService, useValue: mockDoctorsService },
         { provide: ConsentsService, useValue: mockConsentsService },
         { provide: EventEmitter2, useValue: mockEventEmitter },
+        { provide: CacheService, useValue: mockCache },
+        { provide: TenantContextService, useValue: mockTenantContext },
       ],
     }).compile();
 
@@ -139,6 +149,10 @@ describe('BookingsService', () => {
         { isAvailable: false },
       );
       expect(mockQueryRunner.manager.save).toHaveBeenCalledTimes(2);
+      expect(mockCache.incrementWithExpiry).toHaveBeenCalledWith(
+        'bookings:month:tenant-1',
+        expect.any(Date),
+      );
     });
 
     it('should require current consent before booking telemedicine slot', async () => {

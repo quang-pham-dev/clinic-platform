@@ -2,7 +2,7 @@
  * TenantMiddleware — the most critical component in P5.
  * Runs on every request (except health, billing/webhook, super/**).
  * Resolves tenant from X-Tenant-ID header, validates status,
- * sets PostgreSQL search_path, and populates AsyncLocalStorage context.
+ * and populates AsyncLocalStorage context with the tenant schema.
  *
  * See docs/5/05-tenant-middleware.md §1
  */
@@ -63,12 +63,9 @@ export class TenantMiddleware implements NestMiddleware {
     // 3. Load feature flags (cache first, DB fallback)
     const featureFlags = await this.resolveFeatureFlags(tenantId);
 
-    // 4. Set PostgreSQL search_path for this request
-    await this.dataSource.query(
-      `SET search_path = "${tenant.schemaName}", public`,
-    );
-
-    // 5. Store context in AsyncLocalStorage — available to all services
+    // 4. Store context in AsyncLocalStorage — available to all services.
+    // Tenant-scoped database work must use TenantDatabaseService so search_path
+    // is applied to the same connection that runs the query.
     this.tenantCtx.run(
       {
         tenantId: tenant.id,
