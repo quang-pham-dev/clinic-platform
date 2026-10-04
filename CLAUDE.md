@@ -7,8 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 This is a **Turborepo + pnpm workspace** monorepo for the Healthcare Clinic Platform.
 
 - **apps/** - Applications (NestJS API, Vite SPA Dashboard, Next.js Portals)
-- **packages/** - Shared libraries (types, ui, logger, utils, design-system, api-client)
-- **configs/** - Shared configurations (eslint, prettier, typescript, vitest)
+- **packages/** - Shared libraries and workspace configurations (types, ui, logger, utils, design-system, api-client, eslint-config, prettier-config, typescript-config, vitest-config)
 
 ### Workspace Naming Convention
 

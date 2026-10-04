@@ -36,12 +36,6 @@ clinic-platform/
 │   ├── design-system/          # Tailwind v4 CSS tokens, themes, globals
 │   └── api-client/             # Generated type-safe API client (from OpenAPI spec)
 │
-├── configs/
-│   ├── eslint-config/          # Shared ESLint flat configs (base, react, next)
-│   ├── prettier-config/        # Shared Prettier config + import sorting
-│   ├── typescript-config/      # Shared TypeScript base configurations
-│   └── vitest-config/          # Shared Vitest configs (base, node, react)
-│
 ├── tools/
 │   └── scripts/                # Workspace-level scripts (seed, migrate, codegen)
 │
@@ -58,6 +52,7 @@ clinic-platform/
 ### Package Manager: pnpm
 
 **Why pnpm over npm/yarn:**
+
 - Strict dependency resolution (no phantom dependencies)
 - Content-addressable storage (faster installs, less disk usage)
 - Native workspace protocol (`workspace:*`)
@@ -67,6 +62,7 @@ clinic-platform/
 ### Build Orchestrator: Turborepo
 
 **Why Turborepo over Nx:**
+
 - Zero-config for most use cases
 - Integrates natively with pnpm workspaces
 - Remote caching out of the box (Vercel or self-hosted)
@@ -83,26 +79,26 @@ clinic-platform/
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env", ".env.*"],
-      "outputs": ["dist/**", "build/**"]
+      "outputs": ["dist/**", "build/**"],
     },
     "dev": {
       "dependsOn": ["^build"],
       "cache": false,
-      "persistent": false
+      "persistent": false,
     },
     "lint": {
       "dependsOn": ["transit"],
-      "inputs": ["$TURBO_DEFAULT$", "eslint.config.*", ".eslintignore"]
+      "inputs": ["$TURBO_DEFAULT$", "eslint.config.*", ".eslintignore"],
     },
     "test": {
       "dependsOn": ["transit"],
-      "inputs": ["$TURBO_DEFAULT$", ".env", ".env.*"]
+      "inputs": ["$TURBO_DEFAULT$", ".env", ".env.*"],
     },
     "check-types": {
       "dependsOn": ["^build"],
-      "inputs": ["$TURBO_DEFAULT$", "tsconfig*.json"]
-    }
-  }
+      "inputs": ["$TURBO_DEFAULT$", "tsconfig*.json"],
+    },
+  },
 }
 ```
 
@@ -136,6 +132,7 @@ packages/types/
 ```
 
 **Usage in apps:**
+
 ```typescript
 // apps/dashboard/src/features/bookings/api/bookings.api.ts
 import { BookingResponse, PaginatedResponse } from '@clinic-platform/types';
@@ -144,6 +141,7 @@ export const fetchBookings = async (): Promise<PaginatedResponse<BookingResponse
 ```
 
 **Usage in API:**
+
 ```typescript
 // apps/api/src/modules/bookings/dto/create-booking.dto.ts
 // Note: API DTOs use class-validator decorators — they IMPORT types from @clinic-platform/types
@@ -223,6 +221,7 @@ packages/design-system/
 ```
 
 **Usage in apps:**
+
 ```css
 @import '@clinic-platform/design-system';
 ```
@@ -243,6 +242,7 @@ packages/api-client/
 ```
 
 **Generation flow:**
+
 ```bash
 # In CI or as a dev script:
 # 1. NestJS generates OpenAPI spec
@@ -252,25 +252,46 @@ pnpm --filter @clinic-platform/api swagger:export      # outputs openapi.json
 pnpm --filter @clinic-platform/api-client generate
 ```
 
-### 4.7 `configs/eslint-config`
+### 4.7 `packages/eslint-config`
 
 ```
-configs/eslint-config/
+packages/eslint-config/
 ├── base.js                           # Shared rules (TypeScript, imports, Prettier)
 ├── react-internal-library.js         # React-specific (hooks rules, JSX)
 ├── next-internal-library.js          # Next.js-specific (@next/next recommended)
 └── package.json                      # name: "@clinic-platform/eslint-config"
 ```
 
-### 4.8 `configs/typescript-config`
+### 4.8 `packages/typescript-config`
 
 ```
-configs/typescript-config/
+packages/typescript-config/
 ├── base.json                         # Strict mode, module resolution, paths
 ├── react-library.json                # Extends base + JSX, React types
-├── nextjs.json                       # Extends base + Next.js specifics
 ├── nextjs-library.json               # Extends base + Next.js library
 └── package.json                      # name: "@clinic-platform/typescript-config"
+```
+
+### 4.9 `packages/prettier-config`
+
+Shared Prettier configuration and import-sorting plugin setup.
+
+```
+packages/prettier-config/
+├── base.js                           # Repository formatting rules
+└── package.json                      # name: "@clinic-platform/prettier-config"
+```
+
+### 4.10 `packages/vitest-config`
+
+Shared Vitest configuration for Node and React test environments.
+
+```
+packages/vitest-config/
+├── index.ts                          # Base coverage and globals
+├── node.ts                           # Node test environment
+├── react.ts                          # React/jsdom test environment
+└── package.json                      # name: "@clinic-platform/vitest-config"
 ```
 
 ---
@@ -282,7 +303,6 @@ configs/typescript-config/
 packages:
   - 'apps/*'
   - 'packages/*'
-  - 'configs/*'
   - 'tools/*'
 ```
 
@@ -323,18 +343,18 @@ pnpm --filter @clinic-platform/dashboard add @clinic-platform/types --workspace
 
 ## 7. When to Use Each Package
 
-| Need | Package | Example |
-|------|---------|---------|
-| API response type | `@clinic-platform/types` | `BookingResponse`, `PaginatedResponse<T>` |
-| Enum shared across FE+BE | `@clinic-platform/types` | `Role`, `AppointmentStatus` |
-| React component | `@clinic-platform/ui` | `<Button>`, `<Modal>`, `<DataTable>` |
-| Utility function | `@clinic-platform/utils` | `invariant()`, `assertNever()`, `formatDate()` |
-| Structured logging | `@clinic-platform/logger` | `logger.info()`, `httpLogger()` |
-| CSS tokens / themes | `@clinic-platform/design-system` | `@import '@clinic-platform/design-system'` |
-| Call NestJS API from FE | `@clinic-platform/api-client` | `bookingService.create(dto)` |
-| ESLint config | `@clinic-platform/eslint-config` | `import config from '@clinic-platform/eslint-config/base'` |
-| TypeScript config | `@clinic-platform/typescript-config` | `"extends": "@clinic-platform/typescript-config/react-library.json"` |
-| Vitest config | `@clinic-platform/vitest-config` | `import config from '@clinic-platform/vitest-config'` |
+| Need                     | Package                              | Example                                                              |
+| ------------------------ | ------------------------------------ | -------------------------------------------------------------------- |
+| API response type        | `@clinic-platform/types`             | `BookingResponse`, `PaginatedResponse<T>`                            |
+| Enum shared across FE+BE | `@clinic-platform/types`             | `Role`, `AppointmentStatus`                                          |
+| React component          | `@clinic-platform/ui`                | `<Button>`, `<Modal>`, `<DataTable>`                                 |
+| Utility function         | `@clinic-platform/utils`             | `invariant()`, `assertNever()`, `formatDate()`                       |
+| Structured logging       | `@clinic-platform/logger`            | `logger.info()`, `httpLogger()`                                      |
+| CSS tokens / themes      | `@clinic-platform/design-system`     | `@import '@clinic-platform/design-system'`                           |
+| Call NestJS API from FE  | `@clinic-platform/api-client`        | `bookingService.create(dto)`                                         |
+| ESLint config            | `@clinic-platform/eslint-config`     | `import config from '@clinic-platform/eslint-config/base'`           |
+| TypeScript config        | `@clinic-platform/typescript-config` | `"extends": "@clinic-platform/typescript-config/react-library.json"` |
+| Vitest config            | `@clinic-platform/vitest-config`     | `import config from '@clinic-platform/vitest-config'`                |
 
 ---
 
@@ -343,12 +363,14 @@ pnpm --filter @clinic-platform/dashboard add @clinic-platform/types --workspace
 **Decision:** Use pnpm workspaces with Turborepo as the monorepo orchestrator.
 
 **Rationale:**
+
 - 5 frontend apps + 1 backend + 1 CMS sharing types, UI, and lint config — a polyrepo would cause type duplication within weeks
 - pnpm strict mode prevents phantom dependency issues that plague npm/yarn in monorepos
 - Turborepo is the lightest-weight build orchestrator with remote caching, and integrates with CI naturally
 - The team can adopt incrementally — start with `packages/types` in P1, add `packages/ui` and `packages/api-client` when the 2nd frontend (P2 Staff App) is introduced
 
 **Consequences:**
+
 - All apps share a single `pnpm-lock.yaml` — dependency version conflicts must be resolved workspace-wide
 - Turborepo remote caching requires a Vercel account or self-hosted Turborepo server (P5 CI/CD scope)
 - New developers must understand pnpm workspace protocol (`workspace:*`) and `--filter` syntax

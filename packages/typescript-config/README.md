@@ -46,31 +46,31 @@ The foundational TypeScript configuration with strict type checking.
 - Declaration file generation
 - Source maps enabled
 
-### `react-native-library.json`
+### `react-library.json`
 
-Optimized configuration for React Native library packages.
+Optimized configuration for React library packages.
 
 ```json
 {
-  "extends": "@clinic-platform/typescript-config/react-native-library.json"
+  "extends": "@clinic-platform/typescript-config/react-library.json"
 }
 ```
 
 **Features:**
 
 - React JSX transformation
-- React Native types included
+- React JSX transformation
 - Bundler module resolution
 - ES2019 target for compatibility
 - Path aliases support
 
 ## 💻 Usage
 
-### For React Native Libraries
+### For React Libraries
 
 ```json
 {
-  "extends": "@clinic-platform/typescript-config/react-native-library.json",
+  "extends": "@clinic-platform/typescript-config/react-library.json",
   "compilerOptions": {
     "outDir": "dist"
   },
@@ -168,7 +168,7 @@ You can override any setting in your package's `tsconfig.json`:
 
 ```json
 {
-  "extends": "@clinic-platform/typescript-config/react-native-library.json",
+  "extends": "@clinic-platform/typescript-config/react-library.json",
   "compilerOptions": {
     "outDir": "dist",
     "baseUrl": ".",
@@ -201,9 +201,9 @@ You can override any setting in your package's `tsconfig.json`:
 ### 2. Use Appropriate Config
 
 ```json
-// ✅ For React Native components
+// ✅ For React components
 {
-  "extends": "@clinic-platform/typescript-config/react-native-library.json"
+  "extends": "@clinic-platform/typescript-config/react-library.json"
 }
 
 // ✅ For utility packages

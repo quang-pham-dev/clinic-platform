@@ -264,16 +264,16 @@ importers:
     devDependencies:
       '@clinic-platform/eslint-config':
         specifier: workspace:*
-        version: link:configs/eslint-config
+        version: link:packages/eslint-config
       '@clinic-platform/prettier-config':
         specifier: workspace:*
-        version: link:configs/prettier-config
+        version: link:packages/prettier-config
       '@clinic-platform/typescript-config':
         specifier: workspace:*
-        version: link:configs/typescript-config
+        version: link:packages/typescript-config
       '@clinic-platform/vitest-config':
         specifier: workspace:*
-        version: link:configs/vitest-config
+        version: link:packages/vitest-config
       '@commitlint/cli':
         specifier: 'catalog:'
         version: 20.3.1(@types/node@24.10.9)(typescript@5.9.2)
@@ -433,16 +433,16 @@ importers:
     devDependencies:
       '@clinic-platform/eslint-config':
         specifier: workspace:*
-        version: link:../../configs/eslint-config
+        version: link:../../packages/eslint-config
       '@clinic-platform/prettier-config':
         specifier: workspace:*
-        version: link:../../configs/prettier-config
+        version: link:../../packages/prettier-config
       '@clinic-platform/typescript-config':
         specifier: workspace:*
-        version: link:../../configs/typescript-config
+        version: link:../../packages/typescript-config
       '@clinic-platform/vitest-config':
         specifier: workspace:*
-        version: link:../../configs/vitest-config
+        version: link:../../packages/vitest-config
       '@nestjs/cli':
         specifier: catalog:nestjs
         version: 11.0.16(@swc/core@1.15.18)(@types/node@22.19.7)
@@ -578,16 +578,16 @@ importers:
     devDependencies:
       '@clinic-platform/eslint-config':
         specifier: workspace:*
-        version: link:../../configs/eslint-config
+        version: link:../../packages/eslint-config
       '@clinic-platform/prettier-config':
         specifier: workspace:*
-        version: link:../../configs/prettier-config
+        version: link:../../packages/prettier-config
       '@clinic-platform/typescript-config':
         specifier: workspace:*
-        version: link:../../configs/typescript-config
+        version: link:../../packages/typescript-config
       '@clinic-platform/vitest-config':
         specifier: workspace:*
-        version: link:../../configs/vitest-config
+        version: link:../../packages/vitest-config
       '@tailwindcss/typography':
         specifier: ^0.5.16
         version: 0.5.19(tailwindcss@4.1.18)
@@ -675,13 +675,13 @@ importers:
     devDependencies:
       '@clinic-platform/eslint-config':
         specifier: workspace:*
-        version: link:../../configs/eslint-config
+        version: link:../../packages/eslint-config
       '@clinic-platform/prettier-config':
         specifier: workspace:*
-        version: link:../../configs/prettier-config
+        version: link:../../packages/prettier-config
       '@clinic-platform/typescript-config':
         specifier: workspace:*
-        version: link:../../configs/typescript-config
+        version: link:../../packages/typescript-config
       '@tailwindcss/postcss':
         specifier: catalog:web-ui
         version: 4.1.18
@@ -748,13 +748,13 @@ importers:
     devDependencies:
       '@clinic-platform/eslint-config':
         specifier: workspace:*
-        version: link:../../configs/eslint-config
+        version: link:../../packages/eslint-config
       '@clinic-platform/prettier-config':
         specifier: workspace:*
-        version: link:../../configs/prettier-config
+        version: link:../../packages/prettier-config
       '@clinic-platform/typescript-config':
         specifier: workspace:*
-        version: link:../../configs/typescript-config
+        version: link:../../packages/typescript-config
       '@tailwindcss/postcss':
         specifier: catalog:web-ui
         version: 4.1.18
@@ -814,7 +814,7 @@ importers:
         specifier: ^5
         version: 5.9.3
 
-  configs/eslint-config:
+  packages/eslint-config:
     devDependencies:
       '@eslint/js':
         specifier: 'catalog:'
@@ -850,7 +850,7 @@ importers:
         specifier: catalog:eslint-plugins
         version: 8.53.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.2)
 
-  configs/prettier-config:
+  packages/prettier-config:
     dependencies:
       '@trivago/prettier-plugin-sort-imports':
         specifier: catalog:prettier-plugins
@@ -860,9 +860,9 @@ importers:
         specifier: 'catalog:'
         version: 3.8.1
 
-  configs/typescript-config: {}
+  packages/typescript-config: {}
 
-  configs/vitest-config:
+  packages/vitest-config:
     dependencies:
       '@vitejs/plugin-react':
         specifier: catalog:vite-ecosystem
@@ -903,16 +903,16 @@ importers:
     devDependencies:
       '@clinic-platform/eslint-config':
         specifier: workspace:*
-        version: link:../../configs/eslint-config
+        version: link:../eslint-config
       '@clinic-platform/prettier-config':
         specifier: workspace:*
-        version: link:../../configs/prettier-config
+        version: link:../prettier-config
       '@clinic-platform/typescript-config':
         specifier: workspace:*
-        version: link:../../configs/typescript-config
+        version: link:../typescript-config
       '@clinic-platform/vitest-config':
         specifier: workspace:*
-        version: link:../../configs/vitest-config
+        version: link:../vitest-config
       '@types/node':
         specifier: 'catalog:'
         version: 22.19.7
@@ -949,10 +949,10 @@ importers:
     devDependencies:
       '@clinic-platform/eslint-config':
         specifier: workspace:*
-        version: link:../../configs/eslint-config
+        version: link:../eslint-config
       '@clinic-platform/prettier-config':
         specifier: workspace:*
-        version: link:../../configs/prettier-config
+        version: link:../prettier-config
       '@types/node':
         specifier: 'catalog:'
         version: 22.19.7
@@ -989,16 +989,16 @@ importers:
     devDependencies:
       '@clinic-platform/eslint-config':
         specifier: workspace:*
-        version: link:../../configs/eslint-config
+        version: link:../eslint-config
       '@clinic-platform/prettier-config':
         specifier: workspace:*
-        version: link:../../configs/prettier-config
+        version: link:../prettier-config
       '@clinic-platform/typescript-config':
         specifier: workspace:*
-        version: link:../../configs/typescript-config
+        version: link:../typescript-config
       '@clinic-platform/vitest-config':
         specifier: workspace:*
-        version: link:../../configs/vitest-config
+        version: link:../vitest-config
       '@types/node':
         specifier: 'catalog:'
         version: 22.19.7
@@ -1028,16 +1028,16 @@ importers:
     devDependencies:
       '@clinic-platform/eslint-config':
         specifier: workspace:*
-        version: link:../../configs/eslint-config
+        version: link:../eslint-config
       '@clinic-platform/prettier-config':
         specifier: workspace:*
-        version: link:../../configs/prettier-config
+        version: link:../prettier-config
       '@clinic-platform/typescript-config':
         specifier: workspace:*
-        version: link:../../configs/typescript-config
+        version: link:../typescript-config
       '@clinic-platform/vitest-config':
         specifier: workspace:*
-        version: link:../../configs/vitest-config
+        version: link:../vitest-config
       '@types/node':
         specifier: 'catalog:'
         version: 22.19.7
@@ -1098,16 +1098,16 @@ importers:
     devDependencies:
       '@clinic-platform/eslint-config':
         specifier: workspace:*
-        version: link:../../configs/eslint-config
+        version: link:../eslint-config
       '@clinic-platform/prettier-config':
         specifier: workspace:*
-        version: link:../../configs/prettier-config
+        version: link:../prettier-config
       '@clinic-platform/typescript-config':
         specifier: workspace:*
-        version: link:../../configs/typescript-config
+        version: link:../typescript-config
       '@clinic-platform/vitest-config':
         specifier: workspace:*
-        version: link:../../configs/vitest-config
+        version: link:../vitest-config
       '@storybook/react':
         specifier: catalog:storybook
         version: 8.6.15(@storybook/test@8.6.15(storybook@8.6.15(prettier@3.8.1)))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(storybook@8.6.15(prettier@3.8.1))(typescript@5.9.2)
@@ -1159,16 +1159,16 @@ importers:
     devDependencies:
       '@clinic-platform/eslint-config':
         specifier: workspace:*
-        version: link:../../configs/eslint-config
+        version: link:../eslint-config
       '@clinic-platform/prettier-config':
         specifier: workspace:*
-        version: link:../../configs/prettier-config
+        version: link:../prettier-config
       '@clinic-platform/typescript-config':
         specifier: workspace:*
-        version: link:../../configs/typescript-config
+        version: link:../typescript-config
       '@clinic-platform/vitest-config':
         specifier: workspace:*
-        version: link:../../configs/vitest-config
+        version: link:../vitest-config
       '@types/node':
         specifier: 'catalog:'
         version: 22.19.7

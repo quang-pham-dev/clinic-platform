@@ -38,12 +38,12 @@ import { config } from '@clinic-platform/eslint-config/base';
 export default [...config];
 ```
 
-### `react.js`
+### `react-internal-library.js`
 
 React-specific rules extending the base configuration.
 
 ```javascript
-import { config } from '@clinic-platform/eslint-config/react';
+import { config } from '@clinic-platform/eslint-config/react-internal-library';
 
 export default [...config];
 ```
@@ -85,7 +85,7 @@ export default [
 ### React Configuration
 
 ```javascript
-import { config } from '@clinic-platform/eslint-config/react';
+import { config } from '@clinic-platform/eslint-config/react-internal-library';
 
 export default [
   ...config,
@@ -399,7 +399,7 @@ The config includes `eslint-config-prettier` to disable conflicting rules automa
 
 To modify ESLint configuration:
 
-1. Update rules in `packages/eslint-config/base.js` or `react.js`
+1. Update rules in `packages/eslint-config/base.js` or `react-internal-library.js`
 2. Test across packages: `pnpm lint`
 3. Document rule changes
 4. Update this README

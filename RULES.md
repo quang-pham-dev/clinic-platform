@@ -13,7 +13,7 @@ clinic-platform/
 ├── packages/logger   → Shared Pino logger (@clinic-platform/logger)
 ├── packages/types    → Shared TypeScript types
 ├── packages/ui       → Shared UI components
-├── configs/          → Shared ESLint, Prettier, TypeScript, Vitest configs
+├── packages/         → Shared libraries and ESLint, Prettier, TypeScript, Vitest configs
 ```
 
 - Package manager: **pnpm** (use `pnpm` commands, never `npm` or `yarn`)
