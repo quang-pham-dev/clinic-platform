@@ -24,7 +24,7 @@ Use this file as the single reference for commands and style expectations when w
 - `packages/logger` - Pino structured logging
 - `packages/design-system` - Tailwind CSS theme and tokens
 - `packages/api-client` - Auto-generated typed HTTP client
-- `configs/` - Shared config files for ESLint, TypeScript, Prettier, Vitest
+- `packages/eslint-config`, `packages/prettier-config`, `packages/typescript-config`, `packages/vitest-config` - Shared workspace configs
 
 ## Build / Lint / Test Commands
 

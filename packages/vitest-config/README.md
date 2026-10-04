@@ -61,7 +61,10 @@ Tailored for backend utilities and CLI tools.
 In `vitest.config.ts`:
 
 ```typescript
-import { getReactAliases, reactConfig } from '@clinic-platform/vitest-config/react';
+import {
+  getReactAliases,
+  reactConfig,
+} from '@clinic-platform/vitest-config/react';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defineConfig, mergeConfig } from 'vitest/config';
