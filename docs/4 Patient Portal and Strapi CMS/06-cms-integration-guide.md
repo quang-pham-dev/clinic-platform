@@ -1,4 +1,5 @@
 # CMS Integration Guide
+
 ### P4: Patient Portal & Strapi CMS
 
 > **Document type:** Technical Integration Guide
@@ -20,6 +21,7 @@ STRAPI (port 1337)                  NESTJS (port 3000)               NEXT.JS (po
 ```
 
 Three relationships:
+
 1. **Strapi → NestJS** (webhook): content publish events
 2. **NestJS → Next.js** (revalidation): cache invalidation after webhook
 3. **Next.js → Strapi** (SSG/ISR fetch): reading public content at build/render time
@@ -56,7 +58,6 @@ Events to trigger:
 // cms-webhook/cms-webhook.controller.ts
 @Controller('cms/webhook')
 export class CmsWebhookController {
-
   constructor(private readonly webhookService: CmsWebhookService) {}
 
   @Post()
@@ -73,8 +74,10 @@ export class CmsWebhookController {
     const log = await this.webhookService.logReceived(payload);
 
     // Process asynchronously — don't make Strapi wait
-    this.webhookService.process(payload, log.id).catch(err => {
-      this.logger.error(`Webhook processing failed: ${err.message}`, { logId: log.id });
+    this.webhookService.process(payload, log.id).catch((err) => {
+      this.logger.error(`Webhook processing failed: ${err.message}`, {
+        logId: log.id,
+      });
     });
 
     return { received: true, logId: log.id };
@@ -86,7 +89,6 @@ export class CmsWebhookController {
 // cms-webhook/cms-webhook.service.ts
 @Injectable()
 export class CmsWebhookService {
-
   async process(payload: StrapiWebhookDto, logId: string): Promise<void> {
     try {
       switch (payload.model) {
@@ -125,7 +127,12 @@ export class CmsWebhookService {
       const formType = payload.entry.form_type;
       const version = payload.entry.version;
       // Update Redis cache
-      await this.redis.set(`cms:consent:current:${formType}`, version, 'EX', 2592000);
+      await this.redis.set(
+        `cms:consent:current:${formType}`,
+        version,
+        'EX',
+        2592000,
+      );
       await this.revalidate(`/consent/${formType}`, `consent-${formType}`);
     }
   }
@@ -195,16 +202,16 @@ export async function POST(request: NextRequest) {
 
 ### Rendering strategy per content type
 
-| Content type | Strategy | Next.js config | Revalidation trigger |
-|-------------|---------|----------------|---------------------|
-| Article list `/articles` | ISR | `revalidateTag('article-listing')` | On any article publish |
-| Article detail `/articles/[slug]` | ISR | `revalidateTag('article-{slug}')` | On that article's publish |
-| FAQ `/faq` | ISR | `next: { revalidate: 86400 }` | Daily + on any FAQ publish |
-| Consent form `/consent/[type]` | ISR | `revalidateTag('consent-{type}')` | On consent publish (is_current) |
-| Doctor list `/doctors` | ISR | `revalidateTag('doctor-listing')` | On any doctor-page publish |
-| Doctor detail `/doctors/[id]` | ISR | `revalidateTag('doctor-page-{id}')` | On that doctor-page's publish |
-| Medical records | Dynamic | `cache: 'no-store'` | N/A — always dynamic |
-| Booking history | Dynamic | `cache: 'no-store'` | N/A — always dynamic |
+| Content type                      | Strategy | Next.js config                      | Revalidation trigger            |
+| --------------------------------- | -------- | ----------------------------------- | ------------------------------- |
+| Article list `/articles`          | ISR      | `revalidateTag('article-listing')`  | On any article publish          |
+| Article detail `/articles/[slug]` | ISR      | `revalidateTag('article-{slug}')`   | On that article's publish       |
+| FAQ `/faq`                        | ISR      | `next: { revalidate: 86400 }`       | Daily + on any FAQ publish      |
+| Consent form `/consent/[type]`    | ISR      | `revalidateTag('consent-{type}')`   | On consent publish (is_current) |
+| Doctor list `/doctors`            | ISR      | `revalidateTag('doctor-listing')`   | On any doctor-page publish      |
+| Doctor detail `/doctors/[id]`     | ISR      | `revalidateTag('doctor-page-{id}')` | On that doctor-page's publish   |
+| Medical records                   | Dynamic  | `cache: 'no-store'`                 | N/A — always dynamic            |
+| Booking history                   | Dynamic  | `cache: 'no-store'`                 | N/A — always dynamic            |
 
 ---
 
@@ -354,7 +361,7 @@ export class StrapiClient {
 
   async getCurrentConsentVersion(formType: string): Promise<string | null> {
     const data = await this.get<any[]>(
-      `/consent-forms?filters[form_type][$eq]=${formType}&filters[is_current][$eq]=true&fields[0]=version`
+      `/consent-forms?filters[form_type][$eq]=${formType}&filters[is_current][$eq]=true&fields[0]=version`,
     );
     return data?.[0]?.attributes?.version ?? null;
   }
@@ -369,7 +376,7 @@ Before running P4 locally:
 
 ```bash
 # 1. Start Strapi
-cd apps/strapi
+cd apps/cms
 npm install
 npm run develop   # Strapi admin at http://localhost:1337/admin
 

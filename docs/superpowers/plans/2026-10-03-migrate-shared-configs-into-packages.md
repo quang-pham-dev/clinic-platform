@@ -4,7 +4,7 @@
 
 **Goal:** Move every repository-level shared config package from `configs/*` into `packages/*` while preserving the existing `@clinic-platform/*-config` import contracts and keeping the monorepo verifiable.
 
-**Architecture:** Treat ESLint, Prettier, TypeScript, and Vitest configurations as first-class internal packages alongside the existing shared packages. Keep package names and subpath exports stable, move only their physical locations, remove `configs/*` from pnpm workspace discovery, and update repository documentation to make `packages/*` the sole shared-package location. Runtime configuration under `apps/strapi/config/**` is not part of this migration.
+**Architecture:** Treat ESLint, Prettier, TypeScript, and Vitest configurations as first-class internal packages alongside the existing shared packages. Keep package names and subpath exports stable, move only their physical locations, remove `configs/*` from pnpm workspace discovery, and update repository documentation to make `packages/*` the sole shared-package location. Runtime configuration under `apps/cms/config/**` is not part of this migration.
 
 **Tech Stack:** pnpm 10 workspaces, Turborepo 2.8, Node.js >=20, ESLint 9 flat config, Prettier 3, TypeScript 5.9, Vitest 3, JSON package exports.
 
@@ -15,7 +15,7 @@
 - Preserve the package names `@clinic-platform/eslint-config`, `@clinic-platform/prettier-config`, `@clinic-platform/typescript-config`, and `@clinic-platform/vitest-config`.
 - Preserve every currently consumed subpath export, including `base`, `nestjs`, `react-internal-library`, `base.json`, `vite-app.json`, `nextjs-library.json`, `react-library.json`, `nestjs.json`, `node`, and `react`; remove the pre-existing unresolvable `./nextjs.json` declaration because no such file exists.
 - Remove `configs/*` from `pnpm-workspace.yaml`; no shared config package remains discoverable outside `packages/*`.
-- Do not change application runtime configuration such as `apps/strapi/config/**` or domain behavior.
+- Do not change application runtime configuration such as `apps/cms/config/**` or domain behavior.
 - Preserve the current formatting, linting, TypeScript strictness, Vitest environment, and coverage threshold behavior unless a migration defect requires a minimal compatibility fix.
 - Do not commit generated `dist/`, `.turbo/`, `.next/`, or other build artifacts.
 
@@ -55,7 +55,7 @@
 
 ### Explicitly out of scope
 
-- `apps/strapi/config/**`: application runtime configuration, not a shared workspace config package.
+- `apps/cms/config/**`: application runtime configuration, not a shared workspace config package.
 - `packages/design-system/**` and app-local `postcss.config.*`, `next.config.*`, `vite.config.*`: remain local unless a later task discovers an actual dependency on `configs/`.
 - Business code, API behavior, environment validation semantics, and deployment configuration.
 
@@ -184,7 +184,7 @@
 
 - [ ] **Step 3: Search for stale paths**
 
-  Run `rg -n --glob '!**/node_modules/**' --glob '!**/dist/**' 'configs/(eslint|prettier|typescript|vitest)|configs/ - Shared|configs/.*Shared' .` and resolve every repository-documentation hit. Do not rewrite `apps/strapi/config/**` references.
+  Run `rg -n --glob '!**/node_modules/**' --glob '!**/dist/**' 'configs/(eslint|prettier|typescript|vitest)|configs/ - Shared|configs/.*Shared' .` and resolve every repository-documentation hit. Do not rewrite `apps/cms/config/**` references.
 
 - [ ] **Step 4: Commit**
 
@@ -234,7 +234,7 @@
   - pnpm-workspace.yaml has no configs/* entry
   - no consumer imports a physical configs/ path
   - package names remain @clinic-platform/*-config
-  - apps/strapi/config/** remains untouched
+  - apps/cms/config/** remains untouched
   ```
 
 - [ ] **Step 5: Review the final diff and report gates**
