@@ -1,4 +1,5 @@
 # Observability & Infrastructure
+
 ### P5: Multi-Clinic SaaS Platform
 
 > **Document type:** DevOps & Infrastructure Design
@@ -45,7 +46,7 @@ app.use('/metrics', async (req, res) => {
 
 ```typescript
 // common/metrics/metrics.service.ts
-import { Counter, Histogram, Gauge, register } from 'prom-client';
+import { Counter, Gauge, Histogram, register } from 'prom-client';
 
 export const httpRequestsTotal = new Counter({
   name: 'http_requests_total',
@@ -97,13 +98,32 @@ export class MetricsInterceptor implements NestInterceptor {
           const status = context.switchToHttp().getResponse().statusCode;
           const plan = req.tenantCtx?.plan ?? 'unknown';
 
-          httpRequestsTotal.inc({ method: req.method, path: req.route?.path ?? req.path, status, tenant_id: tenantId, plan });
-          httpRequestDurationMs.observe({ method: req.method, path: req.route?.path ?? req.path, tenant_id: tenantId }, duration);
+          httpRequestsTotal.inc({
+            method: req.method,
+            path: req.route?.path ?? req.path,
+            status,
+            tenant_id: tenantId,
+            plan,
+          });
+          httpRequestDurationMs.observe(
+            {
+              method: req.method,
+              path: req.route?.path ?? req.path,
+              tenant_id: tenantId,
+            },
+            duration,
+          );
         },
         error: (err) => {
-          httpRequestsTotal.inc({ method: req.method, path: req.path, status: err.status ?? 500, tenant_id: tenantId, plan: 'unknown' });
+          httpRequestsTotal.inc({
+            method: req.method,
+            path: req.path,
+            status: err.status ?? 500,
+            tenant_id: tenantId,
+            plan: 'unknown',
+          });
         },
-      })
+      }),
     );
   }
 }
@@ -125,7 +145,7 @@ export const loggerConfig = WinstonModule.createLogger({
     new winston.transports.Console({
       format: winston.format.combine(
         winston.format.timestamp(),
-        winston.format.json(),            // Loki-friendly structured JSON
+        winston.format.json(), // Loki-friendly structured JSON
       ),
     }),
   ],
@@ -173,20 +193,22 @@ export class LoggingInterceptor implements NestInterceptor {
     const start = Date.now();
     return next.handle().pipe(
       tap({
-        next: () => this.logger.log({
-          message: `${req.method} ${req.path} completed`,
-          tenant_id: tenantId,
-          request_id: requestId,
-          duration_ms: Date.now() - start,
-        }),
-        error: (err) => this.logger.error({
-          message: `${req.method} ${req.path} error: ${err.message}`,
-          tenant_id: tenantId,
-          request_id: requestId,
-          duration_ms: Date.now() - start,
-          stack: err.stack,
-        }),
-      })
+        next: () =>
+          this.logger.log({
+            message: `${req.method} ${req.path} completed`,
+            tenant_id: tenantId,
+            request_id: requestId,
+            duration_ms: Date.now() - start,
+          }),
+        error: (err) =>
+          this.logger.error({
+            message: `${req.method} ${req.path} error: ${err.message}`,
+            tenant_id: tenantId,
+            request_id: requestId,
+            duration_ms: Date.now() - start,
+            stack: err.stack,
+          }),
+      }),
     );
   }
 }
@@ -208,6 +230,7 @@ Three Grafana dashboards are pre-built:
 - Quota exhaustion alerts (gauge per tenant)
 
 **Loki query example:**
+
 ```logql
 {job="nestjs"} | json | tenant_id != "" | level = "error"
 | line_format "{{.tenant_id}} {{.message}}"
@@ -253,10 +276,10 @@ jobs:
           POSTGRES_DB: clinic_test
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: secret
-        ports: ["5432:5432"]
+        ports: ['5432:5432']
       redis:
         image: redis:7-alpine
-        ports: ["6379:6379"]
+        ports: ['6379:6379']
 
     steps:
       - uses: actions/checkout@v4
@@ -264,7 +287,7 @@ jobs:
         with: { node-version: '20' }
       - run: npm ci
       - run: npm run test:unit
-      - run: npm run test:integration     # Includes tenant isolation test
+      - run: npm run test:integration # Includes tenant isolation test
       - run: npm run test:e2e
 
   build:
@@ -314,7 +337,7 @@ version: '3.8'
 services:
   nginx:
     image: nginx:alpine
-    ports: ["80:80", "443:443"]
+    ports: ['80:80', '443:443']
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./nginx/certs:/etc/nginx/certs
@@ -328,7 +351,7 @@ services:
       STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
     depends_on: [postgres, redis]
     deploy:
-      replicas: 2          # 2 API instances behind Nginx
+      replicas: 2 # 2 API instances behind Nginx
 
   postgres:
     image: postgres:16
@@ -351,7 +374,7 @@ services:
     command: redis-server --requirepass ${REDIS_PASSWORD}
 
   strapi:
-    build: ./apps/strapi
+    build: ./apps/cms
     environment:
       DATABASE_HOST: postgres-strapi
     depends_on: [postgres-strapi]
@@ -363,7 +386,7 @@ services:
 
   grafana:
     image: grafana/grafana
-    ports: ["3100:3000"]
+    ports: ['3100:3000']
     volumes:
       - grafana_data:/var/lib/grafana
       - ./observability/grafana/dashboards:/etc/grafana/provisioning/dashboards
@@ -398,7 +421,7 @@ services:
       update_config:
         parallelism: 1
         delay: 10s
-        order: start-first     # Zero-downtime rolling update
+        order: start-first # Zero-downtime rolling update
       rollback_config:
         parallelism: 1
       restart_policy:
@@ -437,7 +460,9 @@ async function runAllTenantMigrations() {
   for (const tenant of tenants) {
     console.log(`Migrating tenant: ${tenant.slug}`);
     try {
-      await dataSource.query(`SET search_path = "${tenant.schemaName}", public`);
+      await dataSource.query(
+        `SET search_path = "${tenant.schemaName}", public`,
+      );
       await dataSource.runMigrations({ transaction: 'each' });
       console.log(`✓ ${tenant.slug}`);
     } catch (err) {

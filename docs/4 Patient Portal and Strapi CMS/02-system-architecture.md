@@ -1,4 +1,5 @@
 # System Architecture
+
 ### P4: Patient Portal & Strapi CMS
 
 > **Document type:** Architecture Design
@@ -9,15 +10,15 @@
 
 ## 1. Stack Additions (P4 over P3)
 
-| Area | P1–P3 | P4 Addition |
-|------|-------|------------|
-| CMS | None | Strapi v5 (standalone service, port 1337) |
-| CMS DB | None | PostgreSQL 16 (separate instance from NestJS) |
-| Rendering | CSR/SSR | + SSG + ISR (Next.js App Router) |
-| File storage | S3 in-call files (P3) | + `patient-files/` S3 prefix for patient uploads |
-| New NestJS modules | 10 modules (P1–P3) | + `MedicalRecordModule`, `FileModule`, `CmsWebhookModule` |
-| New DB tables | 15 (P1–P3) | +3 new tables (18 total) |
-| Content types | None | 4 Strapi content types |
+| Area               | P1–P3                 | P4 Addition                                               |
+| ------------------ | --------------------- | --------------------------------------------------------- |
+| CMS                | None                  | Strapi v5 (standalone service, port 1337)                 |
+| CMS DB             | None                  | PostgreSQL 16 (separate instance from NestJS)             |
+| Rendering          | CSR/SSR               | + SSG + ISR (Next.js App Router)                          |
+| File storage       | S3 in-call files (P3) | + `patient-files/` S3 prefix for patient uploads          |
+| New NestJS modules | 10 modules (P1–P3)    | + `MedicalRecordModule`, `FileModule`, `CmsWebhookModule` |
+| New DB tables      | 15 (P1–P3)            | +3 new tables (18 total)                                  |
+| Content types      | None                  | 4 Strapi content types                                    |
 
 ---
 
@@ -25,11 +26,11 @@
 
 The core architectural decision of P4 is how Strapi content reaches the patient portal. There are three options:
 
-| Strategy | Path | Pros | Cons |
-|----------|------|------|------|
-| **Direct** | Next.js → Strapi | Fastest, no NestJS overhead | Strapi API token in server env only (safe), but no auth integration |
-| **Proxy** | Next.js → NestJS → Strapi | Single API surface | NestJS becomes bottleneck for static content |
-| **Hybrid** ✓ | Public: Next.js → Strapi · Protected: Next.js → NestJS | Best of both | Two data sources to manage |
+| Strategy     | Path                                                   | Pros                        | Cons                                                                |
+| ------------ | ------------------------------------------------------ | --------------------------- | ------------------------------------------------------------------- |
+| **Direct**   | Next.js → Strapi                                       | Fastest, no NestJS overhead | Strapi API token in server env only (safe), but no auth integration |
+| **Proxy**    | Next.js → NestJS → Strapi                              | Single API surface          | NestJS becomes bottleneck for static content                        |
+| **Hybrid** ✓ | Public: Next.js → Strapi · Protected: Next.js → NestJS | Best of both                | Two data sources to manage                                          |
 
 **P4 uses Hybrid:**
 
@@ -126,7 +127,7 @@ async create(dto: CreateBookingDto, patient: JwtPayload): Promise<Appointment> {
 ### Directory structure
 
 ```
-apps/strapi/
+apps/cms/
 ├── config/
 │   ├── database.ts          # PostgreSQL connection
 │   ├── server.ts            # Port 1337, host
@@ -154,7 +155,7 @@ apps/strapi/
 ### Environment variables
 
 ```dotenv
-# apps/strapi/.env
+# apps/cms/.env
 STRAPI_WEBHOOK_SECRET=change-me-in-production
 DATABASE_CLIENT=postgres
 DATABASE_HOST=postgres-strapi
@@ -182,13 +183,13 @@ postgres-strapi:
     - strapi_postgres_data:/var/lib/postgresql/data
 
 strapi:
-  build: ./apps/strapi
+  build: ./apps/cms
   depends_on: [postgres-strapi]
   environment:
     DATABASE_HOST: postgres-strapi
     STRAPI_WEBHOOK_SECRET: ${STRAPI_WEBHOOK_SECRET}
   ports:
-    - "1337:1337"
+    - '1337:1337'
   volumes:
     - strapi_uploads:/app/public/uploads
 ```
@@ -202,20 +203,27 @@ strapi:
 ```typescript
 // apps/member/app/articles/[slug]/page.tsx
 export async function generateStaticParams() {
-  const res = await fetch(`${process.env.STRAPI_URL}/api/articles?fields[0]=slug`, {
-    headers: { Authorization: `Bearer ${process.env.STRAPI_API_TOKEN}` },
-  });
+  const res = await fetch(
+    `${process.env.STRAPI_URL}/api/articles?fields[0]=slug`,
+    {
+      headers: { Authorization: `Bearer ${process.env.STRAPI_API_TOKEN}` },
+    },
+  );
   const { data } = await res.json();
   return data.map((article: any) => ({ slug: article.attributes.slug }));
 }
 
-export default async function ArticlePage({ params }: { params: { slug: string } }) {
+export default async function ArticlePage({
+  params,
+}: {
+  params: { slug: string };
+}) {
   const res = await fetch(
     `${process.env.STRAPI_URL}/api/articles?filters[slug][$eq]=${params.slug}&populate=*`,
     {
       headers: { Authorization: `Bearer ${process.env.STRAPI_API_TOKEN}` },
-      next: { tags: [`article-${params.slug}`] },   // Tag for on-demand revalidation
-    }
+      next: { tags: [`article-${params.slug}`] }, // Tag for on-demand revalidation
+    },
   );
   const { data } = await res.json();
   // render article...
@@ -226,7 +234,7 @@ export default async function ArticlePage({ params }: { params: { slug: string }
 
 ```typescript
 // apps/member/app/api/revalidate/route.ts
-import { revalidateTag, revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 
 export async function POST(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -258,10 +266,13 @@ export default async function RecordsPage() {
 
   if (!token) redirect('/login');
 
-  const res = await fetch(`${process.env.NESTJS_API_URL}/api/v1/medical-records/me`, {
-    headers: { Authorization: `Bearer ${token}` },
-    cache: 'no-store',    // Never cache medical records
-  });
+  const res = await fetch(
+    `${process.env.NESTJS_API_URL}/api/v1/medical-records/me`,
+    {
+      headers: { Authorization: `Bearer ${token}` },
+      cache: 'no-store', // Never cache medical records
+    },
+  );
 
   if (res.status === 401) redirect('/login');
 
@@ -274,11 +285,13 @@ export default async function RecordsPage() {
 
 ```typescript
 // apps/member/app/doctors/[id]/page.tsx
-export default async function DoctorPage({ params }: { params: { id: string } }) {
-
+export default async function DoctorPage({
+  params,
+}: {
+  params: { id: string };
+}) {
   // Fetch both sources in parallel
   const [nestjsRes, strapiRes] = await Promise.allSettled([
-
     // NestJS: availability + slots (dynamic)
     fetch(`${process.env.NESTJS_API_URL}/api/v1/doctors/${params.id}`, {
       cache: 'no-store',
@@ -290,17 +303,15 @@ export default async function DoctorPage({ params }: { params: { id: string } })
       {
         headers: { Authorization: `Bearer ${process.env.STRAPI_API_TOKEN}` },
         next: { tags: [`doctor-page-${params.id}`] },
-      }
+      },
     ),
   ]);
 
-  const doctorData = nestjsRes.status === 'fulfilled'
-    ? await nestjsRes.value.json()
-    : null;
+  const doctorData =
+    nestjsRes.status === 'fulfilled' ? await nestjsRes.value.json() : null;
 
-  const cmsData = strapiRes.status === 'fulfilled'
-    ? await strapiRes.value.json()
-    : null;
+  const cmsData =
+    strapiRes.status === 'fulfilled' ? await strapiRes.value.json() : null;
 
   // Merge — NestJS data takes precedence for structured fields
   const doctor = {

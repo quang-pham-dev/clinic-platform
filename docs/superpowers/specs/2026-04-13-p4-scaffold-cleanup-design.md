@@ -4,7 +4,7 @@
 
 Current repo state is ahead of the docs in one specific way: P4 has partial scaffolding in code, but not real feature implementation.
 
-- `apps/strapi` exists as a generated Strapi app, but still looks like a default scaffold.
+- `apps/cms` exists as a generated Strapi app, but still looks like a default scaffold.
 - `apps/api/src/modules/medical-records`, `apps/api/src/modules/files`, and `apps/api/src/modules/consents` exist, but are mostly empty NestJS stubs.
 - `apps/member` does not yet contain meaningful P4 integration code.
 
@@ -19,7 +19,7 @@ Normalize P4 scaffolding so the repository clearly communicates what is real fou
 In scope:
 
 - `apps/api` P4 module scaffolding cleanup
-- `apps/strapi` generated scaffold cleanup
+- `apps/cms` generated scaffold cleanup
 - lightweight preparation of integration boundaries for the first P4 slice
 
 Out of scope:
@@ -46,7 +46,7 @@ For this repo, the practical choice is mixed:
 
 ### 2. Keep Strapi as infrastructure, not as a half-built product
 
-`apps/strapi` should remain because it is part of the target architecture, but the generated defaults should be stripped down to a neutral app shell. The cleanup should not create all content types yet. Instead, it should prepare a clean surface for the first CMS slice.
+`apps/cms` should remain because it is part of the target architecture, but the generated defaults should be stripped down to a neutral app shell. The cleanup should not create all content types yet. Instead, it should prepare a clean surface for the first CMS slice.
 
 ### 3. Start P4 with a low-risk vertical slice
 
@@ -83,9 +83,9 @@ Expected result:
 
 Cleanup should focus on these paths:
 
-- `apps/strapi/config/**`
-- `apps/strapi/src/**`
-- `apps/strapi/package.json`
+- `apps/cms/config/**`
+- `apps/cms/src/**`
+- `apps/cms/package.json`
 
 Expected result:
 
@@ -97,7 +97,7 @@ Expected result:
 
 After cleanup, P4 should start with these code areas:
 
-- `apps/strapi/src/api/**` for doctor-profile-related content types
+- `apps/cms/src/api/**` for doctor-profile-related content types
 - `apps/member/src/app/(portal)/doctors/[id]/page.tsx`
 - `apps/member/src/app/(portal)/doctors/page.tsx`
 - `apps/member/src/app/(portal)/doctors/doctors-page-client.tsx`

@@ -777,7 +777,7 @@ importers:
         specifier: 'catalog:'
         version: 5.9.2
 
-  apps/strapi:
+  apps/cms:
     dependencies:
       '@strapi/plugin-users-permissions':
         specifier: 5.42.0

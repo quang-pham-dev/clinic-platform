@@ -4,7 +4,7 @@
 
 **Goal:** Clean up misleading P4 scaffold code first, then begin official P4 work with the smallest useful vertical slice: Strapi foundation plus enriched public doctor profiles in the member portal.
 
-**Architecture:** Treat cleanup as a repository normalization pass, not a feature delivery phase. Preserve only intentional P4 foundations in `apps/api` and `apps/strapi`, then implement the first official P4 slice by adding a server-side Strapi fetch boundary in the member app and merging CMS content with the existing client-side NestJS doctor experience.
+**Architecture:** Treat cleanup as a repository normalization pass, not a feature delivery phase. Preserve only intentional P4 foundations in `apps/api` and `apps/cms`, then implement the first official P4 slice by adding a server-side Strapi fetch boundary in the member app and merging CMS content with the existing client-side NestJS doctor experience.
 
 **Tech Stack:** Turborepo, pnpm workspaces, NestJS, Next.js App Router, Strapi v5, TypeScript, ESLint, Prettier.
 
@@ -18,9 +18,9 @@
 - Modify/Delete: `apps/api/src/modules/medical-records/**`
 - Modify/Delete: `apps/api/src/modules/files/**`
 - Modify/Delete: `apps/api/src/modules/consents/**`
-- Modify: `apps/strapi/package.json`
-- Modify/Delete: `apps/strapi/src/**`
-- Modify: `apps/strapi/config/**`
+- Modify: `apps/cms/package.json`
+- Modify/Delete: `apps/cms/src/**`
+- Modify: `apps/cms/config/**`
 - Modify: `apps/member/src/app/(portal)/doctors/page.tsx`
 - Modify: `apps/member/src/app/(portal)/doctors/[id]/page.tsx`
 - Create: `apps/member/src/app/(portal)/doctors/doctors-page-client.tsx`
@@ -32,7 +32,7 @@
 - Inspect: `apps/api/src/config/validation.schema.ts`
 - Inspect: `apps/member/package.json`
 - Inspect: `apps/member/src/lib/api.ts`
-- Inspect: `apps/strapi/README.md`
+- Inspect: `apps/cms/README.md`
 - Inspect: `turbo.json`
 
 ### Expected testing commands
@@ -42,7 +42,7 @@
 - `pnpm --filter @clinic-platform/member lint`
 - `pnpm --filter @clinic-platform/member check-types`
 - `pnpm --filter @clinic-platform/member build`
-- `pnpm --filter strapi build` once Strapi cleanup or content model setup changes land
+- `pnpm --filter cms build` once Strapi cleanup or content model setup changes land
 
 ## Chunk 1: P4 Scaffold Cleanup
 
@@ -54,8 +54,8 @@
 - Inspect: `apps/api/src/modules/files/**`
 - Inspect: `apps/api/src/modules/consents/**`
 - Inspect: `apps/api/src/app.module.ts`
-- Inspect: `apps/strapi/src/**`
-- Inspect: `apps/strapi/config/**`
+- Inspect: `apps/cms/src/**`
+- Inspect: `apps/cms/config/**`
 
 - [ ] **Step 1: Read the current scaffold files and classify each path**
 
@@ -162,14 +162,14 @@ git add apps/api/src/app.module.ts apps/api/src/modules
 git commit -m "refactor(api): normalize p4 scaffold modules"
 ```
 
-### Task 3: Clean `apps/strapi` down to an intentional foundation
+### Task 3: Clean `apps/cms` down to an intentional foundation
 
 **Files:**
 
-- Modify/Delete: `apps/strapi/src/**`
-- Modify: `apps/strapi/config/**`
-- Modify: `apps/strapi/package.json`
-- Test: `apps/strapi/package.json`
+- Modify/Delete: `apps/cms/src/**`
+- Modify: `apps/cms/config/**`
+- Modify: `apps/cms/package.json`
+- Test: `apps/cms/package.json`
 
 - [ ] **Step 1: Identify generated artifacts that are safe to remove**
 
@@ -180,7 +180,7 @@ Focus on default/sample/admin example files and empty placeholders that do not s
 Run:
 
 ```bash
-pnpm --filter strapi build
+pnpm --filter cms build
 ```
 
 Expected:
@@ -205,7 +205,7 @@ Minimum acceptable outcome:
 Run:
 
 ```bash
-pnpm --filter strapi build
+pnpm --filter cms build
 ```
 
 Expected:
@@ -217,7 +217,7 @@ Build succeeds with the cleaned shell.
 - [ ] **Step 5: Commit**
 
 ```bash
-git add apps/strapi
+git add apps/cms
 git commit -m "refactor(strapi): clean generated p4 scaffold"
 ```
 
@@ -227,9 +227,9 @@ git commit -m "refactor(strapi): clean generated p4 scaffold"
 
 **Files:**
 
-- Create/Modify: `apps/strapi/src/api/**`
-- Modify if needed: `apps/strapi/src/index.ts`
-- Test: `apps/strapi/package.json`
+- Create/Modify: `apps/cms/src/api/**`
+- Modify if needed: `apps/cms/src/index.ts`
+- Test: `apps/cms/package.json`
 
 - [ ] **Step 1: Define the exact first content model before coding**
 
@@ -251,7 +251,7 @@ doctor-page
 Run:
 
 ```bash
-pnpm --filter strapi build
+pnpm --filter cms build
 ```
 
 Expected:
@@ -269,7 +269,7 @@ Keep it to the single doctor-related model needed for the member portal slice. D
 Run:
 
 ```bash
-pnpm --filter strapi build
+pnpm --filter cms build
 ```
 
 Expected:
@@ -281,7 +281,7 @@ Build succeeds and Strapi recognizes the content type.
 - [ ] **Step 5: Commit**
 
 ```bash
-git add apps/strapi/src/api apps/strapi/src/index.ts
+git add apps/cms/src/api apps/cms/src/index.ts
 git commit -m "feat(strapi): add doctor page foundation"
 ```
 
@@ -469,7 +469,7 @@ Exit 0 for all three.
 Run:
 
 ```bash
-pnpm --filter strapi build
+pnpm --filter cms build
 ```
 
 Expected:
@@ -496,7 +496,7 @@ Only intentional cleanup and P4 kickoff files are changed.
 - [ ] **Step 5: Commit final leftovers if needed**
 
 ```bash
-git add apps/api apps/member apps/strapi
+git add apps/api apps/member apps/cms
 git commit -m "chore(p4): complete scaffold cleanup and cms kickoff"
 ```
 

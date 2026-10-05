@@ -144,15 +144,13 @@ async function grantPublicDoctorPageAccess(strapi: Core.Strapi) {
         });
 
       if (!existing) {
-        await strapi.db
-          .query('plugin::users-permissions.permission')
-          .create({
-            data: {
-              role: publicRole.id,
-              action: `api::doctor-page.doctor-page.${action}`,
-              enabled: true,
-            },
-          });
+        await strapi.db.query('plugin::users-permissions.permission').create({
+          data: {
+            role: publicRole.id,
+            action: `api::doctor-page.doctor-page.${action}`,
+            enabled: true,
+          },
+        });
 
         strapi.log.info(
           `[permissions] Granted public ${action} on doctor-page.`,

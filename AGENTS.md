@@ -16,7 +16,7 @@ Use this file as the single reference for commands and style expectations when w
 - `apps/dashboard` - Admin/Doctor React SPA (Vite)
 - `apps/member` - Patient Portal (Next.js)
 - `apps/staff` - Staff Shift Viewer (Next.js)
-- `apps/strapi` - Headless CMS
+- `apps/cms` - Headless CMS (Strapi)
 - `apps/super-admin` - Platform Operator Dashboard (Next.js)
 - `packages/types` - Shared TS types, DTOs, Enums
 - `packages/ui` - Shared UI components (shadcn/ui + Tailwind v4)
